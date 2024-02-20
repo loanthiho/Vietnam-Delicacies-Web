@@ -1,7 +1,6 @@
-import React from "react";
 import styles from "./style.module.css";
 
-const index = () => {
+const Footer = () => {
   return (
     <div className={styles.footer}>
       <div className={styles.footer_content}>
@@ -28,17 +27,17 @@ const index = () => {
           <div className={styles.title}>LIÊN HỆ</div>
           <div className={styles.content_introduce}>
             <div className={styles.icon}>
-              <i class="fa-regular fa-envelope"></i>
+              <i className="fa-regular fa-envelope"></i>
               <p>vns@gmail.com</p>
             </div>
 
             <div className={styles.icon}>
-              <i class="fa-solid fa-phone"></i>
+              <i className="fa-solid fa-phone"></i>
               <p>0359215610</p>
             </div>
 
             <div className={styles.icon}>
-              <i class="fa-solid fa-location-dot"></i>
+              <i className="fa-solid fa-location-dot"></i>
               <p>Lê Hữu Trác, Phước Mỹ, Sơn Trà, Đà Nẵng</p>
             </div>
           </div>
@@ -75,4 +74,4 @@ const index = () => {
   );
 };
 
-export default index;
+export default Footer;

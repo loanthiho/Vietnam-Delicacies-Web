@@ -21,7 +21,7 @@ const Nav = () => {
             <>
               SẢN PHẨM
               <span className={styles.sub_arrow}>
-                <i class="fa-solid fa-caret-down"></i>
+                <i className="fa-solid fa-caret-down"></i>
               </span>
             </>
             <div className={styles.line}></div>

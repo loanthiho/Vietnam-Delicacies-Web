@@ -1,10 +1,9 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import styles from "./style.module.css";
 import outstandingproducts from "../../../public/OutstandingProducts/products.json";
 import newproducts from "../../../public/NewProducts/products.json";
 
-const index = () => {
-
+const Index = () => {
   const [showOutstandingproducts, setShowOutstandingproducts] = useState(false);
   const [shownewProducts, setShownewProducts] = useState(false);
 
@@ -12,21 +11,20 @@ const index = () => {
     setShowOutstandingproducts(!showOutstandingproducts);
   };
 
-  const toggleshowNewproduct = ()=>{
+  const toggleshowNewproduct = () => {
     setShownewProducts(!shownewProducts);
   };
 
-  const showNotification =()=>{
-    alert("Bạn cần tải app này")
-  }
-
+  const showNotification = () => {
+    alert("Bạn cần tải app này để mua sản phẩm");
+  };
 
   return (
     <div className={styles.container}>
       <div className={styles.title_product}>
         SẢN PHẨM NỔI BẬT
         <div className={styles.icon_product}>
-          <i class="fa-solid fa-bowl-food"></i>
+          <i className="fa-solid fa-bowl-food"></i>
         </div>
       </div>
 
@@ -75,7 +73,7 @@ const index = () => {
       <div className={styles.title_product}>
         SẢN PHẨM MỚI
         <div className={styles.icon_product}>
-          <i class="fa-solid fa-burger"></i>
+          <i className="fa-solid fa-burger"></i>
         </div>
       </div>
 
@@ -83,7 +81,7 @@ const index = () => {
         {newproducts
           .slice(0, shownewProducts ? newproducts.length : 6)
           .map((product, index) => (
-            <div key={index} className={styles.card}>
+            <div key={index} className={styles.card} onClick={showNotification}>
               <img src={product.imageUrl} alt="" />
               <div className={styles.name_product}>{product.name}</div>
               <div className={styles.price_product}>{product.price}</div>
@@ -100,4 +98,4 @@ const index = () => {
   );
 };
 
-export default index;
+export default Index;

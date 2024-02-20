@@ -1,7 +1,6 @@
-import React from "react";
 import styles from "./style.module.css";
 
-const index = () => {
+const Index = () => {
   return (
     <div className={styles.container}>
       <div className={styles.img_banner}>
@@ -16,4 +15,4 @@ const index = () => {
   );
 };
 
-export default index;
+export default Index;
