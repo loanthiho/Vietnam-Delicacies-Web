@@ -1,0 +1,99 @@
+ul {
+  list-style-type: none;
+}
+
+.container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 62px;
+}
+
+.container .nav_main {
+  display: flex;
+  gap: 30px;
+  padding: 0;
+}
+
+.container a {
+  color: #333;
+}
+
+.container .nav_main a:hover {
+  color: #ffa000;
+}
+
+.container .nav_main .active a {
+  color: #ffa000;
+}
+
+.menu_product {
+  position: relative;
+}
+
+.container ul li:hover {
+  color: #ffa000;
+  cursor: pointer;
+}
+
+.container ul li .sub_arrow {
+  margin-left: 8px;
+}
+
+ul.drop_dow {
+  margin-top: 14px;
+  border-top: 5px solid #2e7d32;
+  width: 218px;
+  display: none;
+  padding: 10px 20px 20px 20px;
+  transition: display 0.3s ease;
+  color: #333;
+  z-index: 999;
+}
+
+.menu_product .line {
+  background: white;
+  position: absolute;
+  height: 14px;
+  width: 104px;
+}
+
+.menu_product .line:hover {
+  cursor: auto;
+}
+
+li:hover .drop_dow {
+  display: block;
+}
+
+ul.drop_dow li {
+  margin-top: 10px;
+}
+
+.sub_arrow {
+  position: relative;
+}
+
+.drop_dow {
+  position: absolute;
+  background-color: white;
+  padding-inline-start: 0;
+}
+
+.search {
+  position: relative;
+}
+
+.search input {
+  padding: 10px 50px 10px 10px;
+  border-radius: 10px;
+  border: 1px solid #333;
+  outline: 1px;
+}
+
+.search input:hover {
+  border: 1px solid #ffa000;
+}
+.icon_search:hover {
+  cursor: pointer;
+}
