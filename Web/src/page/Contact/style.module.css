@@ -1,0 +1,97 @@
+.container {
+  max-width: 1024px;
+  margin: 0 auto;
+  padding-bottom: 80px;
+}
+
+.title {
+  margin: 40px 0 50px 0;
+  text-align: center;
+  font-weight: 700;
+  color: #2e7d32;
+}
+
+.main_content {
+  display: flex;
+  gap: 30px;
+}
+
+.form_contact {
+  background: #e5e1e187;
+  width: 497px; 
+  max-height: 310px;
+}
+
+
+.group_contact .title_contact {
+  background: #ffa000;
+  font-size: 16px;
+  color: #fff;
+  padding: 15px;
+}
+
+.group_contact {
+  padding: 40px 20px;
+}
+
+
+.group_contact button{
+  float: right;
+  background-color: #ffa000;
+  color:#fff;
+  margin: 20px 0;
+}
+
+.contact_method {
+  display: flex;
+  padding: 20px 10px;
+  justify-content: space-between;
+  border-bottom: 1px solid #b5b5b5;
+}
+
+.number,
+.email,
+.address {
+  display: flex;
+}
+
+.advise {
+  margin-left: 15px;
+  font-weight: 700;
+}
+
+.advise p {
+  font-weight: 400;
+}
+
+.number,
+.email i {
+  margin-top: 5px;
+}
+
+.address i {
+  margin-top: 5px;
+}
+
+.address {
+  margin-top: 25px;
+}
+
+.send_contact {
+  width: 619px;
+  background: #e5e1e187;
+}
+
+.group_input {
+margin-top: 20px;
+}
+
+.group_input input, textarea{
+  margin-top: 10px;
+ padding: 10px;
+ width: 100%;
+ box-sizing: border-box;
+ border: none;
+ outline: none;
+ border-radius: 5px
+}
