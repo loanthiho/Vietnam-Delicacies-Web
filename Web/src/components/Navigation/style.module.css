@@ -31,6 +31,10 @@ ul {
   position: relative;
 }
 
+.menu_product.menu_productColor {
+  color: #ffa000;
+}
+
 .container ul li:hover {
   color: #ffa000;
   cursor: pointer;
@@ -51,7 +55,7 @@ ul.drop_dow {
   z-index: 999;
 }
 
-.menu_product .line {
+.line {
   background: white;
   position: absolute;
   height: 14px;
