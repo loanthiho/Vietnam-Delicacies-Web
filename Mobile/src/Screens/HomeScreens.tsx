@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import {
   View,
   Text,
@@ -9,7 +9,6 @@ import {
   FlatList,
   ScrollView,
 } from 'react-native';
-
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
 const SECTIONS = [
@@ -47,7 +46,7 @@ const SECTIONS = [
   {
     title: 'Punk and hardcore',
     horizontal: true,
-    vertical:true,
+    vertical: true,
     data: [
       {
         key: '1',
@@ -109,7 +108,9 @@ const SECTIONS = [
   },
 ];
 
-const HomePage = () => {
+const HomePage = (props: any) => {
+  console.log('received props', props);
+  const {navigation} = props;
   const [selectedItem, setSelectedItem] = useState('Tất cả');
   const data = ['Tất cả', 'Miền Bắc', 'Miền Nam', 'Miền Trung'];
 
@@ -160,66 +161,77 @@ const HomePage = () => {
           horizontal
         />
       </View>
-      <ScrollView style={styles.scrollView}>
-      <View style={styles.banner}>
-        <Image source={require('../assets/Image.png')} />
-      </View>
+      <ScrollView>
+        <View style={styles.banner}>
+          <Image source={require('../assets/Image.png')} />
+        </View>
 
-      <View>
-        <Text style={{fontSize: 20, fontWeight: 'bold'}}>Sản phẩm nổi bật</Text>
-        <FlatList 
-          horizontal ={true}
-          data={SECTIONS[0].data}
-          renderItem={({item}) => (
-            <View style={styles.featuredProducts}>
-              <Image
-                source={{uri: item.uri}}
-                style={styles.itemPhoto}
-                resizeMode="cover"
-              />
-            <View>
-              <Text style={styles.itemText}>{item.text}</Text>
-              <Ionicons name="star-outline" style={styles.starIcon} />
-              <Text style={styles.textIcon}>4.5</Text> 
-              <Ionicons name="heart-outline"  style={styles.heartIcon}/>
+        <View>
+          <Text style={{fontSize: 20, fontWeight: 'bold'}}>
+            Sản phẩm nổi bật
+          </Text>
+          <FlatList
+            horizontal={true}
+            data={SECTIONS[0].data}
+            renderItem={({item}) => (
+              <View style={styles.featuredProducts}>
+                <Image
+                  source={{uri: item.uri}}
+                  style={styles.itemPhoto}
+                  resizeMode="cover"
+                />
+                <View>
+                  <Text style={styles.itemText}>{item.text}</Text>
+                  <Ionicons name="star-outline" style={styles.starIcon} />
+                  <Text style={styles.textIcon}>4.5</Text>
+                  <Ionicons name="heart-outline" style={styles.heartIcon} />
+                </View>
               </View>
-            </View>
-          )}
-          keyExtractor={item => item.key}
-        />
-      </View>
+            )}
+            keyExtractor={item => item.key}
+          />
+        </View>
 
-      <View style={{marginTop: 20}}>
-        <Text style={{fontSize: 20, fontWeight: 'bold'}}>
-          Sản phẩm yêu thích
-        </Text >
-        <FlatList
-          horizontal ={false}
-          data={SECTIONS[0].data}
-          numColumns={2}
-          contentContainerStyle={{ width:'100%', flexDirection:'column',gap: 20 ,height:'auto' }}
-          renderItem={({item}) => (
-            <View style={styles.favouriteProducts}>
-            <View style={styles.item}>
-              <Image
-                source={{uri: item.uri}}
-                style={styles.itemPhoto}
-                resizeMode="cover"
-              />
-              <View>
-              <Text style={styles.itemText}>{item.text}</Text>
-              <Ionicons name="star-outline" style={styles.starIcon} />
-              <Text style={styles.textIcon}>4.5</Text> 
-              <Ionicons name="heart-outline"  style={styles.heartIcon}/>
-              </View>
-              
-            </View>
-
-            </View>
-          )}
-          keyExtractor={item => item.key}
-        />
-      </View>
+        <View style={{marginTop: 20}}>
+          <Text style={{fontSize: 20, fontWeight: 'bold'}}>
+            Sản phẩm yêu thích
+          </Text>
+          <FlatList
+            horizontal={false}
+            data={SECTIONS[0].data}
+            numColumns={2}
+            contentContainerStyle={{
+              width: '100%',
+              flexDirection: 'column',
+              gap: 20,
+              height: 'auto',
+            }}
+            renderItem={({item}) => (
+              <TouchableOpacity
+                style={styles.favouriteProducts}
+                onPress={() =>
+                  navigation.navigate('ProductDetailScreen', {
+                    selectedItem: item,
+                  })
+                }>
+                <View style={styles.item}>
+                  <Image
+                    source={{uri: item.uri}}
+                    style={styles.itemPhoto}
+                    resizeMode="cover"
+                  />
+                  <View>
+                    <Text style={styles.itemText}>{item.text}</Text>
+                    <Ionicons name="star-outline" style={styles.starIcon} />
+                    <Text style={styles.textIcon}>4.5</Text>
+                    <Ionicons name="heart-outline" style={styles.heartIcon} />
+                  </View>
+                </View>
+              </TouchableOpacity>
+            )}
+            keyExtractor={item => item.key}
+          />
+        </View>
       </ScrollView>
     </View>
   );
@@ -247,7 +259,7 @@ const styles = StyleSheet.create({
   profileImage: {
     width: 44,
     height: 44,
-    borderRadius: 50, 
+    borderRadius: 50,
   },
   search: {
     flexDirection: 'row',
@@ -265,17 +277,17 @@ const styles = StyleSheet.create({
   starIcon: {
     fontSize: 20,
     color: 'yellow',
-    top:20,
-    paddingLeft:10,
+    top: 20,
+    paddingLeft: 10,
   },
   textIcon: {
-    paddingLeft:40,
+    paddingLeft: 40,
   },
   heartIcon: {
     fontSize: 20,
     color: 'red',
-    paddingLeft:120,
-    bottom:20,
+    paddingLeft: 120,
+    bottom: 20,
   },
   searchInput: {
     flex: 1,
@@ -306,45 +318,40 @@ const styles = StyleSheet.create({
   itemPhoto: {
     width: 130,
     height: 130,
-    borderRadius:20,
-    textAlign:'center',
+    borderRadius: 20,
     position: 'relative',
-    left:10,
-    top:10,
+    left: 10,
+    top: 10,
   },
   itemText: {
     color: 'black',
     marginTop: 5,
-    backgroundColor:'blink',
-    paddingLeft:40,
-    top:10,
-    fontSize:16,
+    paddingLeft: 40,
+    top: 10,
+    fontSize: 16,
   },
-  scrollView: {
-    backgroundColor: 'white',
-    marginHorizontal:5,
-  },
+
   featuredProducts: {
     backgroundColor: 'white',
-    borderRadius:10,
-    marginHorizontal:5,
+    borderRadius: 10,
+    marginHorizontal: 5,
     marginTop: 20,
     marginBottom: 20,
     width: 150,
     height: 220,
-    borderColor:'white',
+    borderColor: 'white',
     elevation: 10,
   },
-  
+
   favouriteProducts: {
     backgroundColor: 'white',
-    borderRadius:10,
-    marginHorizontal:5,
+    borderRadius: 10,
+    marginHorizontal: 5,
     marginTop: 20,
     marginBottom: 20,
     width: 170,
     height: 220,
-    borderColor:'white',
+    borderColor: 'white',
     elevation: 10,
   },
 });
