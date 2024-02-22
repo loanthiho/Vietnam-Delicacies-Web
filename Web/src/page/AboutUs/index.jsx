@@ -1,15 +1,13 @@
-import React from "react";
 import { useEffect, useState } from "react";
 import styles from "./style.module.css";
 
-const index = () => {
-
+const Index = () => {
   const imagePaths = [
     "../introduce/banh-uot.jpg",
     "../introduce/lam-rice.jpg",
     "../introduce/thi-xoi.jpg",
   ];
-const [imageLoaded, setImageLoaded] = useState(false);
+  const [imageLoaded, setImageLoaded] = useState(false);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
   useEffect(() => {
@@ -20,14 +18,13 @@ const [imageLoaded, setImageLoaded] = useState(false);
     return () => clearInterval(interval);
   }, []);
 
-    useEffect(() => {
-      const image = new Image();
-      image.src = imagePaths[currentImageIndex];
-      image.onload = () => {
-        setImageLoaded(true);
-      };
-    }, [currentImageIndex]);
-
+  useEffect(() => {
+    const image = new Image();
+    image.src = imagePaths[currentImageIndex];
+    image.onload = () => {
+      setImageLoaded(true);
+    };
+  }, [currentImageIndex]);
 
   return (
     <div className={styles.container}>
@@ -56,7 +53,7 @@ const [imageLoaded, setImageLoaded] = useState(false);
           </p>{" "}
           <br></br>
           <p>
-              Không chỉ dừng lại ở ẩm thực, trang web của chúng tôi còn mang đến
+            Không chỉ dừng lại ở ẩm thực, trang web của chúng tôi còn mang đến
             cho bạn cơ hội khám phá về các loại đặc sản như trà, cà phê, mắc
             khén, và nhiều sản phẩm độc đáo khác, là những biểu tượng của đất
             nước Việt Nam.
@@ -72,4 +69,4 @@ const [imageLoaded, setImageLoaded] = useState(false);
   );
 };
 
-export default index;
+export default Index;

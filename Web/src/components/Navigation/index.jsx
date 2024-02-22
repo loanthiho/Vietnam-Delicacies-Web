@@ -5,19 +5,32 @@ import { Link, useLocation } from "react-router-dom";
 const Nav = () => {
   const location = useLocation();
   const [currentPage, setCurrentPage] = useState("");
+  const [menuProductClass, setMenuProductClass] = useState(styles.menu_product);
 
   useEffect(() => {
     setCurrentPage(location.pathname);
   }, [location]);
 
+
+  const handleDropDowItemClick = () => {
+    setMenuProductClass(`${styles.menu_product} ${styles.menu_productColor}`);
+  };
+
+    const handleDropDowItemunClick = () => {
+      setMenuProductClass(styles.menu_product);
+    };
+
   return (
     <div className={styles.container}>
       <div>
         <ul className={styles.nav_main}>
-          <li className={currentPage === "/" ? styles.active : ""}>
+          <li
+            onClick={handleDropDowItemunClick}
+            className={currentPage === "/" ? styles.active : ""}
+          >
             <Link to="/">TRANG CHỦ</Link>
           </li>
-          <li className={styles.menu_product}>
+          <li className={menuProductClass}>
             <>
               SẢN PHẨM
               <span className={styles.sub_arrow}>
@@ -26,15 +39,38 @@ const Nav = () => {
             </>
             <div className={styles.line}></div>
             <ul className={styles.drop_dow}>
-              <li>RAU CỦ QUẢ</li>
-              <li>THỰC PHẨM KHÔ</li>
-              <li>THỰC PHẨM QUA CHẾ BIẾN</li>
+              <li
+                onClick={handleDropDowItemClick}
+                className={currentPage === "/vegetable" ? styles.active : ""}
+              >
+                <Link to="/vegetable">RAU CỦ QUẢ</Link>
+              </li>
+              <li
+                onClick={handleDropDowItemClick}
+                className={currentPage === "/dryFood" ? styles.active : ""}
+              >
+                <Link to="/dryFood">THỰC PHẨM KHÔ</Link>
+              </li>
+              <li
+                onClick={handleDropDowItemClick}
+                className={
+                  currentPage === "/processedFood" ? styles.active : ""
+                }
+              >
+                <Link to="/processedFood">THỰC PHẨM QUA CHẾ BIẾN</Link>
+              </li>
             </ul>
           </li>
-          <li className={currentPage === "/about" ? styles.active : ""}>
+          <li
+            onClick={handleDropDowItemunClick}
+            className={currentPage === "/about" ? styles.active : ""}
+          >
             <Link to="/about">GIỚI THIỆU</Link>
           </li>
-          <li className={currentPage === "/contact" ? styles.active : ""}>
+          <li
+            onClick={handleDropDowItemunClick}
+            className={currentPage === "/contact" ? styles.active : ""}
+          >
             <Link to="/contact">LIÊN HỆ</Link>
           </li>
         </ul>
