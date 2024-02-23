@@ -10,6 +10,16 @@ import {
   Pressable,
 } from 'react-native';
 
+interface Item{
+  key: string;
+  text: string;
+  price: number;
+  uri: string;
+}
+
+interface New{
+  item: Item;
+}
 const ProductScreen = () => {
   const [cartItems, setCartItems] = useState([
     {
@@ -52,7 +62,7 @@ const ProductScreen = () => {
   ]);
 
   const [modalVisible, setModalVisible] = useState(false);
-  const renderItem = ({item}) => (
+  const renderItem = ({item}:New) => (
     <View>
       <View style={styles.itemContainer}>
         <Image source={{uri: item.uri}} style={styles.itemImage} />
@@ -90,11 +100,7 @@ const ProductScreen = () => {
       <Modal
         animationType="slide"
         transparent={true}
-        visible={modalVisible}
-        onRequestClose={() => {
-          Alert.alert('Modal has been closed.');
-          setModalVisible(!modalVisible);
-        }}>
+        visible={modalVisible}>
         <View style={styles.centeredView}>
           <View style={styles.modalView}>
             <Text style={styles.modalText}>
