@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import {
   View,
   Text,
@@ -14,95 +14,30 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 const SECTIONS = [
   {
     title: 'Made for you',
-
     data: [
       {
         key: '1',
-        text: ' Xôi 7 màu ',
+        text: 'Xôi 7 màu',
+        price: 10000,
         uri: 'https://i.pinimg.com/564x/27/23/28/272328c04f37971919c9e6f28fdd03ce.jpg',
       },
       {
         key: '2',
         text: 'Cá làng Vũ Đại',
+        price: 15000,
         uri: 'https://i.pinimg.com/736x/da/76/e5/da76e520e0bfed988c544ecd7d265ae7.jpg',
       },
       {
-        key: '3',
-        text: 'Item text 3',
-        uri: 'https://picsum.photos/id/1002/200',
-      },
-      {
-        key: '4',
-        text: 'Item text 4',
-        uri: 'https://picsum.photos/id/1006/200',
-      },
-      {
-        key: '5',
-        text: 'Item text 5',
-        uri: 'https://picsum.photos/id/1008/200',
-      },
-    ],
-  },
-  {
-    title: 'Punk and hardcore',
-    horizontal: true,
-    vertical: true,
-    data: [
-      {
         key: '1',
-        text: 'Item text 1',
-        uri: 'https://picsum.photos/id/1011/200',
+        text: 'Xôi 7 màu',
+        price: 10000,
+        uri: 'https://i.pinimg.com/564x/27/23/28/272328c04f37971919c9e6f28fdd03ce.jpg',
       },
       {
         key: '2',
-        text: 'Item text 2',
-        uri: 'https://picsum.photos/id/1012/200',
-      },
-      {
-        key: '3',
-        text: 'Item text 3',
-        uri: 'https://picsum.photos/id/1013/200',
-      },
-      {
-        key: '4',
-        text: 'Item text 4',
-        uri: 'https://picsum.photos/id/1015/200',
-      },
-      {
-        key: '5',
-        text: 'Item text 5',
-        uri: 'https://picsum.photos/id/1016/200',
-      },
-    ],
-  },
-  {
-    title: 'Based on your recent listening',
-    horizontal: true,
-    data: [
-      {
-        key: '1',
-        text: 'Item text 1',
-        uri: 'https://picsum.photos/id/1020/200',
-      },
-      {
-        key: '2',
-        text: 'Item text 2',
-        uri: 'https://picsum.photos/id/1024/200',
-      },
-      {
-        key: '3',
-        text: 'Item text 3',
-        uri: 'https://picsum.photos/id/1027/200',
-      },
-      {
-        key: '4',
-        text: 'Item text 4',
-        uri: 'https://picsum.photos/id/1035/200',
-      },
-      {
-        key: '5',
-        text: 'Item text 5',
-        uri: 'https://picsum.photos/id/1038/200',
+        text: 'Cá làng Vũ Đại',
+        price: 15000,
+        uri: 'https://i.pinimg.com/736x/da/76/e5/da76e520e0bfed988c544ecd7d265ae7.jpg',
       },
     ],
   },
@@ -110,18 +45,18 @@ const SECTIONS = [
 
 const HomePage = (props: any) => {
   console.log('received props', props);
-  const {navigation} = props;
+  const { navigation } = props;
   const [selectedItem, setSelectedItem] = useState('Tất cả');
   const data = ['Tất cả', 'Miền Bắc', 'Miền Nam', 'Miền Trung'];
 
-  const renderItem = ({item}) => (
+  const renderItem = ({item}:any) => (
     <TouchableOpacity
       style={[
         styles.itemOption,
-        {backgroundColor: selectedItem === item ? '#2E7D32' : 'white'},
+        { backgroundColor: selectedItem === item ? '#2E7D32' : 'white' },
       ]}
       onPress={() => setSelectedItem(item)}>
-      <Text style={{color: selectedItem === item ? 'white' : 'black'}}>
+      <Text style={{ color: selectedItem === item ? 'white' : 'black' }}>
         {item}
       </Text>
     </TouchableOpacity>
@@ -167,33 +102,41 @@ const HomePage = (props: any) => {
         </View>
 
         <View>
-          <Text style={{fontSize: 20, fontWeight: 'bold'}}>
+          <Text style={{ fontSize: 20, fontWeight: 'bold' }}>
             Sản phẩm nổi bật
           </Text>
           <FlatList
             horizontal={true}
             data={SECTIONS[0].data}
-            renderItem={({item}) => (
-              <View style={styles.featuredProducts}>
+            renderItem={({ item }) => (
+              <TouchableOpacity style={styles.featuredProducts}
+              onPress={() =>
+                navigation.navigate('ProductDetailScreen', {
+                  selectedItem: item,
+                })
+              }>
                 <Image
-                  source={{uri: item.uri}}
+                  source={{ uri: item.uri }}
                   style={styles.itemPhoto}
                   resizeMode="cover"
                 />
                 <View>
                   <Text style={styles.itemText}>{item.text}</Text>
-                  <Ionicons name="star-outline" style={styles.starIcon} />
-                  <Text style={styles.textIcon}>4.5</Text>
-                  <Ionicons name="heart-outline" style={styles.heartIcon} />
+
+                  <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                    <Ionicons name="star-outline" style={styles.starIcon} />
+                    <Text style={styles.textIcon}>4.5</Text>
+                    <Ionicons name="heart-outline" style={styles.heartIcon} />
+                  </View>
                 </View>
-              </View>
+              </TouchableOpacity>
             )}
             keyExtractor={item => item.key}
           />
         </View>
 
-        <View style={{marginTop: 20}}>
-          <Text style={{fontSize: 20, fontWeight: 'bold'}}>
+        <View style={{ marginTop: 20 }}>
+          <Text style={{ fontSize: 20, fontWeight: 'bold' }}>
             Sản phẩm yêu thích
           </Text>
           <FlatList
@@ -206,7 +149,7 @@ const HomePage = (props: any) => {
               gap: 20,
               height: 'auto',
             }}
-            renderItem={({item}) => (
+            renderItem={({ item }) => (
               <TouchableOpacity
                 style={styles.favouriteProducts}
                 onPress={() =>
@@ -214,19 +157,29 @@ const HomePage = (props: any) => {
                     selectedItem: item,
                   })
                 }>
-                <View style={styles.item}>
-                  <Image
-                    source={{uri: item.uri}}
-                    style={styles.itemPhoto}
-                    resizeMode="cover"
-                  />
-                  <View>
-                    <Text style={styles.itemText}>{item.text}</Text>
+                <FlatList
+            horizontal={true}
+            data={SECTIONS[0].data}
+            renderItem={({ item }) => (
+              <View style={styles.featuredProducts}>
+                <Image
+                  source={{ uri: item.uri }}
+                  style={styles.itemPhoto}
+                  resizeMode="cover"
+                />
+                <View>
+                  <Text style={styles.itemText}>{item.text}</Text>
+
+                  <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                     <Ionicons name="star-outline" style={styles.starIcon} />
                     <Text style={styles.textIcon}>4.5</Text>
                     <Ionicons name="heart-outline" style={styles.heartIcon} />
                   </View>
                 </View>
+              </View>
+            )}
+            keyExtractor={item => item.key}
+          />
               </TouchableOpacity>
             )}
             keyExtractor={item => item.key}
@@ -282,12 +235,14 @@ const styles = StyleSheet.create({
   },
   textIcon: {
     paddingLeft: 40,
+     top: 20,
+     right:30
   },
   heartIcon: {
     fontSize: 20,
     color: 'red',
-    paddingLeft: 120,
-    bottom: 20,
+    paddingLeft: 20,
+    top:20
   },
   searchInput: {
     flex: 1,
@@ -330,7 +285,13 @@ const styles = StyleSheet.create({
     top: 10,
     fontSize: 16,
   },
-
+  priceText: {
+    color: 'black',
+    marginTop: 5,
+    paddingLeft: 40,
+    top: 10,
+    fontSize: 14,
+  },
   featuredProducts: {
     backgroundColor: 'white',
     borderRadius: 10,
@@ -342,7 +303,6 @@ const styles = StyleSheet.create({
     borderColor: 'white',
     elevation: 10,
   },
-
   favouriteProducts: {
     backgroundColor: 'white',
     borderRadius: 10,
