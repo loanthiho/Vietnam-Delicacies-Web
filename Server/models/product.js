@@ -28,7 +28,7 @@ module.exports = (sequelize, DataTypes) => {
           type: DataTypes.UUID,
         }
       });
-      
+
       // Một product thì sẽ chỉ thuộc về một province duy nhất
       // Suy ra một một tỉnh sẽ có nhiều Product => Một province sẽ tham chiếu vào nhiều product khác nhau.
       Product.belongsTo(models.Province, {
@@ -45,36 +45,36 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: {
           name: 'product_id',
           type: DataTypes.UUID,
-          allowNull:true
+          allowNull: true
         }
       });
 
       // Một product có thể có nhiều record trong bảng ProducWishlist
       Product.hasMany(models.ProductWishlist, {
         foreignKey: {
-          name:'product_id',  
-          type:DataTypes.UUID
+          name: 'product_id',
+          type: DataTypes.UUID
         }
       });
 
       // Một product có thể có nhiều record trong bảng productCart.
       Product.hasMany(models.ProductCart, {
         foreignKey: {
-          name:'product_id',
-          type:DataTypes.UUID
+          name: 'product_id',
+          type: DataTypes.UUID
         }
       });
       Product.hasMany(models.Review, {
-        foreignKey:{
-          name:'product_id',
-          type:DataTypes.UUID
+        foreignKey: {
+          name: 'product_id',
+          type: DataTypes.UUID
         }
       });
 
       Product.hasMany(models.OrderDetail, {
-        foreignKey:{
-          name:'product_id',
-          type:DataTypes.UUID
+        foreignKey: {
+          name: 'product_id',
+          type: DataTypes.UUID
         }
       })
 
@@ -97,16 +97,38 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.UUID,
       defaultValue: DataTypes.UUIDV4,
     },
-    province_id: DataTypes.UUID,
-    category_id: DataTypes.UUID,
-    seller_id: DataTypes.UUID,
-    name: DataTypes.STRING,
-    price: DataTypes.INTEGER,
+    province_id: {
+      type: DataTypes.UUID,
+      allowNull: true
+    },
+    domain_id: {
+      type: DataTypes.UUID,
+      allowNull:true
+    },
+    category_id: {
+      type: DataTypes.UUID,
+      allowNull: false,
+    },
+    seller_id: {
+      type: DataTypes.UUID,
+      allowNull: false,
+    },
+    name: {
+      type: DataTypes.STRING,
+      allowNull: false
+    },
+    price: {
+      type: DataTypes.INTEGER,
+      allowNull: false
+    },
     new_price: {
       type: DataTypes.INTEGER,
       allowNull: true
     },
-    inventory: DataTypes.INTEGER,
+    inventory: {
+      type: DataTypes.INTEGER,
+      allowNull: false
+    },
     pre_image: {
       type: DataTypes.STRING,
       allowNull: true,

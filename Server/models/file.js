@@ -14,16 +14,16 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: {
           type: DataTypes.UUID,
           name: 'product_id',
-          allowNull:true
+          allowNull: true
         }
       }),
-      File.belongsTo(models.Review, {
-        foreignKey:{
-          name:'comment_id',
-          type:DataTypes.UUID,
-          allowNull:true
-        }
-      })
+        File.belongsTo(models.Review, {
+          foreignKey: {
+            name: 'comment_id',
+            type: DataTypes.UUID,
+            allowNull: true
+          }
+        })
     }
   }
   File.init({
@@ -33,12 +33,15 @@ module.exports = (sequelize, DataTypes) => {
       primaryKey: true
     },
     product_id: {
-      allowNull:true,
+      allowNull: true,
       type: DataTypes.UUID,
     },
     comment_id: {
       allowNull: true,
       type: DataTypes.UUID
+    },
+    file_type: {
+      type: DataTypes.STRING,
     },
     src: DataTypes.STRING,
     file_name: DataTypes.STRING

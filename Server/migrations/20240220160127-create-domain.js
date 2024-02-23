@@ -2,26 +2,12 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('Files', {
+    await queryInterface.createTable('Domains', {
       id: {
         primaryKey: true,
         type: Sequelize.UUID
       },
-      product_id: {
-        allowNull: true,
-        type: Sequelize.UUID
-      },
-      comment_id: {
-        allowNull: true,
-        type: Sequelize.UUID
-      },
-      file_type: {
-        type: Sequelize.STRING,
-      },
-      src: {
-        type: Sequelize.STRING
-      },
-      file_name: {
+      name: {
         type: Sequelize.STRING
       },
       createdAt: {
@@ -35,6 +21,6 @@ module.exports = {
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('Files');
+    await queryInterface.dropTable('Domains');
   }
 };

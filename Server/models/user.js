@@ -32,6 +32,14 @@ module.exports = (sequelize, DataTypes) => {
         }
       });
 
+      User.belongsTo(models.Domain, {
+        foreignKey: {
+          name: 'domain_id',
+          type: DataTypes.UUID,
+          allowNull: true
+        }
+      })
+
       // Một User chỉ có một shopping cart duy nhất.
       // Một shopping cart chỉ thuộc quyền sở hữu của một người.
       // Một record trong bảng cart sẽ có một unique User.
@@ -75,6 +83,10 @@ module.exports = (sequelize, DataTypes) => {
       defaultValue: DataTypes.UUIDV4
     },
     province_id: {
+      type: DataTypes.UUID,
+      allowNull: true,
+    },
+    domain_id: {
       type: DataTypes.UUID,
       allowNull: true,
     },

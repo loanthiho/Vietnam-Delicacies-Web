@@ -16,9 +16,10 @@ module.exports = {
       seller_id: {
         type: Sequelize.UUID
       },
-      province_id:{
-        type:Sequelize.UUID,
+      province_id: {
+        type: Sequelize.UUID,
       },
+      domain_id: Sequelize.UUID,
       name: {
         type: Sequelize.STRING
       },
@@ -29,52 +30,52 @@ module.exports = {
         type: Sequelize.INTEGER
       },
       pre_image: {
-        allowNull:true,
+        allowNull: true,
         type: Sequelize.STRING
       },
       description: {
-        allowNull:true,
+        allowNull: true,
         type: Sequelize.STRING
       },
       star: {
-        allowNull:true,
+        allowNull: true,
         type: Sequelize.FLOAT
       },
       status: {
-        allowNull:true,
+        allowNull: true,
         type: Sequelize.STRING
       },
       likes: {
-        allowNull:true,
+        allowNull: true,
         type: Sequelize.INTEGER
       },
       brand: {
-        allowNull:true,
+        allowNull: true,
         type: Sequelize.STRING
       },
       new_price: {
-        allowNull:true,
+        allowNull: true,
         type: Sequelize.INTEGER
       },
       food_safety_certification: {
-        allowNull:true,
+        allowNull: true,
         type: Sequelize.STRING
       },
       ingredients: {
-        allowNull:true,
+        allowNull: true,
         type: Sequelize.STRING
       },
       cooking_techniques: {
-        allowNull:true, 
+        allowNull: true,
         type: Sequelize.STRING
       },
       weight: {
-        allowNull:true,
+        allowNull: true,
         type: Sequelize.INTEGER
       },
-      quantity_sold:{
-        type:Sequelize.INTEGER,
-        allowNull:true
+      quantity_sold: {
+        type: Sequelize.INTEGER,
+        allowNull: true
       },
       createdAt: {
         allowNull: false,
