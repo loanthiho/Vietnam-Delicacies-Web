@@ -1,78 +1,59 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import {
   View,
   Text,
   Image,
   FlatList,
-  Button,
   TouchableOpacity,
   StyleSheet,
 } from 'react-native';
-
 import Ionicons from 'react-native-vector-icons/Ionicons';
-const CartScreen = () => {
-  const [cartItems, setCartItems] = useState([
-    {
-      key: '1',
-      text: ' Xôi 7 màu ',
-      uri: 'https://i.pinimg.com/564x/27/23/28/272328c04f37971919c9e6f28fdd03ce.jpg',
-      price: 10000,
-      quantity: 1,
-    },
-    {
-      key: '2',
-      text: 'Cá làng Vũ Đại',
-      uri: 'https://i.pinimg.com/736x/da/76/e5/da76e520e0bfed988c544ecd7d265ae7.jpg',
-      price: 20000,
-      quantity: 1,
-    },
-    {
-      key: '3',
-      text: 'Item text 3',
-      uri: 'https://picsum.photos/id/1002/200',
-      price: 30,
-      quantity: 1,
-    },
-    {
-      key: '4',
-      text: 'Item text 4',
-      uri: 'https://picsum.photos/id/1006/200',
-      price: 40,
-      quantity: 1,
-    },
-    {
-      key: '5',
-      text: 'Item text 5',
-      uri: 'https://picsum.photos/id/1008/200',
-      price: 50,
-      quantity: 1,
-    },
-    {
-      key: '6',
-      text: 'Item text 5',
-      uri: 'https://picsum.photos/id/1008/200',
-      price: 50,
-      quantity: 1,
-    },
-  ]);
 
-  const renderItem = ({item}) => (
+const CartScreen = ({ route }: { route: any }) => {
+  const [cartItems, setCartItems] = useState<any[]>([]);
+
+  React.useEffect(() => {
+    if (route.params && route.params.selectedItem) {
+      const selectedItem = route.params.selectedItem;
+      setCartItems([...cartItems, selectedItem]);
+    }
+  }, [route.params]);
+
+  const increaseQuantity = (itemId: number) => {
+    setCartItems(prevCartItems =>
+      prevCartItems.map(item =>
+        item.key === itemId ? { ...item, quantity: item.quantity + 1 } : item
+      )
+    );
+  };
+
+  const decreaseQuantity = (itemId: number) => {
+    setCartItems(prevCartItems =>
+      prevCartItems.map(item =>
+        item.key === itemId && item.quantity > 1
+          ? { ...item, quantity: item.quantity - 1 }
+          : item
+      )
+    );
+  };
+
+  const renderItem = ({ item }: { item: any }) => (
     <View style={styles.product}>
       <Ionicons name="checkbox-outline" style={styles.checkboxIcon} />
       <View style={styles.itemContainer}>
-        <Image source={{uri: item.uri}} style={styles.itemImage} />
+        <Image source={{ uri: item.uri }} style={styles.itemImage} />
         <Text style={styles.itemText}>{item.text}</Text>
         <Text style={styles.itemPrice}>{item.price} đ</Text>
         <View style={styles.quantityContainer}>
           <TouchableOpacity
             onPress={() => decreaseQuantity(item.key)}
-            style={[styles.button, {backgroundColor: '#FFA000'}]}>
+            style={[styles.button, { backgroundColor: '#FFA000' }]}>
             <Text style={styles.buttonText}>-</Text>
           </TouchableOpacity>
           <Text>{item.quantity}</Text>
           <TouchableOpacity
             onPress={() => increaseQuantity(item.key)}
-            style={[styles.button, {backgroundColor: '#FFA000'}]}>
+            style={[styles.button, { backgroundColor: '#FFA000' }]}>
             <Text style={styles.buttonText}>+</Text>
           </TouchableOpacity>
         </View>
@@ -80,23 +61,6 @@ const CartScreen = () => {
     </View>
   );
 
-  const increaseQuantity = itemId => {
-    setCartItems(
-      cartItems.map(item =>
-        item.key === itemId ? {...item, quantity: item.quantity + 1} : item,
-      ),
-    );
-  };
-
-  const decreaseQuantity = itemId => {
-    setCartItems(
-      cartItems.map(item =>
-        item.key === itemId && item.quantity > 1
-          ? {...item, quantity: item.quantity - 1}
-          : item,
-      ),
-    );
-  };
 
   return (
     <View style={styles.container}>
@@ -108,7 +72,7 @@ const CartScreen = () => {
       <FlatList
         data={cartItems}
         renderItem={renderItem}
-        keyExtractor={item => item.key.toString()}
+        keyExtractor={(item) => item.key.toString()}
       />
       <Text style={styles.checkoutText}>Tổng(tạm tính): </Text>
       <TouchableOpacity style={styles.checkoutButton}>
@@ -203,7 +167,6 @@ const styles = StyleSheet.create({
     bottom: 5,
   },
   shopContent: {
-
     width: 300,
     height: 50,
   },
@@ -213,13 +176,13 @@ const styles = StyleSheet.create({
     fontFamily: 'Roboto',
     right: 10,
     fontWeight: 'bold',
-    bottom:50,
+    bottom: 50,
   },
   chevronIcon: {
     color: '#2E7D32',
     fontSize: 30,
     left: 150,
-    bottom:17,
+    bottom: 17,
   },
   checkboxIcon: {
     color: '#2E7D32',
