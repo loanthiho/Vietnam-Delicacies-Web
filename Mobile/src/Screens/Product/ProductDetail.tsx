@@ -71,7 +71,11 @@ export const ProductDetailScreen = ({ route }: { route: any }) => {
           <Text style={styles.comment}>Bình Luận </Text>
         </View>
       </ScrollView>
-      <TouchableOpacity style={styles.seenContainer}>
+      <TouchableOpacity style={styles.seenContainer} onPress={() =>
+          navigation.navigate('ShopOwnerScreen', {
+            selectedItem: selectedItem,
+          })
+        }>
         <Text style={styles.seenButton}>Xem shop</Text>
       </TouchableOpacity>
 
@@ -178,7 +182,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     width: 160,
     height: 60,
-    left: '50%',
+    left: '55%',
     top: '12%',
   },
   cartButton: {
@@ -194,7 +198,7 @@ const styles = StyleSheet.create({
     width: 100,
     height: 60,
     left: '5%',
-    top: '20%',
+    top: '21%',
   },
   seenButton: {
     fontSize: 16,
