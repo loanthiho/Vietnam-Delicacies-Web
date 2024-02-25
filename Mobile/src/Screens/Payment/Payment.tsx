@@ -4,55 +4,122 @@ import {
   View,
   Text,
   Image,
-  FlatList,
   StyleSheet,
-  Modal,
-  Pressable,
+  FlatList,
+  TouchableOpacity,
 } from 'react-native';
-interface Item {
+
+const ProductScreen = () => {
+  interface New {
     key: string;
     text: string;
     price: number;
     uri: string;
-}
-interface New {
-    item: Item;
-}
-const ProductScreen = () => {
+    quantity: number;
+  }
+
+  interface Item {
+    item: New;
+  }
+  const [modalVisible, setModalVisible] = useState(false);
+
   const [cartItems, setCartItems] = useState([
     {
       key: '1',
       text: ' Xôi 7 màu ',
-      price: 500000,
       uri: 'https://i.pinimg.com/564x/27/23/28/272328c04f37971919c9e6f28fdd03ce.jpg',
-    },
-    {
-      key: '1',
-      text: ' Xôi 7 màu ',
-      price: 500000,
-      uri: 'https://i.pinimg.com/564x/27/23/28/272328c04f37971919c9e6f28fdd03ce.jpg',
+      price: 10000,
+      quantity: 1,
     },
   ]);
 
-  const [modalVisible, setModalVisible] = useState(false);
+  const renderItem = ({item}: Item) => {
+    const totalPrice = item.price * item.quantity;
+    const shippingFee = 30000;
+    const totalAmount = totalPrice + shippingFee;
+    const estimatedDeliveryTime = 'sau 3 ngày';
 
-  const renderItem = () => (
-    <View>
-      <View style={styles.itemContainer}>
-        {/* <Image source={{uri: item.uri}} style={styles.itemImage} /> */}
-        <View style={styles.content}>
-          <Text style={styles.itemText}>Hồ Văn Đi</Text>
-          <Text style={styles.itemPrice}>Lớp PNV đ</Text>
+    return (
+      <View>
+        <View style={styles.itemContainer}>
+          <Image source={{uri: item.uri}} style={styles.itemImage} />
+          <View style={styles.content}>
+            <Text style={styles.itemText}>{item.text}</Text>
+            <Text style={styles.itemPrice}>{item.price} đ</Text>
+          </View>
+          <View style={styles.quantityContainer}>
+            <TouchableOpacity
+              onPress={() => decreaseQuantity(item.key)}
+              style={[styles.button, {backgroundColor: '#FFA000'}]}>
+              <Text style={styles.buttonText}>-</Text>
+            </TouchableOpacity>
+            <Text>{item.quantity}</Text>
+            <TouchableOpacity
+              onPress={() => increaseQuantity(item.key)}
+              style={[styles.button, {backgroundColor: '#FFA000'}]}>
+              <Text style={styles.buttonText}>+</Text>
+            </TouchableOpacity>
+          </View>
         </View>
-        <View style={styles.status}>
-          <Text style={styles.update}>Sửa</Text>
-          <Pressable onPress={() => setModalVisible(true)}>
-            <Text style={styles.delete}>Xóa</Text>
-          </Pressable>
+
+        <View style={styles.infOrder}>
+          <Text style={styles.detailOrder}>Chi tiết thành toán</Text>
+          <View style={styles.groupPrice}>
+            <Text style={styles.groupPrice}>Giá: </Text>
+            <Text style={styles.groupPrice}>{totalPrice} đ </Text>
+          </View>
+          <View style={styles.groupPrice}>
+            <Text style={styles.groupPrice}>Số lượng: </Text>
+            <Text style={styles.groupPrice}>{item.quantity} </Text>
+          </View>
+          <View style={styles.groupPrice}>
+            <Text style={styles.groupPrice}>Phí vận chuyển: </Text>
+            <Text style={styles.groupPrice}>{shippingFee} đ </Text>
+          </View>
+          <View style={styles.groupPrice}>
+            <Text style={[styles.groupPrice, styles.totalPrice]}>Tổng: </Text>
+            <Text style={[styles.groupPrice, styles.totalPrice]}>
+              {totalAmount} đ
+            </Text>
+          </View>
+          <View style={styles.groupPrice}>
+            <Text style={styles.groupPrice}>
+              Ước tính thời gian giao hàng:{' '}
+            </Text>
+            <Text style={styles.groupPrice}>{estimatedDeliveryTime} </Text>
+          </View>
         </View>
       </View>
-    </View>
-  );
+    );
+  };
+
+  const increaseQuantity = (itemId: string) => {
+    setCartItems(
+      cartItems.map(item =>
+        item.key === itemId ? {...item, quantity: item.quantity + 1} : item,
+      ),
+    );
+  };
+
+  const decreaseQuantity = (itemId: string) => {
+    setCartItems(
+      cartItems.map(item =>
+        item.key === itemId && item.quantity > 1
+          ? {...item, quantity: item.quantity - 1}
+          : item,
+      ),
+    );
+  };
+
+  const totalPrice = cartItems.reduce((acc, currentItem) => {
+    return acc + currentItem.price * currentItem.quantity;
+  }, 0);
+
+  // Phí vận chuyển cố định
+  const shippingFee = 30000;
+
+  // Tổng giá tiền của đơn hàng (tổng giá của tất cả các sản phẩm + phí vận chuyển)
+  const totalAmount = totalPrice + shippingFee;
 
   return (
     <View style={styles.container}>
@@ -70,16 +137,22 @@ const ProductScreen = () => {
           style={styles.AddressIcon}
           name="chevron-forward-outline"></Ionicons>
       </View>
+      <Text style={styles.OrderDetails}>Chi tiết đơn hàng</Text>
 
       <FlatList
         data={cartItems}
         renderItem={renderItem}
-        keyExtractor={item => item.key.toString()}>
-      </FlatList>
+        keyExtractor={item => item.key.toString()}
+      />
 
       <View style={styles.btn}>
-        <Text style={styles.BtnAdd}>Thêm</Text>
-        <Text style={styles.BtnShow}>Xem Shop</Text>
+        <View>
+          <Text style={styles.BtnTotal}>Tổng giá:</Text>
+          <Text style={[styles.BtnTotal, styles.numAlltotal]}>
+            {totalAmount} đ
+          </Text>
+        </View>
+        <Text style={styles.BtnShow}>Mua ngày</Text>
       </View>
     </View>
   );
@@ -101,6 +174,14 @@ const styles = StyleSheet.create({
     borderColor: 'white',
     elevation: 10,
   },
+
+  quantityContainer: {
+    gap: 10,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    top: 30,
+  },
+
   itemImage: {
     width: 100,
     height: 100,
@@ -131,21 +212,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFA000',
   },
 
-  status: {
-    flex: 2,
-    position: 'absolute',
-    right: 20,
-    gap: 10,
-  },
-  update: {
-    color: '#2E7D32',
-    fontSize: 18,
-  },
-  delete: {
-    fontSize: 18,
-    color: 'red',
-  },
-
   arrowLeft: {
     fontSize: 30,
   },
@@ -157,26 +223,48 @@ const styles = StyleSheet.create({
     color: '#FFA000',
   },
 
+  OrderDetails: {
+    paddingLeft: 20,
+    paddingTop: 20,
+    fontSize: 18,
+    color: '#FFA000',
+  },
+
+  button: {
+    width: 20,
+    height: 20,
+    borderRadius: 5,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+
+  buttonText: {
+    fontSize: 20,
+    color: 'white',
+    bottom: 5,
+  },
+
   btn: {
     paddingTop: 20,
-    paddingRight: 30,
-    paddingLeft: 30,
     flexDirection: 'row',
     justifyContent: 'space-between',
   },
 
-  BtnAdd: {
-    width: 110,
-    textAlign: 'center',
+  BtnTotal: {
     fontSize: 20,
-    padding: 10,
-    color: 'white',
-    backgroundColor: '#2E7D32',
-    borderRadius: 10,
+  },
+
+  numAlltotal: {
+    fontWeight: 'bold',
+    color: '#FFA000',
+    fontSize: 25,
   },
 
   BtnShow: {
-    padding: 10,
+    paddingTop: 20,
+    paddingBottom: 20,
+    paddingLeft: 40,
+    paddingRight: 40,
     fontSize: 20,
     color: 'white',
     backgroundColor: '#2E7D32',
@@ -200,6 +288,26 @@ const styles = StyleSheet.create({
   AddressIcon: {
     fontSize: 20,
     alignSelf: 'center',
+  },
+
+  infOrder: {
+    padding: 10,
+    marginTop: 10,
+  },
+
+  detailOrder: {
+    fontSize: 18,
+    color: '#FFA000',
+  },
+
+  groupPrice: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    fontSize: 18,
+  },
+
+  totalPrice: {
+    fontWeight: 'bold',
   },
 });
 
