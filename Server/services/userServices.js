@@ -1,6 +1,7 @@
 const { User, Province, District } = require('../models');
 const jwt = require('jsonwebtoken');
 const bcryptjs = require('bcryptjs');
+const { resSuccessData } = require('../utils/response');
 
 const createUser = async (req, res, next) => {
     await User.create(req.body)
@@ -21,15 +22,9 @@ const getAllUser = async (req, res, next) => {
     await User.findAll({
         include: {
             model: Province,
-            include: District
         }
     })
-        .then(result => {
-            res.status(200).json({
-                message: "Get all users successfully!",
-                data: result,
-            })
-        })
+        .then(result => resSuccessData(res, result))
         .catch(error => {
             res.status(500).json({
                 error,
@@ -37,7 +32,6 @@ const getAllUser = async (req, res, next) => {
             })
         })
 };
-
 
 const userSignUp = async (req, res, next) => {
     const user = {
@@ -133,7 +127,8 @@ const userSignIn = async (req, res, next) => {
         })
         .catch(error => {
             res.status(500).json({
-                message: "Something went wrong!"
+                message: "User not found!",
+                error
             });
         })
 
