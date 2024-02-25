@@ -1,6 +1,7 @@
 const { Product, Province, User, Category, File, Review } = require("../models")
 const { resSuccessData, resInternalError, resCreated, resNotFound } = require("../utils/response")
 const cloudinary = require('../utils/cloudinary');
+const { Op } = require("sequelize");
 const createProduct = async (req, res, next) => {
     try {
         const product = req.body;
@@ -45,8 +46,55 @@ const createProduct = async (req, res, next) => {
         resInternalError(res, error);
         console.log(error);
     }
+};
+
+
+const getAllProduct = async (req, res, next) => {
+    var q = {};
+    const { filterByCategoryId, searchByProductName } = req.query;
+    if (req.query) {
+        if (filterByCategoryId) {
+            await Category.findByPk(filterByCategoryId)
+                .then(res => q.category_id = res.id)
+                .catch(error => resNotFound(res, err = { err: error, msg: "Category not exist!" }))
+        }
+        if (searchByProductName) {
+            q.name = { [Op.like]: `%${searchByProductName}%` };
+        }
+    }
+    await Product.findAll({
+        where: { ...q },
+        include: [
+            { model: Province },
+            { model: User },
+            { model: Category }
+        ],
+        order: [
+            ["createdAt", "DESC"]
+        ]
+    })
+        .then(result => resSuccessData(res, result))
+        .catch(error => resInternalError(res, error));
 }
 
+const getDetailProduct = async (req, res, next) => {
+    const id = req.params.id
+    await Product.findOne({
+        where: { id: id },
+        include: [
+            { model: Province },
+            {
+                model: User,
+                attributes: { exclude: ['password'] }
+            },
+            { model: Category }
+        ],
+    })
+        .then(result => resSuccessData(res, result, "Get details product successfully!"))
+        .catch(error => resNotFound(res, error));
+}
+
+// Tạm thời dừng update ở đây khi nào xong thì sẽ update sau.
 const updateProduct = async (req, res, next) => {
     const id = req.params.id;
     resSuccessData(res, id);
@@ -60,7 +108,7 @@ const removeProduct = async (req, res, next) => {
     const id = req.params.id;
     if (id) {
         try {
-            const product = await Product.findOne({ where: { id: id } });
+            const product = await Product.findByPk(id);
             if (!product) {
                 return resNotFound(res, "Product not found!");
             }
@@ -80,23 +128,10 @@ const removeProduct = async (req, res, next) => {
     }
 }
 
-const getAllProduct = async (req, res, next) => {
-    await Product.findAll({
-        include: [
-            { model: Province },
-            { model: User },
-            { model: Category }
-        ],
-        order: [
-            ["createdAt", "DESC"]
-        ]
-    })
-        .then(result => resSuccessData(res, result))
-        .catch(error => resInternalError(res, error))
-}
 module.exports = {
     createProduct,
     updateProduct,
     getAllProduct,
+    getDetailProduct,
     removeProduct
 }
