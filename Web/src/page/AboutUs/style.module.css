@@ -1,0 +1,28 @@
+.container {
+  max-width: 1024px;
+  margin: 0 auto;
+  padding-bottom: 80px;
+}
+
+.title {
+  margin: 40px 0 50px 0;
+  text-align: center;
+  font-weight: 700;
+  color: #2e7d32;
+}
+
+.main_content {
+  display: flex;
+  gap: 40px;
+}
+
+.main_content img .fade-in {
+  opacity: 0; /* Ban đầu, đặt opacity là 0 để ẩn hình ảnh */
+  transition: opacity 1s ease-in-out; /* Áp dụng hiệu ứng chuyển động */
+}
+
+.fade-in.loaded {
+  opacity: 1; /* Khi lớp loaded được thêm vào, đặt opacity là 1 để hiển thị hình ảnh */
+}
+
+
