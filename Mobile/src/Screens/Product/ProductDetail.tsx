@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import {
   View,
   Text,
@@ -8,11 +8,11 @@ import {
   ScrollView,
 } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import { useNavigation } from '@react-navigation/native';
+import {useNavigation} from '@react-navigation/native';
 
-export const ProductDetailScreen = ({ route }: { route: any }) => {
+export const ProductDetailScreen = ({route}: {route: any}) => {
   const [quantity, setQuantity] = useState(1);
-  const navigation = useNavigation();
+  const navigation = useNavigation(); 
 
   if (!route.params || !route.params.selectedItem) {
     return (
@@ -22,7 +22,7 @@ export const ProductDetailScreen = ({ route }: { route: any }) => {
     );
   }
 
-  const { selectedItem }: { selectedItem: any } = route.params;
+  const {selectedItem}: {selectedItem: any} = route.params;
 
   const decreaseQuantity = () => {
     if (quantity > 1) {
@@ -38,7 +38,7 @@ export const ProductDetailScreen = ({ route }: { route: any }) => {
     <View>
       <ScrollView>
         <View style={styles.container}>
-          <Image source={{ uri: selectedItem.uri }} style={styles.image} />
+          <Image source={{uri: selectedItem.uri}} style={styles.image} />
           <Text style={styles.text}>{selectedItem.text}</Text>
           <View style={styles.ratingContainer}>
             <Ionicons name="star-outline" style={styles.starIcon} />
@@ -51,12 +51,14 @@ export const ProductDetailScreen = ({ route }: { route: any }) => {
             đen đi.
           </Text>
           <View style={styles.itemPriceContainer}>
-            <Text style={styles.itemPriceText}>Giá: {selectedItem.price}đ</Text>
+            <Text style={styles.itemPriceText}>
+              Giá: <Text>{selectedItem.price}đ</Text>
+            </Text>
           </View>
           <View style={styles.quantityContainer}>
             <TouchableOpacity
               onPress={decreaseQuantity}
-              style={[styles.button, { backgroundColor: '#FFA000' }]}>
+              style={[styles.button, {backgroundColor: '#FFA000'}]}>
               <Text style={styles.buttonText}>-</Text>
             </TouchableOpacity>
 
@@ -64,14 +66,16 @@ export const ProductDetailScreen = ({ route }: { route: any }) => {
 
             <TouchableOpacity
               onPress={increaseQuantity}
-              style={[styles.button, { backgroundColor: '#FFA000' }]}>
+              style={[styles.button, {backgroundColor: '#FFA000'}]}>
               <Text style={styles.buttonText}>+</Text>
             </TouchableOpacity>
           </View>
           <Text style={styles.comment}>Bình Luận </Text>
         </View>
       </ScrollView>
-      <TouchableOpacity style={styles.seenContainer} onPress={() =>
+      <TouchableOpacity
+        style={styles.seenContainer}
+        onPress={() =>
           navigation.navigate('ShopOwnerScreen', {
             selectedItem: selectedItem,
           })

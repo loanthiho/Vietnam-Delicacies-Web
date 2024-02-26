@@ -66,7 +66,7 @@ const CartScreen = ({ route }: { route: any }) => {
     <View style={styles.container}>
       <TouchableOpacity style={styles.shopContent}>
         <Ionicons name="checkbox-outline" style={styles.checkboxIconText} />
-        <Ionicons name="chevron-forward-outline" style={styles.chevronIcon} />7ujujmki
+        <Ionicons name="chevron-forward-outline" style={styles.chevronIcon} />
         <Text style={styles.shopText}> Bếp nhà VND</Text>
       </TouchableOpacity>
       <FlatList
