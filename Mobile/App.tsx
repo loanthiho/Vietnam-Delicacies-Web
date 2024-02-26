@@ -10,6 +10,8 @@ import ChatScreen from './src/Screens/ChatScreen';
 import ProfileScreen from './src/Screens/ProfileScreen';
 import CartScreen from './src/Screens/CartScreen';
 import Payment from './src/Screens/Payment/Payment';
+import ShopOwnerScreen from './src/Screens/Shop/ShopOwner';
+import AddProduct from './src/Seller/AddProduct';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -43,7 +45,7 @@ const TabNavigator = () => {
 const App = () => {
   return (
     <SafeAreaView style={styles.container}>
-      {/* <NavigationContainer>
+      <NavigationContainer>
         <Stack.Navigator
           screenOptions={{
             headerShown: false,
@@ -55,13 +57,18 @@ const App = () => {
             component={ProductDetailScreen}
           />
           <Stack.Screen
+            name="ShopOwnerScreen"
+            component={ShopOwnerScreen}
+          />
+          <Stack.Screen
             name="Main"
             component={TabNavigator}
           />
         </Stack.Navigator>
-      </NavigationContainer> */}
+      </NavigationContainer>
 
-      <Payment></Payment>
+      {/* <Payment></Payment> */}
+
     </SafeAreaView>
   );
 };
