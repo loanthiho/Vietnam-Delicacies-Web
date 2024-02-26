@@ -65,7 +65,9 @@ const HomePage = (props: any) => {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.textheader}>Đặc sản Việt </Text>
+        <Text style={styles.textheader}>
+          Đặc sản Việt
+        </Text>
         <TouchableOpacity style={styles.profileImageContainer}>
           <Image
             source={require('../assets/huong.jpg')}
@@ -102,28 +104,29 @@ const HomePage = (props: any) => {
         </View>
 
         <View>
-          <Text style={{ fontSize: 20, fontWeight: 'bold' }}>
+          <Text style={{fontSize: 20, fontWeight: 'bold'}}>
             Sản phẩm nổi bật
           </Text>
           <FlatList
             horizontal={true}
             data={SECTIONS[0].data}
-            renderItem={({ item }) => (
-              <TouchableOpacity style={styles.featuredProducts}
-              onPress={() =>
-                navigation.navigate('ProductDetailScreen', {
-                  selectedItem: item,
-                })
-              }>
+            renderItem={({item}) => (
+              <TouchableOpacity
+                style={styles.featuredProducts}
+                onPress={() =>
+                  navigation.navigate('ProductDetailScreen', {
+                    selectedItem: item,
+                  })
+                }>
                 <Image
-                  source={{ uri: item.uri }}
+                  source={{uri: item.uri}}
                   style={styles.itemPhoto}
                   resizeMode="cover"
                 />
                 <View>
                   <Text style={styles.itemText}>{item.text}</Text>
 
-                  <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                  <View style={{flexDirection: 'row', alignItems: 'center'}}>
                     <Ionicons name="star-outline" style={styles.starIcon} />
                     <Text style={styles.textIcon}>4.5</Text>
                     <Ionicons name="heart-outline" style={styles.heartIcon} />
@@ -135,8 +138,8 @@ const HomePage = (props: any) => {
           />
         </View>
 
-        <View style={{ marginTop: 20 }}>
-          <Text style={{ fontSize: 20, fontWeight: 'bold' }}>
+        <View style={{marginTop: 20}}>
+          <Text style={{fontSize: 20, fontWeight: 'bold'}}>
             Sản phẩm yêu thích
           </Text>
           <FlatList
@@ -149,7 +152,7 @@ const HomePage = (props: any) => {
               gap: 20,
               height: 'auto',
             }}
-            renderItem={({ item }) => (
+            renderItem={({item}) => (
               <TouchableOpacity
                 style={styles.favouriteProducts}
                 onPress={() =>
@@ -158,28 +161,35 @@ const HomePage = (props: any) => {
                   })
                 }>
                 <FlatList
-            horizontal={true}
-            data={SECTIONS[0].data}
-            renderItem={({ item }) => (
-              <View style={styles.featuredProducts}>
-                <Image
-                  source={{ uri: item.uri }}
-                  style={styles.itemPhoto}
-                  resizeMode="cover"
-                />
-                <View>
-                  <Text style={styles.itemText}>{item.text}</Text>
+                  horizontal={true}
+                  data={SECTIONS[0].data}
+                  renderItem={({item}) => (
+                    <View style={styles.featuredProducts}>
+                      <Image
+                        source={{uri: item.uri}}
+                        style={styles.itemPhoto}
+                        resizeMode="cover"
+                      />
+                      <View>
+                        <Text style={styles.itemText}>{item.text}</Text>
 
-                  <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                    <Ionicons name="star-outline" style={styles.starIcon} />
-                    <Text style={styles.textIcon}>4.5</Text>
-                    <Ionicons name="heart-outline" style={styles.heartIcon} />
-                  </View>
-                </View>
-              </View>
-            )}
-            keyExtractor={item => item.key}
-          />
+                        <View
+                          style={{flexDirection: 'row', alignItems: 'center'}}>
+                          <Ionicons
+                            name="star-outline"
+                            style={styles.starIcon}
+                          />
+                          <Text style={styles.textIcon}>4.5</Text>
+                          <Ionicons
+                            name="heart-outline"
+                            style={styles.heartIcon}
+                          />
+                        </View>
+                      </View>
+                    </View>
+                  )}
+                  keyExtractor={item => item.key}
+                />
               </TouchableOpacity>
             )}
             keyExtractor={item => item.key}
@@ -235,14 +245,14 @@ const styles = StyleSheet.create({
   },
   textIcon: {
     paddingLeft: 40,
-     top: 20,
-     right:30
+    top: 20,
+    right: 30,
   },
   heartIcon: {
     fontSize: 20,
     color: 'red',
     paddingLeft: 20,
-    top:20
+    top: 20,
   },
   searchInput: {
     flex: 1,
