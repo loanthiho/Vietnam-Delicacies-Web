@@ -6,42 +6,50 @@ const createProduct = async (req, res, next) => {
     try {
         const product = req.body;
         const files = req.files;
-        const productCreated = await Product.create(product);
-        if (productCreated) {
-            if (files) {
-                var file_into_dbs = [];
-                for (var file of files) {
-                    var cloudFiles = {}
-                    cloudFiles = {
-                        product_id: productCreated.id,
-                        file_name: file.originalname,
-                    }
-                    if (file.mimetype.startsWith('video/')) {
-                        const result = await cloudinary.uploader.upload(file.path, { resource_type: 'video' });
-                        if (result) {
-                            cloudFiles.src = result.secure_url;
-                            cloudFiles.file_type = result.resource_type;
-                        } else {
-                            resInternalError(res, error = { serverErr: result, msg: "Upload files to cloudinary unsuccesful!" })
+        if (product) {
+            const productCreated = await Product.create(product);
+            var dataRes = {};
+            if (productCreated) {
+                dataRes.product = { msg: "Create product successful", data: productCreated }
+                if (files && files.length > 0) {
+                    var file_into_dbs = [];
+                    for (var file of files) {
+                        var cloudFiles = {}
+                        cloudFiles = {
+                            product_id: productCreated.id,
+                            file_name: file.originalname,
                         }
-                    } else if (file.mimetype.startsWith('image/')) {
-                        const result = await cloudinary.uploader.upload(file.path);
-                        if (result) {
-                            cloudFiles.src = result.secure_url;
-                            cloudFiles.file_type = result.resource_type;
-                        } else {
-                            resInternalError(res, error = { serverErr: result, msg: "Upload files to cloudinary unsuccesful!" })
+                        if (file.mimetype.startsWith('video/')) {
+                            const result = await cloudinary.uploader.upload(file.path, { resource_type: 'video' });
+                            if (result) {
+                                cloudFiles.src = result.secure_url;
+                                cloudFiles.file_type = result.resource_type;
+                            } else {
+                                resInternalError(res, error = { serverErr: result, msg: "Upload files to cloudinary unsuccesful!" })
+                            }
+                        } else if (file.mimetype.startsWith('image/')) {
+                            const result = await cloudinary.uploader.upload(file.path);
+                            if (result) {
+                                cloudFiles.src = result.secure_url;
+                                cloudFiles.file_type = result.resource_type;
+                            } else {
+                                resInternalError(res, error = { serverErr: result, msg: "Upload files to cloudinary unsuccesful!" })
+                            }
                         }
+                        file_into_dbs.push(cloudFiles);
                     }
-                    file_into_dbs.push(cloudFiles);
-                }
-                await File.bulkCreate(file_into_dbs)
-                    .then(result => {
-                        resSuccessData(res, result = { files: result, product: productCreated }, "Product and files created successfully!");
-                    })
-                    .catch(error => resInternalError(res, error = { serverErr: error, msg: "File create unsuccessful!" }));
-            };
+                    await File.bulkCreate(file_into_dbs)
+                        .then(result => {
+                            dataRes.files = { result, msg: "files create successful" };
+                        })
+                        .catch(error => dataRes.fileError = { serverErr: error, msg: "File create unsuccessful!" });
+                };
+                resSuccessData(res, dataRes, "Create product successfully!");
+            } else {
+                resInternalError(res, "Product create Unsuccessful!");
+            }
         }
+
     } catch (error) {
         resInternalError(res, error);
         console.log(error);
@@ -66,8 +74,9 @@ const getAllProduct = async (req, res, next) => {
         where: { ...q },
         include: [
             { model: Province },
-            { model: User },
-            { model: Category }
+            { model: User, attributes: { exclude: [['password']] } },
+            { model: Category },
+            { model: File },
         ],
         order: [
             ["createdAt", "DESC"]
@@ -87,7 +96,8 @@ const getDetailProduct = async (req, res, next) => {
                 model: User,
                 attributes: { exclude: ['password'] }
             },
-            { model: Category }
+            { model: Category },
+            { model: File }
         ],
     })
         .then(result => resSuccessData(res, result, "Get details product successfully!"))
@@ -97,12 +107,18 @@ const getDetailProduct = async (req, res, next) => {
 // Tạm thời dừng update ở đây khi nào xong thì sẽ update sau.
 const updateProduct = async (req, res, next) => {
     const id = req.params.id;
-    resSuccessData(res, id);
-    await Product.update(req.body, {
-        where: {
-            id: id
+    if (await Product.findByPk(id)) {
+        req.body.id = id;
+        const productUpdated = await Product.update(req.body, { where: { id: id } });
+        if (productUpdated) {
+            await Product.findByPk(id)
+                .then(respond => resSuccessData(res, dataRes, "Create product successfully"))
+                .catch(err => resNotFound(res, error = { err, msg: "Product Not found" }));
+            resSuccessData(res, respond, "Update successfully!")
+        } else {
+            resInternalError(res, "Update Unsuccessful");
         }
-    });
+    } else { resNotFound(res, "Product not found or not exist!") }
 }
 const removeProduct = async (req, res, next) => {
     const id = req.params.id;
