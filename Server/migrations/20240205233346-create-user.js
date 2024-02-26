@@ -14,6 +14,10 @@ module.exports = {
         type: Sequelize.UUID,
         allowNull: true
       },
+      domain_id: {
+        type: Sequelize.UUID,
+        allowNull: true
+      },
       name: {
         type: Sequelize.STRING
       },

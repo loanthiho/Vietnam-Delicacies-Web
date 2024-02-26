@@ -40,8 +40,9 @@ function resSuccess(res, msg) {
 
 // ------------------------------------------
 // Success Data Response Function
-function resSuccessData(res, data) {
-    writeResponseData(res, 200, "Success", data);
+function resSuccessData(res, data, msg) {
+    msg = msg !== undefined ? msg : "Success"
+    writeResponseData(res, 200, msg, data);
 }
 
 // ------------------------------------------

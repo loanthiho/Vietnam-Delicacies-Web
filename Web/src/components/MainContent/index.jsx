@@ -1,11 +1,25 @@
 import { useState } from "react";
 import styles from "./style.module.css";
+import { useQuery } from "@tanstack/react-query";
 import outstandingproducts from "../../../public/OutstandingProducts/products.json";
 import newproducts from "../../../public/NewProducts/products.json";
 
 const Index = () => {
   const [showOutstandingproducts, setShowOutstandingproducts] = useState(false);
   const [shownewProducts, setShownewProducts] = useState(false);
+
+  const fetchtAPI = async () => {
+    const response = await fetch("http://localhost:3000/products");
+    return response.json();
+  };
+
+  const { isPending, data, error } = useQuery({
+    queryKey: ["products"],
+    queryFn: fetchtAPI,
+  });
+
+  if (isPending) return "Đang tải...";
+  if (error) return "Lỗi tải dữ liệu";
 
   const toggleShowOutstandingproducts = () => {
     setShowOutstandingproducts(!showOutstandingproducts);
@@ -29,13 +43,13 @@ const Index = () => {
       </div>
 
       <div className={styles.product}>
-        {outstandingproducts
+        {data?.data
           .slice(0, showOutstandingproducts ? outstandingproducts.length : 6)
           .map((product, index) => (
             <div key={index} className={styles.card} onClick={showNotification}>
-              <img src={product.imageUrl} alt="" />
+              <img src={product.Files[0].src} alt="" />
               <div className={styles.name_product}>{product.name}</div>
-              <div className={styles.price_product}>{product.price}</div>
+              <div className={styles.price_product}>{product.price}đ</div>
             </div>
           ))}
       </div>
