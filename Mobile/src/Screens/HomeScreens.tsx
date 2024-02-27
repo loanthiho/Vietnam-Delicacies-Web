@@ -65,7 +65,9 @@ const HomePage = (props: any) => {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.textheader}>Đặc sản Việt </Text>
+        <Text style={styles.textheader}>
+          Đặc sản Việt
+        </Text>
         <TouchableOpacity style={styles.profileImageContainer}>
           <Image
             source={require('../assets/huong.jpg')}
@@ -78,9 +80,6 @@ const HomePage = (props: any) => {
       <View style={styles.search}>
         <Ionicons name="search-outline" style={styles.searchIcon} />
         <TextInput placeholder="Tìm kiếm..." style={styles.searchInput} />
-        <TouchableOpacity>
-          <Ionicons name="notifications-outline" style={styles.notifications} />
-        </TouchableOpacity>
       </View>
 
       <View
@@ -102,28 +101,29 @@ const HomePage = (props: any) => {
         </View>
 
         <View>
-          <Text style={{ fontSize: 20, fontWeight: 'bold' }}>
+          <Text style={{fontSize: 20, fontWeight: 'bold'}}>
             Sản phẩm nổi bật
           </Text>
           <FlatList
             horizontal={true}
             data={SECTIONS[0].data}
-            renderItem={({ item }) => (
-              <TouchableOpacity style={styles.featuredProducts}
-              onPress={() =>
-                navigation.navigate('ProductDetailScreen', {
-                  selectedItem: item,
-                })
-              }>
+            renderItem={({item}) => (
+              <TouchableOpacity
+                style={styles.featuredProducts}
+                onPress={() =>
+                  navigation.navigate('ProductDetailScreen', {
+                    selectedItem: item,
+                  })
+                }>
                 <Image
-                  source={{ uri: item.uri }}
+                  source={{uri: item.uri}}
                   style={styles.itemPhoto}
                   resizeMode="cover"
                 />
                 <View>
                   <Text style={styles.itemText}>{item.text}</Text>
 
-                  <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                  <View style={{flexDirection: 'row', alignItems: 'center'}}>
                     <Ionicons name="star-outline" style={styles.starIcon} />
                     <Text style={styles.textIcon}>4.5</Text>
                     <Ionicons name="heart-outline" style={styles.heartIcon} />
@@ -134,9 +134,7 @@ const HomePage = (props: any) => {
             keyExtractor={item => item.key}
           />
         </View>
-
-        <View style={{ marginTop: 20 }}>
-          <Text style={{ fontSize: 20, fontWeight: 'bold' }}>
+          <Text style={{fontSize: 20, fontWeight: 'bold'}}>
             Sản phẩm yêu thích
           </Text>
           <FlatList
@@ -149,7 +147,7 @@ const HomePage = (props: any) => {
               gap: 20,
               height: 'auto',
             }}
-            renderItem={({ item }) => (
+            renderItem={({item}) => (
               <TouchableOpacity
                 style={styles.favouriteProducts}
                 onPress={() =>
@@ -158,33 +156,39 @@ const HomePage = (props: any) => {
                   })
                 }>
                 <FlatList
-            horizontal={true}
-            data={SECTIONS[0].data}
-            renderItem={({ item }) => (
-              <View style={styles.featuredProducts}>
-                <Image
-                  source={{ uri: item.uri }}
-                  style={styles.itemPhoto}
-                  resizeMode="cover"
-                />
-                <View>
-                  <Text style={styles.itemText}>{item.text}</Text>
+                  horizontal={true}
+                  data={SECTIONS[0].data}
+                  renderItem={({item}) => (
+                    <View style={styles.featuredProducts}>
+                      <Image
+                        source={{uri: item.uri}}
+                        style={styles.itemPhoto}
+                        resizeMode="cover"
+                      />
+                      <View>
+                        <Text style={styles.itemText}>{item.text}</Text>
 
-                  <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                    <Ionicons name="star-outline" style={styles.starIcon} />
-                    <Text style={styles.textIcon}>4.5</Text>
-                    <Ionicons name="heart-outline" style={styles.heartIcon} />
-                  </View>
-                </View>
-              </View>
-            )}
-            keyExtractor={item => item.key}
-          />
+                        <View
+                          style={{flexDirection: 'row', alignItems: 'center'}}>
+                          <Ionicons
+                            name="star-outline"
+                            style={styles.starIcon}
+                          />
+                          <Text style={styles.textIcon}>4.5</Text>
+                          <Ionicons
+                            name="heart-outline"
+                            style={styles.heartIcon}
+                          />
+                        </View>
+                      </View>
+                    </View>
+                  )}
+                  keyExtractor={item => item.key}
+                />
               </TouchableOpacity>
             )}
             keyExtractor={item => item.key}
           />
-        </View>
       </ScrollView>
     </View>
   );
@@ -228,25 +232,26 @@ const styles = StyleSheet.create({
     color: 'black',
   },
   starIcon: {
-    fontSize: 20,
+    fontSize: 15,
     color: 'yellow',
     top: 20,
     paddingLeft: 10,
   },
   textIcon: {
     paddingLeft: 40,
-     top: 20,
-     right:30
+    top: 20,
+    right: 30,
   },
   heartIcon: {
     fontSize: 20,
     color: 'red',
     paddingLeft: 20,
-    top:20
+    top: 20,
   },
   searchInput: {
     flex: 1,
     marginLeft: 20,
+    fontSize: 20,
   },
   notifications: {
     fontSize: 34,
@@ -257,8 +262,9 @@ const styles = StyleSheet.create({
   banner: {
     width: '100%',
     height: 200,
-    borderRadius: 10,
     backgroundColor: '#2E7D32',
+    marginBottom:10,
+    borderRadius: 20,
   },
   item: {
     margin: 10,
@@ -269,6 +275,8 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 15,
     textAlign: 'center',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   itemPhoto: {
     width: 130,
@@ -301,18 +309,18 @@ const styles = StyleSheet.create({
     width: 150,
     height: 220,
     borderColor: 'white',
-    elevation: 10,
   },
   favouriteProducts: {
     backgroundColor: 'white',
     borderRadius: 10,
     marginHorizontal: 5,
-    marginTop: 20,
+    marginTop: 10,
     marginBottom: 20,
     width: 170,
-    height: 220,
-    borderColor: 'white',
+    height: 240,
     elevation: 10,
+    top:20,
+    
   },
 });
 

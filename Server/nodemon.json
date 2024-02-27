@@ -1,0 +1,9 @@
+{
+    "env": {
+        "JWT_KEY": "secret",
+        "CLOUDINARY_CLOUD_NAME": "dzz3i0apg",
+        "CLOUDINARY_API_KEY": "278979412795927",
+        "CLOUDINARY_SECRET_KEY": "7NIgawgz-_fpcatSeCF2B9SaHQs",
+        "CLOUDINARY_URL": "cloudinary://278979412795927:7NIgawgz-_fpcatSeCF2B9SaHQs@dzz3i0apg"
+    }
+}

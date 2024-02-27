@@ -1,0 +1,55 @@
+.footer {
+  background-color: #333333;
+  width: 100%;
+  color: white;
+}
+
+.footer_content {
+  display: flex;
+  margin: 0 auto;
+  padding: 40px 0 40px 0;
+  max-width: 1024px;
+  justify-content: space-between;
+}
+
+.content_introduce {
+  font-size: 14px;
+  max-width: 300px;
+  display: grid;
+  gap: 20px;
+}
+
+.content_introduce {
+  color: #9e9e9e;
+}
+
+.title {
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+
+.content_introduce p span {
+  color: #ffa000;
+  font-weight: 700;
+}
+
+.content_introduce p span:hover {
+  cursor: pointer;
+}
+
+.content_introduce i {
+  margin-right: 10px;
+}
+
+.content_introduce .icon {
+  display: flex;
+  align-items: center;
+}
+
+.content_introduce.dowload {
+  display: flex;
+}
+
+.contact .app img:hover {
+  cursor: pointer;
+}

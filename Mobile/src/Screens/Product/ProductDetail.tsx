@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import {
   View,
   Text,
@@ -8,9 +8,9 @@ import {
   ScrollView,
 } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import { useNavigation } from '@react-navigation/native';
+import {useNavigation} from '@react-navigation/native';
 
-export const ProductDetailScreen = ({ route }: { route: any }) => {
+export const ProductDetailScreen = ({route}: {route: any}) => {
   const [quantity, setQuantity] = useState(1);
   const navigation = useNavigation();
 
@@ -22,7 +22,7 @@ export const ProductDetailScreen = ({ route }: { route: any }) => {
     );
   }
 
-  const { selectedItem }: { selectedItem: any } = route.params;
+  const {selectedItem}: {selectedItem: any} = route.params;
 
   const decreaseQuantity = () => {
     if (quantity > 1) {
@@ -36,9 +36,17 @@ export const ProductDetailScreen = ({ route }: { route: any }) => {
 
   return (
     <View>
+      <TouchableOpacity onPress={() =>
+                  navigation.navigate('Trang chủ', {
+                    selectedItem: selectedItem,
+                  })
+                }>
+        <Ionicons name="arrow-back-outline" style={styles.arrowLeft} />
+      </TouchableOpacity>
+
       <ScrollView>
         <View style={styles.container}>
-          <Image source={{ uri: selectedItem.uri }} style={styles.image} />
+          <Image source={{uri: selectedItem.uri}} style={styles.image} />
           <Text style={styles.text}>{selectedItem.text}</Text>
           <View style={styles.ratingContainer}>
             <Ionicons name="star-outline" style={styles.starIcon} />
@@ -51,12 +59,14 @@ export const ProductDetailScreen = ({ route }: { route: any }) => {
             đen đi.
           </Text>
           <View style={styles.itemPriceContainer}>
-            <Text style={styles.itemPriceText}>Giá: {selectedItem.price}đ</Text>
+            <Text style={styles.itemPriceText}>
+              Giá: <Text>{selectedItem.price}đ</Text>
+            </Text>
           </View>
           <View style={styles.quantityContainer}>
             <TouchableOpacity
               onPress={decreaseQuantity}
-              style={[styles.button, { backgroundColor: '#FFA000' }]}>
+              style={[styles.button, {backgroundColor: '#FFA000'}]}>
               <Text style={styles.buttonText}>-</Text>
             </TouchableOpacity>
 
@@ -64,14 +74,20 @@ export const ProductDetailScreen = ({ route }: { route: any }) => {
 
             <TouchableOpacity
               onPress={increaseQuantity}
-              style={[styles.button, { backgroundColor: '#FFA000' }]}>
+              style={[styles.button, {backgroundColor: '#FFA000'}]}>
               <Text style={styles.buttonText}>+</Text>
             </TouchableOpacity>
           </View>
           <Text style={styles.comment}>Bình Luận </Text>
         </View>
       </ScrollView>
-      <TouchableOpacity style={styles.seenContainer}>
+      <TouchableOpacity
+        style={styles.seenContainer}
+        onPress={() =>
+          navigation.navigate('ShopOwnerScreen', {
+            selectedItem: selectedItem,
+          })
+        }>
         <Text style={styles.seenButton}>Xem shop</Text>
       </TouchableOpacity>
 
@@ -94,6 +110,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     flex: 1,
   },
+  arrowLeft: {
+    fontSize: 30,
+  },
   text: {
     fontSize: 25,
     fontWeight: 'bold',
@@ -101,6 +120,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     top: 10,
     right: '32%',
+    paddingLeft: '20%',
   },
   image: {
     width: 300,
@@ -178,7 +198,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     width: 160,
     height: 60,
-    left: '50%',
+    left: '55%',
     top: '12%',
   },
   cartButton: {
@@ -194,7 +214,7 @@ const styles = StyleSheet.create({
     width: 100,
     height: 60,
     left: '5%',
-    top: '20%',
+    top: '21%',
   },
   seenButton: {
     fontSize: 16,

@@ -1,0 +1,99 @@
+@import url("https://fonts.googleapis.com/css2?family=Lobster&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Lobster&family=Meddon&display=swap");
+
+p {
+  margin: 0;
+}
+
+ul {
+  margin: 0;
+}
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: #333333;
+  padding-bottom: 30px;
+  border-bottom: 1px solid #0000003b;
+}
+.name {
+  color: #2e7d32;
+  font-size: 40px;
+  font-family: "Lobster", sans-serif;
+  display: flex;
+  align-items: center;
+}
+
+.name .sub_name {
+  color: #ffa000;
+  font-family: "Meddon", cursive;
+  font-size: 50px;
+}
+
+.subnav ul {
+  gap: 30px;
+  list-style-type: none;
+  display: flex;
+  border-bottom: 1px dotted #333333;
+  padding-inline-start: 0px;
+  padding-bottom: 14px;
+}
+
+.subnav ul a {
+  color: #333333;
+}
+
+.subnav ul a:hover {
+  color: #FFA000;
+}
+
+.subnav ul a:first-child {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.header_line {
+  display: flex;
+  padding-top: 8px;
+}
+
+.header_line .header_pro {
+  margin-left: 8px;
+  color: #2e7d32;
+}
+
+.navholder {
+  display: flex;
+  align-items: center;
+}
+
+.cart {
+  border: 1px solid #ebebeb;
+  padding: 16px;
+  margin-left: 16px;
+  transition: border 0.3s ease;
+  position: relative;
+}
+
+.cart:hover {
+  border: 1px solid #2e7d32;
+}
+
+i.fa-solid.fa-cart-shopping {
+  font-size: 24px;
+}
+
+.cart_number {
+  width: 24px;
+  height: 24px;
+  line-height: 24px;
+  display: block;
+  position: absolute;
+  background: #2e7d32;
+  color: #ffffff;
+  top: 11px;
+  right: -9px;
+  text-align: center;
+  font-size: 12px;
+}
