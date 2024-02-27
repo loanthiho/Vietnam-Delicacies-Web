@@ -60,6 +60,10 @@ const App = () => {
             name="ShopOwnerScreen"
             component={ShopOwnerScreen}
           />
+           <Stack.Screen
+            name="Payment"
+            component={Payment}
+          />
           <Stack.Screen
             name="Main"
             component={TabNavigator}
@@ -67,7 +71,7 @@ const App = () => {
         </Stack.Navigator>
       </NavigationContainer>
 
-      {/* <Payment></Payment> */}
+
 
     </SafeAreaView>
   );

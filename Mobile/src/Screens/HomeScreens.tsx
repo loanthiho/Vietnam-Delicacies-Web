@@ -80,9 +80,6 @@ const HomePage = (props: any) => {
       <View style={styles.search}>
         <Ionicons name="search-outline" style={styles.searchIcon} />
         <TextInput placeholder="Tìm kiếm..." style={styles.searchInput} />
-        <TouchableOpacity>
-          <Ionicons name="notifications-outline" style={styles.notifications} />
-        </TouchableOpacity>
       </View>
 
       <View
@@ -137,8 +134,6 @@ const HomePage = (props: any) => {
             keyExtractor={item => item.key}
           />
         </View>
-
-        <View style={{marginTop: 20}}>
           <Text style={{fontSize: 20, fontWeight: 'bold'}}>
             Sản phẩm yêu thích
           </Text>
@@ -194,7 +189,6 @@ const HomePage = (props: any) => {
             )}
             keyExtractor={item => item.key}
           />
-        </View>
       </ScrollView>
     </View>
   );
@@ -238,7 +232,7 @@ const styles = StyleSheet.create({
     color: 'black',
   },
   starIcon: {
-    fontSize: 20,
+    fontSize: 15,
     color: 'yellow',
     top: 20,
     paddingLeft: 10,
@@ -257,6 +251,7 @@ const styles = StyleSheet.create({
   searchInput: {
     flex: 1,
     marginLeft: 20,
+    fontSize: 20,
   },
   notifications: {
     fontSize: 34,
@@ -267,8 +262,9 @@ const styles = StyleSheet.create({
   banner: {
     width: '100%',
     height: 200,
-    borderRadius: 10,
     backgroundColor: '#2E7D32',
+    marginBottom:10,
+    borderRadius: 20,
   },
   item: {
     margin: 10,
@@ -279,6 +275,8 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 15,
     textAlign: 'center',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   itemPhoto: {
     width: 130,
@@ -311,18 +309,18 @@ const styles = StyleSheet.create({
     width: 150,
     height: 220,
     borderColor: 'white',
-    elevation: 10,
   },
   favouriteProducts: {
     backgroundColor: 'white',
     borderRadius: 10,
     marginHorizontal: 5,
-    marginTop: 20,
+    marginTop: 10,
     marginBottom: 20,
     width: 170,
-    height: 220,
-    borderColor: 'white',
+    height: 240,
     elevation: 10,
+    top:20,
+    
   },
 });
 
