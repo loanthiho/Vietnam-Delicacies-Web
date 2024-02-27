@@ -12,7 +12,7 @@ import {useNavigation} from '@react-navigation/native';
 
 export const ProductDetailScreen = ({route}: {route: any}) => {
   const [quantity, setQuantity] = useState(1);
-  const navigation = useNavigation(); 
+  const navigation = useNavigation();
 
   if (!route.params || !route.params.selectedItem) {
     return (
@@ -36,6 +36,14 @@ export const ProductDetailScreen = ({route}: {route: any}) => {
 
   return (
     <View>
+      <TouchableOpacity onPress={() =>
+                  navigation.navigate('Trang chủ', {
+                    selectedItem: selectedItem,
+                  })
+                }>
+        <Ionicons name="arrow-back-outline" style={styles.arrowLeft} />
+      </TouchableOpacity>
+
       <ScrollView>
         <View style={styles.container}>
           <Image source={{uri: selectedItem.uri}} style={styles.image} />
@@ -102,6 +110,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     flex: 1,
   },
+  arrowLeft: {
+    fontSize: 30,
+  },
   text: {
     fontSize: 25,
     fontWeight: 'bold',
@@ -109,6 +120,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     top: 10,
     right: '32%',
+    paddingLeft: '20%',
   },
   image: {
     width: 300,
