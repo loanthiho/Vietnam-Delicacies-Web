@@ -5,7 +5,7 @@ import { View, Text, StyleSheet } from 'react-native';
 const ChatScreen = () => {
   return (
     <View style={styles.container}>
-      <Text style={styles.text}>Welcome to Food HomePage!</Text>
+      <Text style={styles.text}>Welcome to Food HomePagee!</Text>
     </View>
   );
 };
