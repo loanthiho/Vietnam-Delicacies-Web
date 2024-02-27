@@ -6,10 +6,10 @@ const upload = require('../middleware/multer');
 
 
 router.post('/', checkAuth, upload.array('files', 10), productCtl.create);
-router.patch('/:id', checkAuth, productCtl.update);
+router.patch('/:id', checkAuth, upload.array('files', 10), productCtl.update);
 router.delete('/:id', checkAuth, productCtl.remove);
 router.get('/', productCtl.getAll);
-// router.get('/:id', productCtl.getOne);
+router.get('/:id', productCtl.getOne);
 
 
 module.exports = router;
