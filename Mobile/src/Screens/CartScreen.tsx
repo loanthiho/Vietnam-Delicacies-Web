@@ -46,7 +46,7 @@ const CartScreen = ({route, navigation}: {route: any; navigation: any}) => {
   };
 
   const renderItem = ({item}: any) => (
-    <View style={styles.product}>
+    <View >
       <Swipeable
         renderRightActions={() => (
           <TouchableOpacity
@@ -81,22 +81,20 @@ const CartScreen = ({route, navigation}: {route: any; navigation: any}) => {
 
   return (
     <GestureHandlerRootView style={styles.container}>
-      <ScrollView>
-        <View>
-          {/* <TouchableOpacity style={styles.shopContent}>
+      <ScrollView style={styles.listItem}>
+        <TouchableOpacity style={styles.shopContent}>
             <Ionicons name="checkbox-outline" style={styles.checkboxIconText} />
             <Ionicons
               name="chevron-forward-outline"
               style={styles.chevronIcon}
             />
             <Text style={styles.shopText}> Bếp nhà VND</Text>
-          </TouchableOpacity> */}
-          <FlatList
-            data={cartItems}
-            renderItem={renderItem}
-            keyExtractor={item => item.key.toString()}
-          />
-        </View>
+          </TouchableOpacity>
+        <FlatList
+          data={cartItems}
+          renderItem={renderItem}
+          keyExtractor={item => item.key.toString()}
+        />
       </ScrollView>
       <Text style={styles.checkoutText}>Tổng(tạm tính): </Text>
       <TouchableOpacity
@@ -118,14 +116,18 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  listItem: {
+    paddingTop: 40,
+  },
   itemContainer: {
-    paddingTop: 10,
+    paddingTop: 20,
   },
   itemImage: {
     width: 80,
     height: 80,
     marginRight: 10,
     borderRadius: 10,
+    top:5,
   },
   itemText: {
     width: 80,
@@ -216,9 +218,6 @@ const styles = StyleSheet.create({
     right: 40,
     top: 20,
   },
-  product: {
-    bottom: 35,
-  },
   deleteButton: {
     backgroundColor: 'red',
     justifyContent: 'center',
@@ -227,7 +226,7 @@ const styles = StyleSheet.create({
     height: 90,
     borderRadius: 10,
     gap: 10,
-    top:10,
+    top: 20,
   },
   deleteButtonText: {
     color: 'white',
