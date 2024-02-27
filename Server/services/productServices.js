@@ -143,7 +143,7 @@ const removeProduct = async (req, res, next) => {
             resNotFound(res, "Not Found Product");
         }
     }
-}
+  }
 
 module.exports = {
     createProduct,
