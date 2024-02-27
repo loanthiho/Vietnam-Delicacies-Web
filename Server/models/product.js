@@ -48,7 +48,6 @@ module.exports = (sequelize, DataTypes) => {
           allowNull: true
         }
       });
-
       // Một product có thể có nhiều record trong bảng ProducWishlist
       Product.hasMany(models.ProductWishlist, {
         foreignKey: {
@@ -61,7 +60,8 @@ module.exports = (sequelize, DataTypes) => {
       Product.hasMany(models.ProductCart, {
         foreignKey: {
           name: 'product_id',
-          type: DataTypes.UUID
+          type: DataTypes.UUID,
+          field: 'product_id'
         }
       });
       Product.hasMany(models.Review, {
@@ -70,7 +70,6 @@ module.exports = (sequelize, DataTypes) => {
           type: DataTypes.UUID
         }
       });
-
       Product.hasMany(models.OrderDetail, {
         foreignKey: {
           name: 'product_id',
@@ -80,15 +79,15 @@ module.exports = (sequelize, DataTypes) => {
 
       // Một sản phẩm có thể có ở shopping cart của nhiều người dùng.
       // Một shopping cart có thể có nhiều sản phẩm.
-      Product.belongsToMany(models.Cart, {
-        through: models.ProductCart
-      });
+      // Product.belongsToMany(models.Cart, {
+      //   through: models.ProductCart
+      // });
 
       // Một product có thể có trong nhiều wishlist của nhiều người dùng.
       // Một wishlist có thể có nhiều product.
-      Product.belongsToMany(models.Wishlist, {
-        through: models.ProductWishlist
-      });
+      // Product.belongsToMany(models.Wishlist, {
+      //   through: models.ProductWishlist
+      // });
     }
   }
   Product.init({
@@ -103,7 +102,7 @@ module.exports = (sequelize, DataTypes) => {
     },
     domain_id: {
       type: DataTypes.UUID,
-      allowNull:true
+      allowNull: true
     },
     category_id: {
       type: DataTypes.UUID,

@@ -17,16 +17,17 @@ module.exports = (sequelize, DataTypes) => {
         }
       });
 
-      Cart.hasMany(models.ProductCart,{
-        foreignKey:{
-          name:'cart_id',
-          type:DataTypes.UUID
+      Cart.hasMany(models.ProductCart, {
+        foreignKey: {
+          name: 'cart_id',
+          type: DataTypes.UUID,
+          field: 'cart_id'
         }
       });
 
-      Cart.belongsToMany(models.Product, {
-        through: models.ProductCart
-      }); 
+      // Cart.belongsToMany(models.Product, {
+      //   through: models.ProductCart
+      // }); 
     }
   }
   Cart.init({
