@@ -4,14 +4,14 @@ import {NavigationContainer} from '@react-navigation/native';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import { ProductDetailScreen } from './src/Screens/Product/ProductDetail';
+import {ProductDetailScreen} from './src/Screens/Product/ProductDetail';
 import HomePage from './src/Screens/HomeScreens';
 import ChatScreen from './src/Screens/ChatScreen';
 import ProfileScreen from './src/Screens/ProfileScreen';
 import CartScreen from './src/Screens/CartScreen';
 import Payment from './src/Screens/Payment/Payment';
 import ShopOwnerScreen from './src/Screens/Shop/ShopOwner';
-import AddProduct from './src/Seller/AddProduct';
+import Seller from './src/Seller/Seller';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -44,8 +44,8 @@ const TabNavigator = () => {
 
 const App = () => {
   return (
-    <SafeAreaView style={styles.container}>
-      <NavigationContainer>
+      <SafeAreaView style={styles.container}>
+        {/* <NavigationContainer>
         <Stack.Navigator
           screenOptions={{
             headerShown: false,
@@ -65,11 +65,10 @@ const App = () => {
             component={TabNavigator}
           />
         </Stack.Navigator>
-      </NavigationContainer>
+      </NavigationContainer> */}
 
-      {/* <Payment></Payment> */}
-
-    </SafeAreaView>
+         <Seller></Seller>
+      </SafeAreaView>
   );
 };
 
