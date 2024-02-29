@@ -6,13 +6,12 @@ import {
   Image,
   TouchableOpacity,
   ScrollView,
+  Dimensions,
 } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import {useNavigation} from '@react-navigation/native';
 
-export const ProductDetailScreen = ({route}: {route: any}) => {
+const ProductDetailScreen = ({route, navigation}: any) => {
   const [quantity, setQuantity] = useState(1);
-  const navigation = useNavigation();
 
   if (!route.params || !route.params.selectedItem) {
     return (
@@ -36,18 +35,17 @@ export const ProductDetailScreen = ({route}: {route: any}) => {
 
   return (
     <View>
-      <TouchableOpacity onPress={() =>
-                  navigation.navigate('Trang chủ', {
-                    selectedItem: selectedItem,
-                  })
-                }>
+      <TouchableOpacity onPress={() => navigation.goBack()}>
         <Ionicons name="arrow-back-outline" style={styles.arrowLeft} />
       </TouchableOpacity>
 
       <ScrollView>
         <View style={styles.container}>
-          <Image source={{uri: selectedItem.uri}} style={styles.image} />
-          <Text style={styles.text}>{selectedItem.text}</Text>
+          <Image
+            source={{uri: selectedItem?.Files[0]?.src}}
+            style={styles.image}
+          />
+          <Text style={styles.text}>{selectedItem.name}</Text>
           <View style={styles.ratingContainer}>
             <Ionicons name="star-outline" style={styles.starIcon} />
             <Text style={styles.textIcon}>4.5 - 26 phút</Text>
@@ -81,34 +79,35 @@ export const ProductDetailScreen = ({route}: {route: any}) => {
           <Text style={styles.comment}>Bình Luận </Text>
         </View>
       </ScrollView>
-      <TouchableOpacity
-        style={styles.seenContainer}
-        onPress={() =>
-          navigation.navigate('ShopOwnerScreen', {
-            selectedItem: selectedItem,
-          })
-        }>
-        <Text style={styles.seenButton}>Xem shop</Text>
-      </TouchableOpacity>
+      <View>
+        <TouchableOpacity
+          style={styles.seenContainer}
+          onPress={() =>
+            navigation.navigate('ShopOwnerScreen', {
+              selectedItem: selectedItem,
+            })
+          }>
+          <Text style={styles.seenButton}>Xem shop</Text>
+        </TouchableOpacity>
 
-      <TouchableOpacity
-        style={styles.cartContainer}
-        onPress={() =>
-          navigation.navigate('Giỏ hàng', {
-            selectedItem: selectedItem,
-          })
-        }>
-        <Text style={styles.cartButton}>Thêm vào giỏ hàng</Text>
-      </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.cartContainer}
+          onPress={() =>
+            navigation.navigate('Giỏ hàng', {
+              selectedItem: selectedItem,
+            })
+          }>
+          <Text style={styles.cartButton}>Thêm vào giỏ hàng</Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    justifyContent: 'center',
-    alignItems: 'center',
     flex: 1,
+    paddingHorizontal: 20,
   },
   arrowLeft: {
     fontSize: 30,
@@ -117,22 +116,21 @@ const styles = StyleSheet.create({
     fontSize: 25,
     fontWeight: 'bold',
     color: '#ffa000',
-    marginBottom: 10,
+    marginBottom: 20,
+    marginTop: 20,
     top: 10,
-    right: '32%',
-    paddingLeft: '20%',
   },
   image: {
-    width: 300,
+    width: 'auto',
     height: 300,
     borderRadius: 10,
-    top: 10,
+    justifyContent: 'center',
+    alignContent: 'center',
   },
   ratingContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 10,
-    right: '20%',
   },
   starIcon: {
     fontSize: 20,
@@ -149,12 +147,11 @@ const styles = StyleSheet.create({
   },
   itemPriceContainer: {
     backgroundColor: '#FFA000',
-    width: 100,
+    width: 110,
     height: 40,
     borderRadius: 10,
     justifyContent: 'center',
     alignItems: 'center',
-    right: '32%',
     top: 40,
   },
   itemPriceText: {
@@ -165,7 +162,7 @@ const styles = StyleSheet.create({
   quantityContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    left: '20%',
+    left: '40%',
   },
   button: {
     width: 40,
@@ -189,9 +186,7 @@ const styles = StyleSheet.create({
   comment: {
     fontSize: 25,
     fontWeight: 'bold',
-    marginRight: 10,
     color: '#FFA000',
-    right: '32%',
   },
   cartContainer: {
     backgroundColor: '#2E7D32',
@@ -213,8 +208,8 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     width: 100,
     height: 60,
-    left: '5%',
-    top: '21%',
+    left: '10%',
+    top: '60%',
   },
   seenButton: {
     fontSize: 16,
