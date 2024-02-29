@@ -14,19 +14,18 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 
 const ProductDetailScreen = ({route, navigation}: any) => {
   const [quantity, setQuantity] = useState(1);
-  // const { mutate } = useAddToCart();
-
-  // const addToCartHandler = (item: any) => {
-  //   mutate(item, {
-  //     onSuccess: (data) => {
-  //       navigation.navigate('Giỏ hàng', {
-  //         selectedItem: item,
-  //       });
-  //     },
-  //     onError: (error) => {
-  //       console.error('Lỗi khi thêm sản phẩm vào giỏ hàng:', error);
-  //   }
-  //   });
+  const {mutate} = useAddToCart();
+  const addToCartHandler = (item: any) => {
+    mutate(item, {
+      onSuccess: data => {
+        navigation.navigate('Giỏ hàng');
+      },
+      onError: error => {
+        console.error('Lỗi khi thêm sản phẩm vào giỏ hàng:', error);
+      },
+    });
+    console.log('use add to cart:', item);
+  };
 
   if (!route.params || !route.params.selectedItem) {
     return (
@@ -35,8 +34,9 @@ const ProductDetailScreen = ({route, navigation}: any) => {
       </ScrollView>
     );
   }
-  }
-  const {selectedItem}: {selectedItem: any} = route.params;
+
+  // const {selectedItem}: {selectedItem: any} = route.params;
+  const {selectedItem}: any = route.params;
   const decreaseQuantity = () => {
     if (quantity > 1) {
       setQuantity(quantity - 1);
@@ -64,9 +64,7 @@ const ProductDetailScreen = ({route, navigation}: any) => {
             <Ionicons name="star-outline" style={styles.starIcon} />
             <Text style={styles.textIcon}>4.5 - 26 phút</Text>
           </View>
-          <Text style={styles.textscript}>
-          {selectedItem.description}
-          </Text>
+          <Text style={styles.textscript}>{selectedItem.description}</Text>
           <View style={styles.itemPriceContainer}>
             <Text style={styles.itemPriceText}>
               Giá: <Text>{selectedItem.price}đ</Text>
@@ -103,11 +101,7 @@ const ProductDetailScreen = ({route, navigation}: any) => {
 
         <TouchableOpacity
           style={styles.cartContainer}
-          onPress={() =>
-            navigation.navigate('Giỏ hàng', {
-              selectedItem: selectedItem,
-            })
-          }>
+          onPress={() => addToCartHandler(selectedItem?.id)}>
           <Text style={styles.cartButton}>Thêm vào giỏ hàng</Text>
         </TouchableOpacity>
       </View>

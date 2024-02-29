@@ -12,7 +12,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import Banner from '../components/Homepage/Banner';
 import FeaturedProductsList from '../components/Homepage/FeaturedProductsList';
 import SuggestionsList from '../components/Homepage/SuggestionsList';
-import {useQuery}  from '@tanstack/react-query';
+import {useQuery} from '@tanstack/react-query';
 
 const HomePage = ({navigation}: any) => {
   const [selectedItem, setSelectedItem] = useState('Tất cả');
@@ -45,7 +45,6 @@ const HomePage = ({navigation}: any) => {
   if (error) return <Text>Error: {error.message}</Text>;
   return (
     <View style={styles.container}>
-      
       <View style={styles.header}>
         <Text style={styles.textheader}>Đặc sản Việt</Text>
         <TouchableOpacity style={styles.profileImageContainer}>
@@ -78,24 +77,26 @@ const HomePage = ({navigation}: any) => {
 
       <View style={{flex: 1}}>
         <FlatList
-        data={data}
-        keyExtractor={item=>item.key}
-        renderItem={null}
+          data={data}
+          keyExtractor={item => item.key}
+          renderItem={null}
           ListHeaderComponent={
             <>
               <Banner />
-              <Text style={{fontSize: 20, fontWeight: 'bold'}}>Sản phẩm nổi bật </Text>
+              <Text style={{fontSize: 20, fontWeight: 'bold'}}>
+                Sản phẩm nổi bật{' '}
+              </Text>
             </>
           }
           ListFooterComponent={
-            <> 
-            <FeaturedProductsList data={data} navigation={navigation} />
-            <Text style={{fontSize: 20, fontWeight: 'bold'}}>Sản phẩm đề xuất</Text>
-            <SuggestionsList data={data} navigation={navigation} /></>
-          }
-          >
-          </FlatList>  
-        
+            <>
+              <FeaturedProductsList data={data} navigation={navigation} />
+              <Text style={{fontSize: 20, fontWeight: 'bold'}}>
+                Sản phẩm đề xuất
+              </Text>
+              <SuggestionsList data={data} navigation={navigation} />
+            </>
+          }></FlatList>
       </View>
     </View>
   );
