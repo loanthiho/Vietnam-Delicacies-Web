@@ -1,0 +1,19 @@
+branch-defaults:
+  default:
+    environment: Nodejs-app-env-1
+environment-defaults:
+  Nodejs-app-env-1:
+    branch: null
+    repository: null
+global:
+  application_name: nodejs-app
+  default_ec2_keyname: null
+  default_platform: Node.js 20 running on 64bit Amazon Linux 2023
+  default_region: ap-southeast-2
+  include_git_submodules: true
+  instance_profile: null
+  platform_name: null
+  platform_version: null
+  profile: null
+  sc: null
+  workspace_type: Application
