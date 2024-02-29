@@ -1,23 +1,23 @@
-const { User, Province, District } = require('../models');
+const { User, Cart, Province } = require('../models');
 const jwt = require('jsonwebtoken');
 const bcryptjs = require('bcryptjs');
-const { resSuccessData } = require('../utils/response');
+const { resSuccessData, resBadRequest, resInternalError } = require('../utils/response');
 
-const createUser = async (req, res, next) => {
-    await User.create(req.body)
-        .then(result => {
-            res.status(201).json({
-                message: "User create successfully",
-                data: result
-            })
-        })
-        .catch(error => {
-            res.status(500).json({
-                error: error,
-                message: "Server error!"
-            })
-        })
-};
+// const createUser = async (req, res, next) => {
+//     await User.create(req.body)
+//         .then(result => {
+//             res.status(201).json({
+//                 message: "User create successfully",
+//                 data: result
+//             })
+//         })
+//         .catch(error => {
+//             res.status(500).json({
+//                 error: error,
+//                 message: "Server error!"
+//             })
+//         })
+// };
 const getAllUser = async (req, res, next) => {
     await User.findAll({
         include: {
@@ -25,14 +25,17 @@ const getAllUser = async (req, res, next) => {
         }
     })
         .then(result => resSuccessData(res, result))
-        .catch(error => {
-            res.status(500).json({
-                error,
-                message: "Server error!"
-            })
-        })
+        .catch(error => resInternalError(res, err = { error, msg: "Server Error!" }));
 };
 
+const createCart = async (res, user_id, dataRes) => {
+    const newCart = await Cart.create({ user_id });
+    if (newCart) {
+        resSuccessData(res, dataRes = { dataRes, newCart }, "SignUp successfully!")
+    } else {
+        resInternalError(res, "Create cart error!")
+    }
+}
 const userSignUp = async (req, res, next) => {
     const user = {
         name: req.body.name,
@@ -40,40 +43,25 @@ const userSignUp = async (req, res, next) => {
         password: await bcryptjs.hash(req.body.password, 10),
         role: req.body.role
     };
-    await User.findOne({
-        where: { email: req.body.email }
-    })
-        .then(result => {
-            if (result) {
-                res.status(409).json({
-                    message: "Email already exists!"
-                })
-            } else {
-                User.create(user)
-                    .then(result => {
-                        res.status(201).json({
-                            message: "SignUp successfully!",
-                            data: result,
-                        });
-                    })
-                    .catch(error => {
-                        res.status(500).json({
-                            message: "Somethings went wrong!",
-                            error: error
-                        });
-                    });
-            }
-        })
-        .catch(error => {
-            res.status(500).json({
-                message: "Somethings went wrong!",
-                error: error
-            });
-        });
-
-
-
+    const userDb = await User.findOne({ where: { email: req.body.email } });
+    if (!userDb) {
+        const dataRes = {};
+        await User.create(user)
+            .then(result => {
+                const { id, role } = result;
+                dataRes.user = result;
+                if (role === "customer") {
+                    createCart(res, id, dataRes);
+                } else {
+                    resSuccessData(res, result, "Sigup successfully")
+                }
+            })
+    }
+    else {
+        resBadRequest(res, "This email ready exists!");
+    }
 };
+
 
 const userSignIn = async (req, res, next) => {
     const user = {
@@ -138,7 +126,6 @@ const userSignIn = async (req, res, next) => {
 
 
 module.exports = {
-    createUser,
     getAllUser,
     userSignUp,
     userSignIn

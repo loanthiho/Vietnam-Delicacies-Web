@@ -8,10 +8,25 @@ import {
   ScrollView,
   Dimensions,
 } from 'react-native';
+import useAddToCart from '../../Hooks/addToCart';
+
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
 const ProductDetailScreen = ({route, navigation}: any) => {
   const [quantity, setQuantity] = useState(1);
+  // const { mutate } = useAddToCart();
+
+  // const addToCartHandler = (item: any) => {
+  //   mutate(item, {
+  //     onSuccess: (data) => {
+  //       navigation.navigate('Giỏ hàng', {
+  //         selectedItem: item,
+  //       });
+  //     },
+  //     onError: (error) => {
+  //       console.error('Lỗi khi thêm sản phẩm vào giỏ hàng:', error);
+  //   }
+  //   });
 
   if (!route.params || !route.params.selectedItem) {
     return (
@@ -20,9 +35,8 @@ const ProductDetailScreen = ({route, navigation}: any) => {
       </ScrollView>
     );
   }
-
+  }
   const {selectedItem}: {selectedItem: any} = route.params;
-
   const decreaseQuantity = () => {
     if (quantity > 1) {
       setQuantity(quantity - 1);
@@ -51,10 +65,7 @@ const ProductDetailScreen = ({route, navigation}: any) => {
             <Text style={styles.textIcon}>4.5 - 26 phút</Text>
           </View>
           <Text style={styles.textscript}>
-            Gấc bổ đổi lấy hết hạt để riêng ra bát, sau đó cho 1/2 bát con rượu
-            trắng vào ngâm 30 phút cho gấc phai hết màu ra nước. Tiếp đó bạn đeo
-            găng tay nilon bóp lại cho hạt gấc ra hết màu hoàn toàn rồi bỏ hạt
-            đen đi.
+          {selectedItem.description}
           </Text>
           <View style={styles.itemPriceContainer}>
             <Text style={styles.itemPriceText}>

@@ -28,3 +28,7 @@ node_modules/.cache
 # Ignore package-lock.json file
 package-lock.json
 .vscode
+# Elastic Beanstalk Files
+.elasticbeanstalk/*
+!.elasticbeanstalk/*.cfg.yml
+!.elasticbeanstalk/*.global.yml

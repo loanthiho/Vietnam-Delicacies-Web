@@ -13,7 +13,6 @@ import Banner from '../components/Homepage/Banner';
 import FeaturedProductsList from '../components/Homepage/FeaturedProductsList';
 import SuggestionsList from '../components/Homepage/SuggestionsList';
 import {useQuery}  from '@tanstack/react-query';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 const HomePage = ({navigation}: any) => {
   const [selectedItem, setSelectedItem] = useState('Tất cả');
@@ -23,7 +22,7 @@ const HomePage = ({navigation}: any) => {
     queryKey: ['products'],
     queryFn: async () => {
       const response = await fetch(
-        'https://91ab-113-176-99-140.ngrok-free.app/products',
+        'http://nodejs-app-env-1.eba-q2t7wpq3.ap-southeast-2.elasticbeanstalk.com/products',
       );
       return response.json();
     },

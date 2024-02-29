@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 const { Product, Province, User, Category, File, Review } = require("../models")
+=======
+const { Product,ProductCart, Province, User, Category, File, Review } = require("../models")
+>>>>>>> cef7366fa6e727b4b119310180576a3a7ccf3f14
 const { resSuccessData, resInternalError, resCreated, resNotFound } = require("../utils/response")
 const cloudinary = require('../utils/cloudinary');
 const { Op } = require("sequelize");
@@ -77,6 +81,7 @@ const getAllProduct = async (req, res, next) => {
             { model: User, attributes: { exclude: [['password']] } },
             { model: Category },
             { model: File },
+            { model: ProductCart },
         ],
         order: [
             ["createdAt", "DESC"]
@@ -143,7 +148,6 @@ const removeProduct = async (req, res, next) => {
         }
     }
   }
-
 
 module.exports = {
     createProduct,

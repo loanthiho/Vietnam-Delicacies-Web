@@ -1,10 +1,11 @@
 {
   "development": {
-    "username": "root",
-    "password": null,
-    "database": "vnd_db",
-    "host": "127.0.0.1",
-    "dialect": "mysql"
+    "username": "uv2vmyupftsxh4fc",
+    "password": "lgvkLzX7Lcb6H9tGDxFy",
+    "database": "bsvszhr5oyagog0yonta",
+    "host": "bsvszhr5oyagog0yonta-mysql.services.clever-cloud.com",
+    "dialect": "mysql",
+    "port": 3306
   },
   "test": {
     "username": "root",

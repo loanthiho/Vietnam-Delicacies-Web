@@ -8,4 +8,3 @@ function Dependencies(app) {
     app.use(cors("*", { credentials: true }));
 }
 module.exports = { Dependencies };
-
