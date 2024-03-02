@@ -11,12 +11,7 @@ function writeResponse(res, statusCode, msg) {
 // ------------------------------------------
 // Write Data Response Function
 function writeResponseData(res, statusCode, msg, data) {
-    res.status(statusCode).json({
-        status: true,
-        code: statusCode,
-        message: msg,
-        data
-    })
+    res.status(statusCode).json({ status: statusCode, msg, data })
 }
 
 // ------------------------------------------
