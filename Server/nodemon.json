@@ -4,6 +4,14 @@
         "CLOUDINARY_CLOUD_NAME": "dzz3i0apg",
         "CLOUDINARY_API_KEY": "278979412795927",
         "CLOUDINARY_SECRET_KEY": "7NIgawgz-_fpcatSeCF2B9SaHQs",
-        "CLOUDINARY_URL": "cloudinary://278979412795927:7NIgawgz-_fpcatSeCF2B9SaHQs@dzz3i0apg"
+        "CLOUDINARY_URL": "cloudinary://278979412795927:7NIgawgz-_fpcatSeCF2B9SaHQs@dzz3i0apg",
+
+
+        "MYSQL_HOST": "bsvszhr5oyagog0yonta-mysql.services.clever-cloud.com",
+        "MYSQL_DB": "bsvszhr5oyagog0yonta",
+        "MYSQL_USER": "uv2vmyupftsxh4fc",
+        "MYSQL_PORT": 3306,
+        "MYSQL_PASSWORD": "lgvkLzX7Lcb6H9tGDxFy",
+        "MYSQL_URI": "mysql://uv2vmyupftsxh4fc:lgvkLzX7Lcb6H9tGDxFy@bsvszhr5oyagog0yonta-mysql.services.clever-cloud.com:3306/bsvszhr5oyagog0yonta"
     }
 }
