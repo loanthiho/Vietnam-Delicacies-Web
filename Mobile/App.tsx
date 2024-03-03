@@ -44,8 +44,8 @@ const TabNavigator = () => {
 
 const App = () => {
   return (
-      <SafeAreaView style={styles.container}>
-        {/* <NavigationContainer>
+    <SafeAreaView style={styles.container}>
+      {/* <NavigationContainer>
         <Stack.Navigator
           screenOptions={{
             headerShown: false,
@@ -67,8 +67,8 @@ const App = () => {
         </Stack.Navigator>
       </NavigationContainer> */}
 
-         <Seller></Seller>
-      </SafeAreaView>
+      <Seller></Seller>
+    </SafeAreaView>
   );
 };
 

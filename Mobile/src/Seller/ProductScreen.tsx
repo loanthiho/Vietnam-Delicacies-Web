@@ -10,17 +10,19 @@ import {
   Pressable,
 } from 'react-native';
 import axios from 'axios';
+import {useNavigation} from '@react-navigation/native';
 
 const ProductScreen = () => {
   const [cartItems, setCartItems] = useState<any[]>([]);
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedItemId, setSelectedItemId] = useState(null);
+  const navigation = useNavigation();
 
   useEffect(() => {
     const fetchCartItems = async () => {
       try {
         const response = await axios.get(
-          'https://6076-116-103-20-252.ngrok-free.app/products',
+          'http://nodejs-app-env-1.eba-q2t7wpq3.ap-southeast-2.elasticbeanstalk.com/products',
         );
         setCartItems(response.data.data);
       } catch (error) {
@@ -31,10 +33,29 @@ const ProductScreen = () => {
     fetchCartItems();
   }, []);
 
-  const handleDeleteItem = itemId => {
-    const updatedCartItems = cartItems.filter(item => item.id !== itemId);
-    setCartItems(updatedCartItems);
-    setModalVisible(false); // Đóng modal sau khi xóa
+  const token =
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjU3N2IwMTU3LTBkMDQtNDJkOC1iZmUxLTc2MzQyNDU1Zjc5ZiIsImVtYWlsIjoiZGkuaG8yNGdtYWlsLmNvbSIsInBhc3N3b3JkIjoiJDJhJDEwJEtmVS5mVW5lQlE0VFB1UkJxWENMWmVNR3lXcEtnNHpMS2NCa2JJUWg1QVo5LlBHN2RvaU5lIiwibmFtZSI6IkRpIEhvIiwiaWF0IjoxNzA5NDU1NTEyfQ.2kuxkqvavVSZNBtYSSjy5dcdP6O-2hXnDRMsCc56FQQ';
+
+  const handleDeleteItem = async itemId => {
+    try {
+      const updatedCartItems = cartItems.filter(item => item.id !== itemId);
+      await axios.delete(
+        `http://nodejs-app-env-1.eba-q2t7wpq3.ap-southeast-2.elasticbeanstalk.com/products/${itemId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      );
+      setCartItems(updatedCartItems);
+      setModalVisible(false);
+    } catch (error) {
+      console.error('Lỗi khi xóa sản phẩm:', error);
+    }
+  };
+
+  const OnClickBack = () => {
+    navigation.navigate('AddProduct');
   };
 
   const renderItem = ({item}) => (
@@ -48,7 +69,7 @@ const ProductScreen = () => {
         <Text style={styles.update}>Sửa</Text>
         <Pressable
           onPress={() => {
-            setSelectedItemId(item.id); 
+            setSelectedItemId(item.id);
             setModalVisible(true); // Mở modal
           }}>
           <Text style={styles.delete}>Xóa</Text>
@@ -60,13 +81,19 @@ const ProductScreen = () => {
   return (
     <View style={styles.container}>
       <View style={styles.title}>
-        <Ionicons name="arrow-back-outline" style={styles.arrowLeft} />
+        <Ionicons
+          name="arrow-back-outline"
+          style={styles.arrowLeft}
+          onPress={() => OnClickBack()}
+        />
         <Text style={styles.Subtitle}>Sản phẩm của tôi</Text>
       </View>
       <FlatList data={cartItems} renderItem={renderItem} />
 
       <View style={styles.btn}>
-        <Text style={styles.BtnAdd}>Thêm</Text>
+        <Text style={styles.BtnAdd} onPress={() => OnClickBack()}>
+          Thêm
+        </Text>
         <Text style={styles.BtnShow}>Xem Shop</Text>
       </View>
 
@@ -87,7 +114,7 @@ const ProductScreen = () => {
               <Pressable
                 style={[styles.button, styles.buttonYes]}
                 onPress={() => {
-                  handleDeleteItem(selectedItemId); 
+                  handleDeleteItem(selectedItemId);
                 }}>
                 <Text style={styles.textStyle}>Có</Text>
               </Pressable>
@@ -98,7 +125,6 @@ const ProductScreen = () => {
     </View>
   );
 };
-
 
 const styles = StyleSheet.create({
   centeredView: {
@@ -182,7 +208,7 @@ const styles = StyleSheet.create({
   itemText: {
     maxWidth: 140,
     marginRight: 10,
-    fontSize: 20,
+    fontSize: 16,
     borderRadius: 10,
     color: '#FFA000',
   },
@@ -192,7 +218,7 @@ const styles = StyleSheet.create({
     paddingBottom: 5,
     paddingLeft: 10,
     paddingRight: 10,
-    fontSize: 18,
+    fontSize: 14,
     borderRadius: 5,
     color: '#FFFFFF',
     backgroundColor: '#FFA000',
@@ -206,15 +232,15 @@ const styles = StyleSheet.create({
   },
   update: {
     color: '#2E7D32',
-    fontSize: 18,
+    fontSize: 14,
   },
   delete: {
-    fontSize: 18,
+    fontSize: 14,
     color: 'red',
   },
 
   arrowLeft: {
-    fontSize: 30,
+    fontSize: 20,
   },
 
   title: {
@@ -224,15 +250,15 @@ const styles = StyleSheet.create({
   },
 
   Subtitle: {
-    fontSize: 30,
+    fontSize: 20,
     fontWeight: 'bold',
     color: '#2E7D32',
   },
 
   btn: {
     paddingTop: 20,
-    paddingRight: 30,
-    paddingLeft: 30,
+    paddingRight: 24,
+    paddingLeft: 24,
     flexDirection: 'row',
     justifyContent: 'space-between',
   },
@@ -240,16 +266,16 @@ const styles = StyleSheet.create({
   BtnAdd: {
     width: 110,
     textAlign: 'center',
-    fontSize: 20,
-    padding: 10,
+    fontSize: 16,
+    padding: 8,
     color: 'white',
     backgroundColor: '#2E7D32',
     borderRadius: 10,
   },
 
   BtnShow: {
-    padding: 10,
-    fontSize: 20,
+    padding: 8,
+    fontSize: 16,
     color: 'white',
     backgroundColor: '#2E7D32',
     borderRadius: 10,

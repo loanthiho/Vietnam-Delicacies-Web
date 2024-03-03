@@ -1,5 +1,8 @@
 import React, {useState, useEffect} from 'react';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import ProductImg from './ProductImg';
+import {Formik} from 'formik';
+import * as Yup from 'yup';
 
 import {
   View,
@@ -7,15 +10,14 @@ import {
   StyleSheet,
   TextInput,
   Alert,
-  Button,
-  PermissionsAndroid,
-  Image,
   ScrollView,
+  ActivityIndicator,
+  StatusBar,
 } from 'react-native';
 import {Dropdown} from 'react-native-element-dropdown';
 import axios from 'axios';
 import {useNavigation} from '@react-navigation/native';
-import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
+import {TouchableOpacity} from 'react-native-gesture-handler';
 
 // import {useMutation} from 'react-query';
 
@@ -24,15 +26,77 @@ const AddProduct = () => {
   const [descProduct, setdescProduct] = useState('');
   const [quantityProduct, setquantityProduct] = useState('');
   const [weightProduct, setweightProduct] = useState('');
-  const [priceProduct, setpriceProduct] = useState(0);
-  const [value, setValue] = useState(null);
-  const [img, setImg] = useState('');
+  const [priceProduct, setpriceProduct] = useState('');
+
   const navigation = useNavigation();
+  //DataDomain
+  const [selectedItem, setSelectedItem] = useState(null);
   const [dataDomain, setDataDomain] = useState<any[]>();
   const [data, setData] = useState([]);
+  const [domainId, setDomainId] = useState(null);
+  //DataCategory
+  const [categoryAPI, setDataCategoryAPI] = useState<any[]>();
+  const [dataCategory, setDataCategory] = useState([]);
+  const [categoryId, setcategoryId] = useState(null);
+  //focus
+  const [isFocused, setIsFocused] = useState(false);
+  const [isFocusedDetail, setIsFocusedDetail] = useState(false);
 
-  const apiDomain = 'https://b467-113-176-99-140.ngrok-free.app/domains';
+  //img
+  const [img, setImg] = useState<string>('');
 
+  //Formk
+  const SignupSchema = Yup.object().shape({
+    nameProduct: Yup.string()
+      .min(2, 'Tên quá ngắn!')
+      .max(40, 'Vui lòng đặt tên ngắn gọn!')
+      .required('Vui lòng nhập tên sản phẩm'),
+    priceProduct: Yup.string().required('Chưa nhập giá'),
+    quantityProduct: Yup.string().required('Chưa nhập số lượng'),
+    weightProduct: Yup.string().required('Chưa nhập cân nặng'),
+    category: Yup.string().required('Chưa chọn loại hàng'),
+  });
+
+  //Loading
+  const [isLoading, setIsLoading] = useState(true);
+
+  const formatPrice = (text: string) => {
+    const formattedText = text.replace(/\D/g, '');
+    const formattedNumber = Number(formattedText).toLocaleString();
+    return formattedNumber;
+  };
+
+  const formatQuantity = (text: string) => {
+    const formattedText = text.replace(/\D/g, '');
+    const formattedNumber = Number(formattedText).toLocaleString();
+    return formattedNumber;
+  };
+
+  const formatWeight = (text: string) => {
+    const formattedText = text.replace(/\D/g, '');
+    const formattedNumber = Number(formattedText).toLocaleString();
+    return formattedNumber;
+  };
+
+  const handleFocus = () => {
+    setIsFocused(true);
+  };
+
+  const handleBlur = () => {
+    setIsFocused(false);
+  };
+
+  const handleFocusDetail = () => {
+    setIsFocusedDetail(true);
+  };
+
+  const handleBlurDetail = () => {
+    setIsFocusedDetail(false);
+  };
+
+  //domain
+  const apiDomain =
+    'http://nodejs-app-env-1.eba-q2t7wpq3.ap-southeast-2.elasticbeanstalk.com/domains';
   useEffect(() => {
     axios
       .get(apiDomain)
@@ -44,7 +108,6 @@ const AddProduct = () => {
       });
   }, []);
 
-
   useEffect(() => {
     if (dataDomain && dataDomain.length > 0) {
       const newData = dataDomain.map(item => ({
@@ -53,205 +116,325 @@ const AddProduct = () => {
       }));
       setData(newData);
     }
-    // console.log('dataProvincedomian', data);
   }, [dataDomain]);
 
+  const handleDomainChange = (item: React.SetStateAction<null>) => {
+    setSelectedItem(item);
+    setDomainId(item.value);
+    console.log('Data dimain before sending:', {
+      domainId: item.value,
+      domainName: item.label,
+    });
+    console.log('Domain:', domainId);
+  };
+  //domain
+
+  //categories
+  const apiCategory =
+    'http://nodejs-app-env-1.eba-q2t7wpq3.ap-southeast-2.elasticbeanstalk.com/categories';
+  useEffect(() => {
+    axios
+      .get(apiCategory)
+      .then(response => {
+        setDataCategoryAPI(response.data.data);
+      })
+      .catch(error => {
+        console.error('Đã xảy ra lỗi khi gọi API:', error);
+      });
+  }, []);
+
+  useEffect(() => {
+    if (categoryAPI && categoryAPI.length > 0) {
+      const newcategoryAPI = categoryAPI.map(item => ({
+        label: item.name,
+        value: item.id,
+      }));
+      setDataCategory(newcategoryAPI);
+    }
+  }, [categoryAPI]);
+
+  const handleCategoryChange = item => {
+    setDataCategoryAPI(item);
+    setcategoryId(item.value);
+    console.log('Data category before sending:', {
+      domainId: item.value,
+      domainName: item.label,
+    });
+    console.log('category:', categoryId);
+  };
+
   const token =
-    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Ijg3MGU4NzMwLWY0YmMtNGIwOC1hNWFkLTdkMDU1OWQ5MDk5OSIsImVtYWlsIjoiZGkuaGkyNGdtYWlsLmNvbSIsInBhc3N3b3JkIjoiJDJhJDEwJFVJanBxLlRWMjBSaHhXRjl2bEEyMWVVZjdSTmJUR0hIZ0kzS1Q3RFpqL3F1Wmd5MS9zMGguIiwibmFtZSI6IkRpIEhvIiwiaWF0IjoxNzA5MTc4MzUyfQ.Lp8QV0oJTmV2nqvcmp0LVmxE8QB6fc3IWUVx9I7z1ts';
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjU3N2IwMTU3LTBkMDQtNDJkOC1iZmUxLTc2MzQyNDU1Zjc5ZiIsImVtYWlsIjoiZGkuaG8yNGdtYWlsLmNvbSIsInBhc3N3b3JkIjoiJDJhJDEwJEtmVS5mVW5lQlE0VFB1UkJxWENMWmVNR3lXcEtnNHpMS2NCa2JJUWg1QVo5LlBHN2RvaU5lIiwibmFtZSI6IkRpIEhvIiwiaWF0IjoxNzA5NDU1NTEyfQ.2kuxkqvavVSZNBtYSSjy5dcdP6O-2hXnDRMsCc56FQQ';
+
   const saveProduct = async () => {
+    setIsLoading(false);
     let ojb = {
-      category_id: '023923',
-      seller_id: '04',
+      category_id: categoryId,
+      seller_id: '23',
       name: nameProduct,
       price: priceProduct,
       description: descProduct,
-      quantity: quantityProduct,
+      inventory: quantityProduct,
       weight: weightProduct,
-      inventory: 30,
+      domain_id: domainId,
     };
 
     const formData = new FormData();
-    formData.append('files', {
-      uri: img,
-      type: 'image/jpeg',
-      name: 'product_image.jpg',
-    });
+    if (img) {
+      formData.append('files', {
+        uri: img,
+        type: 'image/jpeg',
+        name: 'product_image.jpg',
+      });
+    }
 
-    // Thêm dữ liệu từ ojb vào formData
     Object.keys(ojb).forEach(key => {
       formData.append(key, ojb[key]);
     });
 
-    let url_api = 'https://b467-113-176-99-140.ngrok-free.app/products';
+    // console.log('data trước khi post', formData);
+    // console.log('img trước khi post', img);
+    let url_api =
+      'http://nodejs-app-env-1.eba-q2t7wpq3.ap-southeast-2.elasticbeanstalk.com/products';
     try {
-      const test = await axios.get(
-        'https://b467-113-176-99-140.ngrok-free.app/products',
-        {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-            Authorization: `Bearer ${token}`,
-          },
-        },
-      );
       const response = await axios.post(url_api, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
           Authorization: `Bearer ${token}`,
         },
       });
+      setnameProduct('');
+      setdescProduct('');
+      setquantityProduct('');
+      setweightProduct('');
+      setpriceProduct('');
+      setImg('');
+      setData([]);
+      setDataCategory([]);
+
+      setIsLoading(true);
       Alert.alert('Thêm thành công');
       navigation.navigate('ProductScreen');
     } catch (error) {
-      Alert.alert('add products failure');
+      console.log(error);
+      Alert.alert('Thêm chưa thành công vui lòng kiểm tra lại');
     }
   };
 
-  const handleChooseOption = () => {
-    Alert.alert(
-      'Chọn ảnh',
-      'Bạn muốn chọn ảnh từ thư viện hay chụp ảnh mới?',
-      [
-        {
-          text: 'Chọn ảnh từ thư viện',
-          onPress: () => requestImageLibraryPermission(),
-        },
-        {
-          text: 'Chụp ảnh mới',
-          onPress: () => requestCameraPermission(),
-        },
-      ],
-      {cancelable: true},
+  if (!isLoading) {
+    return (
+      <View style={styles.Loadingcontainer}>
+        <ActivityIndicator size="large" color="#ffa000" />
+        <Text>Đang tải...</Text>
+      </View>
     );
-  };
-
-  const requestCameraPermission = async () => {
-    try {
-      const checkPermission = await PermissionsAndroid.request(
-        PermissionsAndroid.PERMISSIONS.CAMERA,
-      );
-      if (checkPermission === PermissionsAndroid.RESULTS.GRANTED) {
-        const result: any = await launchCamera({
-          mediaType: 'photo',
-          cameraType: 'back',
-        });
-        setImg(result.assets[0].uri);
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  const requestImageLibraryPermission = async () => {
-    try {
-      const checkPermission = await PermissionsAndroid.request(
-        PermissionsAndroid.PERMISSIONS.CAMERA,
-      );
-      if (checkPermission === PermissionsAndroid.RESULTS.GRANTED) {
-        const result: any = await launchImageLibrary({
-          mediaType: 'photo',
-          selectionLimit: 3,
-        });
-        setImg(result.assets[0].uri);
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  }
 
   return (
-    <View>
-      <View style={styles.title}>
-        <Ionicons name="arrow-back-outline" style={styles.arrowLeft} />
-        <Text style={styles.Subtitle}>Thêm sản phẩm</Text>
-      </View>
-
-      <ScrollView contentContainerStyle={styles.scrollViewContainer}>
-        <View style={styles.FormAdd}>
-          <View>
-            <Text style={[styles.textIcon, styles.titleName]}>
-              Tên sản phẩm *
-            </Text>
-            <TextInput
-              style={styles.textInput}
-              placeholder="Nhập tên sản phẩm"
-              onChangeText={text => setnameProduct(text)}
-            />
+    <Formik
+      initialValues={{
+        nameProduct: '',
+        descProduct: '',
+        quantityProduct: '',
+        weightProduct: '',
+        category: '',
+        priceProduct: '',
+        img: '',
+      }}
+      validationSchema={SignupSchema}>
+      {({
+        values,
+        errors,
+        touched,
+        handleChange,
+        setFieldTouched,
+        setFieldValue,
+        isValid,
+      }) => (
+        <View>
+          <View style={styles.title}>
+            <Ionicons name="arrow-back-outline" style={styles.arrowLeft} />
+            <Text style={styles.Subtitle}>Thêm sản phẩm</Text>
           </View>
 
-          <View style={styles.image}>
-            <Text style={styles.titleImg} onPress={() => handleChooseOption()}>
-              Hình ảnh *
-            </Text>
-            {img != '' ? (
-              <Image source={{uri: img}} style={{width: 150, height: 150}} />
-            ) : (
-              ''
-            )}
-          </View>
+          <ScrollView contentContainerStyle={styles.scrollViewContainer}>
+            <View style={styles.FormAdd}>
+              <View>
+                <Text style={[styles.textIcon, styles.titleName]}>
+                  Tên sản phẩm
+                </Text>
+                <TextInput
+                  style={[
+                    styles.textInput,
+                    styles.Inputname,
+                    isFocused ? styles.textInputFocus : null,
+                  ]}
+                  value={values.nameProduct}
+                  onFocus={handleFocus}
+                  onBlur={() => {
+                    handleBlur();
+                    setFieldTouched('nameProduct');
+                  }}
+                  placeholder="Tên sản phẩm"
+                  onChangeText={text => {
+                    setnameProduct(text);
+                    handleChange('nameProduct')(text);
+                  }}
+                />
+                {touched.nameProduct && errors.nameProduct && (
+                  <Text style={styles.errorTsx}>{errors.nameProduct}</Text>
+                )}
+              </View>
 
-          <View>
-            <Text style={[styles.textIcon, styles.titleName]}>Mô tả</Text>
-            <TextInput
-              style={styles.textInput}
-              placeholder="Nhập mô tả"
-              onChangeText={text => setdescProduct(text)}
-            />
-          </View>
+              <ProductImg setImage={setImg} />
 
-          <Dropdown
-            style={styles.dropdown}
-            placeholderStyle={styles.placeholderStyle}
-            selectedTextStyle={styles.selectedTextStyle}
-            inputSearchStyle={styles.inputSearchStyle}
-            iconStyle={styles.iconStyle}
-            data={data}
-            search
-            maxHeight={300}
-            labelField="label"
-            valueField="value"
-            placeholder="Chọn vùng"
-            searchPlaceholder="Tiềm kiếm..."
-            value={value}
-            onChange={item => {
-              setValue(item.value);
-            }}
-            renderLeftIcon={() => (
-              <Ionicons
-                name="shield-checkmark-outline"
-                style={styles.IconCheck}></Ionicons>
-            )}
-          />
+              <View>
+                <Text style={[styles.textIcon, styles.titleName]}>Mô tả</Text>
+                <TextInput
+                  style={[
+                    styles.textInput,
+                    styles.Inputname,
+                    isFocusedDetail ? styles.textInputFocus : null,
+                  ]}
+                  onFocus={handleFocusDetail}
+                  onBlur={handleBlurDetail}
+                  placeholder="Mô tả sản phẩm"
+                  onChangeText={text => setdescProduct(text)}
+                />
+              </View>
 
-          <View style={styles.group}>
-            <Text style={[styles.textIcon, styles.titleName]}>Giá *</Text>
-            <TextInput
-              style={styles.textInput}
-              placeholder="Nhập giá"
-              onChangeText={text => setpriceProduct(text)}
-            />
-          </View>
-
-          <View style={styles.group}>
-            <Text style={[styles.textIcon, styles.titleName]}>Số lượng *</Text>
-            <TextInput
-              style={styles.textInput}
-              placeholder="Nhập số lượng"
-              onChangeText={text => setquantityProduct(text)}
-            />
-          </View>
-          <View style={styles.group}>
-            <Text style={[styles.textIcon, styles.titleName]}>Cân nặng *</Text>
-            <TextInput
-              style={styles.textInput}
-              placeholder="Nhập cân nặng"
-              onChangeText={text => setweightProduct(text)}
-            />
-          </View>
-
-          <Button title="Thêm sản phẩm" onPress={saveProduct} />
+              <Dropdown
+                style={styles.dropdown}
+                placeholderStyle={styles.placeholderStyle}
+                selectedTextStyle={styles.selectedTextStyle}
+                inputSearchStyle={styles.inputSearchStyle}
+                iconStyle={styles.iconStyle}
+                data={data}
+                search
+                maxHeight={300}
+                labelField="label"
+                valueField="value"
+                placeholder="Chọn vùng đặc sản"
+                searchPlaceholder="Tìm kiếm..."
+                value={selectedItem}
+                onChange={handleDomainChange}
+                renderLeftIcon={() => (
+                  <Ionicons
+                    name="shield-checkmark-outline"
+                    style={styles.IconCheck}></Ionicons>
+                )}
+              />
+              <Dropdown
+                value={values.category || selectedItem}
+                onBlur={() => {
+                  setFieldTouched('category');
+                }}
+                onChangeText={text => {
+                  setFieldValue('category', text.valueOf);
+                }}
+                style={styles.dropdown}
+                placeholderStyle={styles.placeholderStyle}
+                selectedTextStyle={styles.selectedTextStyle}
+                inputSearchStyle={styles.inputSearchStyle}
+                iconStyle={styles.iconStyle}
+                data={dataCategory}
+                search
+                maxHeight={300}
+                labelField="label"
+                valueField="value"
+                placeholder="Thể loại hàng"
+                searchPlaceholder="Tìm kiếm..."
+                onChange={handleCategoryChange}
+                renderLeftIcon={() => (
+                  <Ionicons
+                    name="fast-food-outline"
+                    style={styles.IconCheck}></Ionicons>
+                )}
+              />
+              {touched.category && errors.category && (
+                <Text style={styles.errorTsx}>{errors.category}</Text>
+              )}
+              <View>
+                <View style={styles.group}>
+                  <Text style={[styles.textIcon, styles.titleName]}>
+                    Giá (vnđ)
+                  </Text>
+                  <TextInput
+                    onBlur={() => setFieldTouched('priceProduct')}
+                    style={[styles.textInput, {textAlign: 'right'}]}
+                    placeholder="Giá"
+                    value={formatPrice(priceProduct) || values.priceProduct}
+                    onChangeText={text => {
+                      setpriceProduct(text);
+                      handleChange('priceProduct')(text);
+                    }}
+                    keyboardType="numeric"
+                  />
+                </View>
+                {touched.priceProduct && errors.priceProduct && (
+                  <Text style={styles.errorTsx}>{errors.priceProduct}</Text>
+                )}
+              </View>
+              <View>
+                <View style={styles.group}>
+                  <Text style={[styles.textIcon, styles.titleName]}>
+                    Số lượng
+                  </Text>
+                  <TextInput
+                    onBlur={() => setFieldTouched('quantityProduct')}
+                    style={[styles.textInput, {textAlign: 'right'}]}
+                    placeholder="Số lượng"
+                    value={
+                      formatWeight(quantityProduct) || values.quantityProduct
+                    }
+                    keyboardType="numeric"
+                    onChangeText={text => {
+                      setquantityProduct(text);
+                      handleChange('quantityProduct')(text);
+                    }}
+                  />
+                </View>
+                {touched.quantityProduct && errors.quantityProduct && (
+                  <Text style={styles.errorTsx}>{errors.quantityProduct}</Text>
+                )}
+              </View>
+              <View>
+                <View style={styles.group}>
+                  <Text style={[styles.textIcon, styles.titleName]}>
+                    Cân nặng (kg)
+                  </Text>
+                  <TextInput
+                    onBlur={() => setFieldTouched('weightProduct')}
+                    value={
+                      formatQuantity(weightProduct) || values.weightProduct
+                    }
+                    keyboardType="numeric"
+                    style={[styles.textInput, {textAlign: 'right'}]}
+                    placeholder="Cân nặng"
+                    onChangeText={text => {
+                      setweightProduct(text);
+                      handleChange('weightProduct')(text);
+                    }}
+                  />
+                </View>
+                {touched.weightProduct && errors.weightProduct && (
+                  <Text style={styles.errorTsx}>{errors.weightProduct}</Text>
+                )}
+              </View>
+              <TouchableOpacity
+                onPress={saveProduct}
+                disabled={!isValid}
+                style={[
+                  styles.sumbitBtn,
+                  {backgroundColor: isValid ? '#ffa000' : '#FAE1B7'},
+                ]}>
+                <Text style={[styles.BtnAdd]}>Thêm sản phẩm</Text>
+              </TouchableOpacity>
+            </View>
+          </ScrollView>
         </View>
-      </ScrollView>
-    </View>
+      )}
+    </Formik>
   );
 };
 
@@ -259,6 +442,19 @@ const styles = StyleSheet.create({
   scrollViewContainer: {
     flexGrow: 1,
     paddingVertical: 60,
+  },
+
+  BtnAdd: {
+    textAlign: 'center',
+    fontSize: 16,
+    fontWeight: '700',
+    color: '#fff',
+  },
+
+  sumbitBtn: {
+    padding: 10,
+    borderRadius: 15,
+    justifyContent: 'center',
   },
 
   dropdown: {
@@ -279,7 +475,7 @@ const styles = StyleSheet.create({
   IconCheck: {
     color: '#2E7D32',
     marginRight: 10,
-    fontSize: 25,
+    fontSize: 24,
   },
   item: {
     padding: 17,
@@ -287,15 +483,12 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
   },
-  textItem: {
-    flex: 1,
-    fontSize: 18,
-  },
+
   placeholderStyle: {
-    fontSize: 18,
+    fontSize: 14,
   },
   selectedTextStyle: {
-    fontSize: 18,
+    fontSize: 16,
   },
   iconStyle: {
     width: 20,
@@ -303,7 +496,7 @@ const styles = StyleSheet.create({
   },
   inputSearchStyle: {
     height: 40,
-    fontSize: 18,
+    fontSize: 14,
   },
 
   title: {
@@ -324,13 +517,32 @@ const styles = StyleSheet.create({
   },
 
   titleName: {
-    fontSize: 20,
+    fontSize: 16,
     fontWeight: 'bold',
-    color: '#000000',
+    color: '#000',
   },
 
   textInput: {
-    fontSize: 16,
+    fontSize: 14,
+  },
+
+  Inputname: {
+    borderColor: '#666',
+    borderWidth: 1, // Độ dày của đường viền
+    paddingHorizontal: 10,
+    borderRadius: 10,
+    marginBottom: 10,
+  },
+
+  textInputFocus: {
+    borderColor: '#2089dc', // Màu của đường viền khi ô input được chọn
+  },
+
+  errorTsx: {
+    marginTop: -10,
+    color: 'red',
+    fontSize: 12,
+    textAlign: 'right',
   },
 
   group: {
@@ -346,21 +558,30 @@ const styles = StyleSheet.create({
   },
 
   titleImg: {
-    fontSize: 20,
+    fontSize: 16,
     fontWeight: 'bold',
     color: '#000000',
   },
   arrowLeft: {
-    fontSize: 30,
+    marginLeft: 10,
+    fontSize: 20,
   },
   Subtitle: {
-    fontSize: 26,
+    fontSize: 22,
     fontWeight: 'bold',
     color: '#2E7D32',
   },
 
   iconImg: {
     fontSize: 30,
+  },
+
+  Loadingcontainer: {
+    flex: 1,
+    justifyContent: 'center',
+    backgroundColor: '#f5f5f5',
+    alignItems: 'center',
+    paddingTop: StatusBar.currentHeight,
   },
 });
 
