@@ -7,12 +7,16 @@ import {
   TouchableOpacity,
   ScrollView,
 } from 'react-native';
+import {addToCart} from '../../Hooks/addToCart';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import {useNavigation} from '@react-navigation/native';
 
-export const ProductDetailScreen = ({route}: {route: any}) => {
+const ProductDetailScreen = ({route, navigation}: any) => {
   const [quantity, setQuantity] = useState(1);
-  const navigation = useNavigation();
+
+  const addToCartHandler = (product_id: any) => {
+    console.log('id Product add to cart', product_id);
+    addToCart(product_id, navigation);
+  };
 
   if (!route.params || !route.params.selectedItem) {
     return (
@@ -22,7 +26,9 @@ export const ProductDetailScreen = ({route}: {route: any}) => {
     );
   }
 
-  const {selectedItem}: {selectedItem: any} = route.params;
+  const {selectedItem}: any = route.params;
+
+  console.log('my data', selectedItem);
 
   const decreaseQuantity = () => {
     if (quantity > 1) {
@@ -34,33 +40,33 @@ export const ProductDetailScreen = ({route}: {route: any}) => {
     setQuantity(quantity + 1);
   };
 
+  const formatPrice = (price: number) => {
+    return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+  };
+
   return (
     <View>
-      <TouchableOpacity onPress={() =>
-                  navigation.navigate('Trang chủ', {
-                    selectedItem: selectedItem,
-                  })
-                }>
+      <TouchableOpacity onPress={() => navigation.goBack()}>
         <Ionicons name="arrow-back-outline" style={styles.arrowLeft} />
       </TouchableOpacity>
 
       <ScrollView>
         <View style={styles.container}>
-          <Image source={{uri: selectedItem.uri}} style={styles.image} />
-          <Text style={styles.text}>{selectedItem.text}</Text>
+          <Image
+            source={{uri: selectedItem?.Files[0]?.src}}
+            style={styles.image}
+          />
+          <Text style={styles.text}>{selectedItem.name}</Text>
           <View style={styles.ratingContainer}>
-            <Ionicons name="star-outline" style={styles.starIcon} />
+            <Ionicons name="star" style={styles.starIcon} />
             <Text style={styles.textIcon}>4.5 - 26 phút</Text>
           </View>
-          <Text style={styles.textscript}>
-            Gấc bổ đổi lấy hết hạt để riêng ra bát, sau đó cho 1/2 bát con rượu
-            trắng vào ngâm 30 phút cho gấc phai hết màu ra nước. Tiếp đó bạn đeo
-            găng tay nilon bóp lại cho hạt gấc ra hết màu hoàn toàn rồi bỏ hạt
-            đen đi.
-          </Text>
+          <ScrollView>
+            <Text style={styles.textscript}>{selectedItem.description}</Text>
+          </ScrollView>
           <View style={styles.itemPriceContainer}>
             <Text style={styles.itemPriceText}>
-              Giá: <Text>{selectedItem.price}đ</Text>
+              Giá: <Text>{formatPrice(selectedItem.price)}đ</Text>
             </Text>
           </View>
           <View style={styles.quantityContainer}>
@@ -81,34 +87,31 @@ export const ProductDetailScreen = ({route}: {route: any}) => {
           <Text style={styles.comment}>Bình Luận </Text>
         </View>
       </ScrollView>
-      <TouchableOpacity
-        style={styles.seenContainer}
-        onPress={() =>
-          navigation.navigate('ShopOwnerScreen', {
-            selectedItem: selectedItem,
-          })
-        }>
-        <Text style={styles.seenButton}>Xem shop</Text>
-      </TouchableOpacity>
+      <View>
+        <TouchableOpacity
+          style={styles.seenContainer}
+          onPress={() =>
+            navigation.navigate('ShopOwnerScreen', {
+              selectedItem: selectedItem,
+            })
+          }>
+          <Text style={styles.seenButton}>Xem shop</Text>
+        </TouchableOpacity>
 
-      <TouchableOpacity
-        style={styles.cartContainer}
-        onPress={() =>
-          navigation.navigate('Giỏ hàng', {
-            selectedItem: selectedItem,
-          })
-        }>
-        <Text style={styles.cartButton}>Thêm vào giỏ hàng</Text>
-      </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.cartContainer}
+          onPress={() => addToCartHandler(selectedItem?.id)}>
+          <Text style={styles.cartButton}>Thêm vào giỏ hàng</Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    justifyContent: 'center',
-    alignItems: 'center',
     flex: 1,
+    paddingHorizontal: 20,
   },
   arrowLeft: {
     fontSize: 30,
@@ -117,30 +120,29 @@ const styles = StyleSheet.create({
     fontSize: 25,
     fontWeight: 'bold',
     color: '#ffa000',
-    marginBottom: 10,
+    marginBottom: 20,
+    marginTop: 20,
     top: 10,
-    right: '32%',
-    paddingLeft: '20%',
   },
   image: {
-    width: 300,
+    width: 'auto',
     height: 300,
     borderRadius: 10,
-    top: 10,
+    justifyContent: 'center',
+    alignContent: 'center',
   },
   ratingContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 10,
-    right: '20%',
   },
   starIcon: {
-    fontSize: 20,
+    fontSize: 30,
     color: 'yellow',
     marginRight: 5,
   },
   textIcon: {
-    fontSize: 15,
+    fontSize: 20,
   },
   textscript: {
     paddingHorizontal: 20,
@@ -149,12 +151,11 @@ const styles = StyleSheet.create({
   },
   itemPriceContainer: {
     backgroundColor: '#FFA000',
-    width: 100,
+    width: 110,
     height: 40,
     borderRadius: 10,
     justifyContent: 'center',
     alignItems: 'center',
-    right: '32%',
     top: 40,
   },
   itemPriceText: {
@@ -165,7 +166,7 @@ const styles = StyleSheet.create({
   quantityContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    left: '20%',
+    left: '40%',
   },
   button: {
     width: 40,
@@ -189,9 +190,7 @@ const styles = StyleSheet.create({
   comment: {
     fontSize: 25,
     fontWeight: 'bold',
-    marginRight: 10,
     color: '#FFA000',
-    right: '32%',
   },
   cartContainer: {
     backgroundColor: '#2E7D32',
@@ -213,8 +212,8 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     width: 100,
     height: 60,
-    left: '5%',
-    top: '21%',
+    left: '10%',
+    top: '60%',
   },
   seenButton: {
     fontSize: 16,

@@ -12,6 +12,7 @@ import { getUserCombineData } from '../../../api/storage';
 
 const ChooseRole = ({ navigation }: any) => {
     // const { signUp, onChange, userCredentials } = userSignUp;
+    const [role, setRole] = useState<string>('customer')
     const fectDataUserLocal = async () => {
         const dataUser = await getUserCombineData();
     }
@@ -27,7 +28,6 @@ const ChooseRole = ({ navigation }: any) => {
                 }}>
                 <Image source={require('../../../assets/img_login_sigup/Logo-app.png')} />
                 <TouchableOpacity
-
                     style={[styles.role__touchable]}>
                     <View style={{ flexDirection: 'row', justifyContent: 'space-around' }}>
                         <Image

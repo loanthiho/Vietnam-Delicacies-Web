@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import {
   View,
@@ -9,73 +9,71 @@ import {
   Modal,
   Pressable,
 } from 'react-native';
+import axios from 'axios';
+import {useNavigation} from '@react-navigation/native';
 
-interface Item{
-  key: string;
-  text: string;
-  price: number;
-  uri: string;
-}
-
-interface New{
-  item: Item;
-}
 const ProductScreen = () => {
-  const [cartItems, setCartItems] = useState([
-    {
-      key: '1',
-      text: ' Xôi 7 màu ',
-      price: 500000,
-      uri: 'https://i.pinimg.com/564x/27/23/28/272328c04f37971919c9e6f28fdd03ce.jpg',
-    },
-    {
-      key: '2',
-      text: 'Cá Kho làng Vũ Đại',
-      price: 500000,
-      uri: 'https://i.pinimg.com/736x/da/76/e5/da76e520e0bfed988c544ecd7d265ae7.jpg',
-    },
-    {
-      key: '3',
-      text: 'Item text 3',
-      price: 500000,
-      uri: 'https://picsum.photos/id/1002/200',
-    },
-    {
-      key: '4',
-      text: 'Item text 4',
-      price: 500000,
-      uri: 'https://picsum.photos/id/1006/200',
-    },
-    {
-      key: '5',
-      text: 'Item text 5',
-      price: 500000,
-      uri: 'https://picsum.photos/id/1008/200',
-    },
-
-    {
-      key: '5',
-      text: 'Item text 5',
-      price: 500000,
-      uri: 'https://picsum.photos/id/1008/200',
-    },
-  ]);
-
+  const [cartItems, setCartItems] = useState<any[]>([]);
   const [modalVisible, setModalVisible] = useState(false);
-  const renderItem = ({item}:New) => (
-    <View>
-      <View style={styles.itemContainer}>
-        <Image source={{uri: item.uri}} style={styles.itemImage} />
-        <View style={styles.content}>
-          <Text style={styles.itemText}>{item.text}</Text>
-          <Text style={styles.itemPrice}>{item.price} đ</Text>
-        </View>
-        <View style={styles.status}>
-          <Text style={styles.update}>Sửa</Text>
-          <Pressable onPress={() => setModalVisible(true)}>
-            <Text style={styles.delete}>Xóa</Text>
-          </Pressable>
-        </View>
+  const [selectedItemId, setSelectedItemId] = useState(null);
+  const navigation = useNavigation();
+
+  useEffect(() => {
+    const fetchCartItems = async () => {
+      try {
+        const response = await axios.get(
+          'http://nodejs-app-env-1.eba-q2t7wpq3.ap-southeast-2.elasticbeanstalk.com/products',
+        );
+        setCartItems(response.data.data);
+      } catch (error) {
+        console.error('Error fetching cart items:', error);
+      }
+    };
+
+    fetchCartItems();
+  }, []);
+
+  const token =
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjU3N2IwMTU3LTBkMDQtNDJkOC1iZmUxLTc2MzQyNDU1Zjc5ZiIsImVtYWlsIjoiZGkuaG8yNGdtYWlsLmNvbSIsInBhc3N3b3JkIjoiJDJhJDEwJEtmVS5mVW5lQlE0VFB1UkJxWENMWmVNR3lXcEtnNHpMS2NCa2JJUWg1QVo5LlBHN2RvaU5lIiwibmFtZSI6IkRpIEhvIiwiaWF0IjoxNzA5NDU1NTEyfQ.2kuxkqvavVSZNBtYSSjy5dcdP6O-2hXnDRMsCc56FQQ';
+
+  const handleDeleteItem = async itemId => {
+    try {
+      const updatedCartItems = cartItems.filter(item => item.id !== itemId);
+      await axios.delete(
+        `http://nodejs-app-env-1.eba-q2t7wpq3.ap-southeast-2.elasticbeanstalk.com/products/${itemId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      );
+      setCartItems(updatedCartItems);
+      setModalVisible(false);
+    } catch (error) {
+      console.error('Lỗi khi xóa sản phẩm:', error);
+    }
+  };
+
+  const OnClickBack = () => {
+    navigation.navigate('AddProduct');
+  };
+
+  const renderItem = ({item}) => (
+    <View key={item.id} style={styles.itemContainer}>
+      <Image source={{uri: item.Files?.[0]?.src}} style={styles.itemImage} />
+      <View style={styles.content}>
+        <Text style={styles.itemText}>{item.name}</Text>
+        <Text style={styles.itemPrice}>{item.price} đ</Text>
+      </View>
+      <View style={styles.status}>
+        <Text style={styles.update}>Sửa</Text>
+        <Pressable
+          onPress={() => {
+            setSelectedItemId(item.id);
+            setModalVisible(true); // Mở modal
+          }}>
+          <Text style={styles.delete}>Xóa</Text>
+        </Pressable>
       </View>
     </View>
   );
@@ -83,24 +81,23 @@ const ProductScreen = () => {
   return (
     <View style={styles.container}>
       <View style={styles.title}>
-        <Ionicons name="arrow-back-outline" style={styles.arrowLeft} />
+        <Ionicons
+          name="arrow-back-outline"
+          style={styles.arrowLeft}
+          onPress={() => OnClickBack()}
+        />
         <Text style={styles.Subtitle}>Sản phẩm của tôi</Text>
       </View>
-      <FlatList
-        data={cartItems}
-        renderItem={renderItem}
-        keyExtractor={item => item.key.toString()}
-      />
+      <FlatList data={cartItems} renderItem={renderItem} />
 
       <View style={styles.btn}>
-        <Text style={styles.BtnAdd}>Thêm</Text>
+        <Text style={styles.BtnAdd} onPress={() => OnClickBack()}>
+          Thêm
+        </Text>
         <Text style={styles.BtnShow}>Xem Shop</Text>
       </View>
 
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={modalVisible}>
+      <Modal animationType="slide" transparent={true} visible={modalVisible}>
         <View style={styles.centeredView}>
           <View style={styles.modalView}>
             <Text style={styles.modalText}>
@@ -110,13 +107,15 @@ const ProductScreen = () => {
             <View style={styles.confirm}>
               <Pressable
                 style={[styles.button, styles.buttonNo]}
-                onPress={() => setModalVisible(!modalVisible)}>
+                onPress={() => setModalVisible(false)}>
                 <Text style={styles.textStyle}>Không</Text>
               </Pressable>
 
               <Pressable
                 style={[styles.button, styles.buttonYes]}
-                onPress={() => setModalVisible(!modalVisible)}>
+                onPress={() => {
+                  handleDeleteItem(selectedItemId);
+                }}>
                 <Text style={styles.textStyle}>Có</Text>
               </Pressable>
             </View>
@@ -209,7 +208,7 @@ const styles = StyleSheet.create({
   itemText: {
     maxWidth: 140,
     marginRight: 10,
-    fontSize: 20,
+    fontSize: 16,
     borderRadius: 10,
     color: '#FFA000',
   },
@@ -219,7 +218,7 @@ const styles = StyleSheet.create({
     paddingBottom: 5,
     paddingLeft: 10,
     paddingRight: 10,
-    fontSize: 18,
+    fontSize: 14,
     borderRadius: 5,
     color: '#FFFFFF',
     backgroundColor: '#FFA000',
@@ -233,15 +232,15 @@ const styles = StyleSheet.create({
   },
   update: {
     color: '#2E7D32',
-    fontSize: 18,
+    fontSize: 14,
   },
   delete: {
-    fontSize: 18,
+    fontSize: 14,
     color: 'red',
   },
 
   arrowLeft: {
-    fontSize: 30,
+    fontSize: 20,
   },
 
   title: {
@@ -251,15 +250,15 @@ const styles = StyleSheet.create({
   },
 
   Subtitle: {
-    fontSize: 30,
+    fontSize: 20,
     fontWeight: 'bold',
     color: '#2E7D32',
   },
 
   btn: {
     paddingTop: 20,
-    paddingRight: 30,
-    paddingLeft: 30,
+    paddingRight: 24,
+    paddingLeft: 24,
     flexDirection: 'row',
     justifyContent: 'space-between',
   },
@@ -267,16 +266,16 @@ const styles = StyleSheet.create({
   BtnAdd: {
     width: 110,
     textAlign: 'center',
-    fontSize: 20,
-    padding: 10,
+    fontSize: 16,
+    padding: 8,
     color: 'white',
     backgroundColor: '#2E7D32',
     borderRadius: 10,
   },
 
   BtnShow: {
-    padding: 10,
-    fontSize: 20,
+    padding: 8,
+    fontSize: 16,
     color: 'white',
     backgroundColor: '#2E7D32',
     borderRadius: 10,
