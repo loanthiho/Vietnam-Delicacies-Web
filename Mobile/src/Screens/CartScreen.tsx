@@ -1,203 +1,161 @@
-import React, { useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import {
-  View,
+  ScrollView,
   Text,
-  Image,
-  FlatList,
   TouchableOpacity,
+  View,
   StyleSheet,
 } from 'react-native';
-import Ionicons from 'react-native-vector-icons/Ionicons';
 
-const CartScreen = ({ route }: { route: any }) => {
+import {GestureHandlerRootView, Swipeable} from 'react-native-gesture-handler';
+
+import CartItem from '../components/Cart/CartItem';
+
+import axios from 'axios';
+
+const CartScreen = ({route, navigation}: any) => {
   const [cartItems, setCartItems] = useState<any[]>([]);
+  const [totalPrice, setTotalPrice] = useState<number>(0);
 
-  React.useEffect(() => {
-    if (route.params && route.params.selectedItem) {
-      const selectedItem = route.params.selectedItem;
-      setCartItems([...cartItems, selectedItem]);
-    }
-  }, [route.params]);
+  const fetchDataShoppingcart = async () => {
+    const res = await axios.get(
+      `http://nodejs-app-env-1.eba-q2t7wpq3.ap-southeast-2.elasticbeanstalk.com/carts`,
+      {
+        headers: {
+          Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYzMGE3ZmVkLTY2YzMtNGExYS1iNDdkLTU3MWM3YWFlYTQ0MyIsImVtYWlsIjoidGhpY3VzdG9tZXIuYTI0dGVjaG5vbG9neUBnbWFpLmNvbSIsInBhc3N3b3JkIjoiJDJhJDEwJEZkbGVtY3MwV0E3WEx3YWRzTjBGMXVYbkFKV21zdEVQWjhSM3pLeHh2UWUvMFlGYVBRa1dLIiwibmFtZSI6InRoaSBjdXN0b21lciIsImlhdCI6MTcwOTIyMzQzNn0.QuQ2zXw7HFSQs2D_XFPl_m7eSUT4lVVpuM_E6Ey0UTg`,
+        },
+      },
+    );
+    return res.data;
+  };
+  useEffect(() => {
+    fetchDataShoppingcart().then(res => setCartItems(res.data));
+  }, []);
 
-  const increaseQuantity = (itemId: number) => {
+  const updateTotalPrice = (priceChange: number) => {
+    setTotalPrice(prevTotalPrice => prevTotalPrice + priceChange);
+  };
+
+  useEffect(() => {
+    let sum = 0;
+    // cartItems.forEach(item => {
+    //   if (item.isChecked) {
+    //     sum += item.price * item.quantity;
+    //   }
+    // });
+    setTotalPrice(sum);
+  }, [cartItems]);
+
+  const increaseQuantity = (itemId: string) => {
     setCartItems(prevCartItems =>
       prevCartItems.map(item =>
-        item.key === itemId ? { ...item, quantity: item.quantity + 1 } : item
-      )
+        item.key === itemId ? {...item, quantity: item.quantity + 1} : item,
+      ),
     );
   };
 
-  const decreaseQuantity = (itemId: number) => {
+  const decreaseQuantity = (itemId: string) => {
     setCartItems(prevCartItems =>
       prevCartItems.map(item =>
         item.key === itemId && item.quantity > 1
-          ? { ...item, quantity: item.quantity - 1 }
-          : item
-      )
+          ? {...item, quantity: item.quantity - 1}
+          : item,
+      ),
     );
   };
 
-  const renderItem = ({ item }: { item: any }) => (
-    <View style={styles.product}>
-      <Ionicons name="checkbox-outline" style={styles.checkboxIcon} />
-      <View style={styles.itemContainer}>
-        <Image source={{ uri: item.uri }} style={styles.itemImage} />
-        <Text style={styles.itemText}>{item.text}</Text>
-        <Text style={styles.itemPrice}>{item.price} đ</Text>
-        <View style={styles.quantityContainer}>
+  const removeItem = (itemId: string) => {
+    setCartItems(prevCartItems =>
+      prevCartItems.filter(item => item.key !== itemId),
+    );
+  };
+
+  return (
+    <GestureHandlerRootView style={styles.container}>
+      <ScrollView>
+        {cartItems && cartItems.length > 0
+          ? cartItems?.map((item, index) => (
+              <CartItem
+                key={index.toString()}
+                item={item}
+                increaseQuantity={increaseQuantity}
+                decreaseQuantity={decreaseQuantity}
+                removeItem={removeItem}
+                updateTotalPrice={updateTotalPrice}
+              />
+            ))
+          : null}
+      </ScrollView>
+      <View>
+        <View style={styles.footer}>
+          <Text style={styles.checkoutText}>
+            Tổng <Text style={styles.tamTinhText}>(tạm tính):</Text>
+          </Text>
+          <Text style={styles.money}>{totalPrice}đ</Text>
           <TouchableOpacity
-            onPress={() => decreaseQuantity(item.key)}
-            style={[styles.button, { backgroundColor: '#FFA000' }]}>
-            <Text style={styles.buttonText}>-</Text>
-          </TouchableOpacity>
-          <Text>{item.quantity}</Text>
-          <TouchableOpacity
-            onPress={() => increaseQuantity(item.key)}
-            style={[styles.button, { backgroundColor: '#FFA000' }]}>
-            <Text style={styles.buttonText}>+</Text>
+            style={styles.checkoutButton}
+            onPress={() =>
+              navigation.navigate('Payment', {
+                selectedItem: cartItems
+              })
+            }>
+            <Text style={styles.checkoutButtonText}>Thanh toán</Text>
           </TouchableOpacity>
         </View>
       </View>
-    </View>
-  );
-
-
-  return (
-    <View style={styles.container}>
-      <TouchableOpacity style={styles.shopContent}>
-        <Ionicons name="checkbox-outline" style={styles.checkboxIconText} />
-        <Ionicons name="chevron-forward-outline" style={styles.chevronIcon} />7ujujmki
-        <Text style={styles.shopText}> Bếp nhà VND</Text>
-      </TouchableOpacity>
-      <FlatList
-        data={cartItems}
-        renderItem={renderItem}
-        keyExtractor={(item) => item.key.toString()}
-      />
-      <Text style={styles.checkoutText}>Tổng(tạm tính): </Text>
-      <TouchableOpacity style={styles.checkoutButton}>
-        <Text style={styles.checkoutButtonText}>Thanh toán</Text>
-      </TouchableOpacity>
-    </View>
+    </GestureHandlerRootView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
+    padding:10
   },
-
-  itemContainer: {
+  footer: {
     flexDirection: 'row',
-    alignItems: 'center',
-    padding: 5,
+    justifyContent: 'space-between',
     backgroundColor: 'white',
-    borderRadius: 10,
-    width: 320,
-    height: 100,
-    borderColor: 'white',
-    elevation: 10,
-    marginLeft: 40,
-  },
-  itemImage: {
-    width: 80,
-    height: 80,
-    marginRight: 10,
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    width: 'auto',
+    height: 130,
     borderRadius: 10,
   },
-  itemText: {
-    width: 80,
-    height: 80,
-    marginRight: 10,
-    borderRadius: 10,
-    color: '#FFA000',
-    paddingTop: 20,
-  },
-  itemPrice: {
-    width: 60,
-    height: 20,
-    marginRight: 10,
-    borderRadius: 5,
-    color: '#FFFFFF',
-    backgroundColor: '#FFA000',
-    position: 'relative',
-    top: 30,
-    right: 90,
+  tamTinhText: {
+    fontSize: 18,
   },
   checkoutText: {
-    marginTop: 10,
+    fontSize: 26,
+    fontWeight: 'bold',
     color: '#FFA000',
-    padding: 10,
-    borderRadius: 10,
-    right: 100,
-    fontSize: 20,
+  },
+  money: {
+    fontSize: 26,
+    fontWeight: 'bold',
+    color: '#FFA000',
+    left: 300,
+    position: 'absolute',
+    top: 10,
+    marginRight: 30,
   },
   checkoutButton: {
-    marginTop: 10,
     backgroundColor: '#2E7D32',
-    padding: 10,
     borderRadius: 10,
-    width: 300,
-    height: 50,
-    marginBottom: 10,
+    width: 350,
+    height: 70,
+    top: 55,
+    left: 30,
     textAlign: 'center',
+    position: 'absolute',
+    right: 30,
   },
   checkoutButtonText: {
     color: 'white',
-    textAlign: 'center',
-  },
-  quantityContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    top: 30,
-  },
-  button: {
-    width: 20,
-    height: 20,
-    borderRadius: 5,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  buttonText: {
-    fontSize: 20,
-    color: 'white',
-    bottom: 5,
-  },
-  shopContent: {
-    width: 300,
-    height: 50,
-  },
-  shopText: {
-    fontSize: 25,
-    color: '#2E7D32',
-    fontFamily: 'Roboto',
-    right: 10,
+    fontSize: 26,
     fontWeight: 'bold',
-    bottom: 50,
-  },
-  chevronIcon: {
-    color: '#2E7D32',
-    fontSize: 30,
-    left: 150,
-    bottom: 17,
-  },
-  checkboxIcon: {
-    color: '#2E7D32',
-    fontSize: 35,
-    right: 2,
-    top: 70,
-  },
-  checkboxIconText: {
-    color: '#2E7D32',
-    fontSize: 35,
-    right: 40,
-    top: 20,
-  },
-  product: {
-    bottom: 35,
+    textAlign: 'center',
+    top: 15,
   },
 });
 

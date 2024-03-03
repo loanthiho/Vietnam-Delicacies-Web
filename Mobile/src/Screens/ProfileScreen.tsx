@@ -1,12 +1,15 @@
 
-import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+
 
 const ProfileScreen = () => {
+  const [checkBox, setCheckBox] = useState<boolean>();
   return (
     <View style={styles.container}>
       <Text style={styles.text}>Welcome to Food HomePage!</Text>
     </View>
+    
   );
 };
 
