@@ -1,27 +1,52 @@
 import React, {useEffect, useState} from 'react';
 import {
-  View,
+  ScrollView,
   Text,
-  Image,
-  FlatList,
   TouchableOpacity,
+  View,
   StyleSheet,
 } from 'react-native';
-import Ionicons from 'react-native-vector-icons/Ionicons';
-import Swipeable from 'react-native-gesture-handler/Swipeable';
-import {GestureHandlerRootView, ScrollView} from 'react-native-gesture-handler';
 
-const CartScreen = ({route, navigation}: {route: any; navigation: any}) => {
+import {GestureHandlerRootView, Swipeable} from 'react-native-gesture-handler';
+
+import CartItem from '../components/Cart/CartItem';
+
+import axios from 'axios';
+
+const CartScreen = ({route, navigation}: any) => {
   const [cartItems, setCartItems] = useState<any[]>([]);
+  const [totalPrice, setTotalPrice] = useState<number>(0);
+
+  const fetchDataShoppingcart = async () => {
+    const res = await axios.get(
+      `http://nodejs-app-env-1.eba-q2t7wpq3.ap-southeast-2.elasticbeanstalk.com/carts`,
+      {
+        headers: {
+          Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYzMGE3ZmVkLTY2YzMtNGExYS1iNDdkLTU3MWM3YWFlYTQ0MyIsImVtYWlsIjoidGhpY3VzdG9tZXIuYTI0dGVjaG5vbG9neUBnbWFpLmNvbSIsInBhc3N3b3JkIjoiJDJhJDEwJEZkbGVtY3MwV0E3WEx3YWRzTjBGMXVYbkFKV21zdEVQWjhSM3pLeHh2UWUvMFlGYVBRa1dLIiwibmFtZSI6InRoaSBjdXN0b21lciIsImlhdCI6MTcwOTIyMzQzNn0.QuQ2zXw7HFSQs2D_XFPl_m7eSUT4lVVpuM_E6Ey0UTg`,
+        },
+      },
+    );
+    return res.data;
+  };
+  useEffect(() => {
+    fetchDataShoppingcart().then(res => setCartItems(res.data));
+  }, []);
+
+  const updateTotalPrice = (priceChange: number) => {
+    setTotalPrice(prevTotalPrice => prevTotalPrice + priceChange);
+  };
 
   useEffect(() => {
-    if (route.params && route.params.selectedItem) {
-      const selectedItem = route.params.selectedItem;
-      setCartItems([...cartItems, selectedItem]);
-    }
-  }, [route.params]);
+    let sum = 0;
+    // cartItems.forEach(item => {
+    //   if (item.isChecked) {
+    //     sum += item.price * item.quantity;
+    //   }
+    // });
+    setTotalPrice(sum);
+  }, [cartItems]);
 
-  const increaseQuantity = (itemId: number) => {
+  const increaseQuantity = (itemId: string) => {
     setCartItems(prevCartItems =>
       prevCartItems.map(item =>
         item.key === itemId ? {...item, quantity: item.quantity + 1} : item,
@@ -29,7 +54,7 @@ const CartScreen = ({route, navigation}: {route: any; navigation: any}) => {
     );
   };
 
-  const decreaseQuantity = (itemId: number) => {
+  const decreaseQuantity = (itemId: string) => {
     setCartItems(prevCartItems =>
       prevCartItems.map(item =>
         item.key === itemId && item.quantity > 1
@@ -39,73 +64,45 @@ const CartScreen = ({route, navigation}: {route: any; navigation: any}) => {
     );
   };
 
-  const removeItem = (itemId: number) => {
+  const removeItem = (itemId: string) => {
     setCartItems(prevCartItems =>
       prevCartItems.filter(item => item.key !== itemId),
     );
   };
 
-  const renderItem = ({item}: any) => (
-    <View >
-      <Swipeable
-        renderRightActions={() => (
-          <TouchableOpacity
-            style={styles.deleteButton}
-            onPress={() => removeItem(item.key)}>
-            <Text style={styles.deleteButtonText}>Delete</Text>
-          </TouchableOpacity>
-        )}>
-        <View style={styles.itemContainer}>
-          <View style={styles.item}>
-            <Image source={{uri: item.uri}} style={styles.itemImage} />
-            <Text style={styles.itemText}>{item.text}</Text>
-            <Text style={styles.itemPrice}>{item.price} đ</Text>
-            <View style={styles.quantityContainer}>
-              <TouchableOpacity
-                onPress={() => decreaseQuantity(item.key)}
-                style={[styles.button, {backgroundColor: '#FFA000'}]}>
-                <Text style={styles.buttonText}> -</Text>
-              </TouchableOpacity>
-              <Text>{item.quantity}</Text>
-              <TouchableOpacity
-                onPress={() => increaseQuantity(item.key)}
-                style={[styles.button, {backgroundColor: '#FFA000'}]}>
-                <Text style={styles.buttonText}> +</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-        </View>
-      </Swipeable>
-    </View>
-  );
-
   return (
     <GestureHandlerRootView style={styles.container}>
-      <ScrollView style={styles.listItem}>
-        <TouchableOpacity style={styles.shopContent}>
-            <Ionicons name="checkbox-outline" style={styles.checkboxIconText} />
-            <Ionicons
-              name="chevron-forward-outline"
-              style={styles.chevronIcon}
-            />
-            <Text style={styles.shopText}> Bếp nhà VND</Text>
-          </TouchableOpacity>
-        <FlatList
-          data={cartItems}
-          renderItem={renderItem}
-          keyExtractor={item => item.key.toString()}
-        />
+      <ScrollView>
+        {cartItems && cartItems.length > 0
+          ? cartItems?.map((item, index) => (
+              <CartItem
+                key={index.toString()}
+                item={item}
+                increaseQuantity={increaseQuantity}
+                decreaseQuantity={decreaseQuantity}
+                removeItem={removeItem}
+                updateTotalPrice={updateTotalPrice}
+              />
+            ))
+          : null}
       </ScrollView>
-      <Text style={styles.checkoutText}>Tổng(tạm tính): </Text>
-      <TouchableOpacity
-        style={styles.checkoutButton}
-        onPress={() =>
-          navigation.navigate('Payment', {
-            selectedItem: cartItems,
-          })
-        }>
-        <Text style={styles.checkoutButtonText}>Thanh toán</Text>
-      </TouchableOpacity>
+      <View>
+        <View style={styles.footer}>
+          <Text style={styles.checkoutText}>
+            Tổng <Text style={styles.tamTinhText}>(tạm tính):</Text>
+          </Text>
+          <Text style={styles.money}>{totalPrice}đ</Text>
+          <TouchableOpacity
+            style={styles.checkoutButton}
+            onPress={() =>
+              navigation.navigate('Payment', {
+                selectedItem: cartItems
+              })
+            }>
+            <Text style={styles.checkoutButtonText}>Thanh toán</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
     </GestureHandlerRootView>
   );
 };
@@ -113,134 +110,52 @@ const CartScreen = ({route, navigation}: {route: any; navigation: any}) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
+    padding:10
   },
-  listItem: {
-    paddingTop: 40,
-  },
-  itemContainer: {
-    paddingTop: 20,
-  },
-  itemImage: {
-    width: 80,
-    height: 80,
-    marginRight: 10,
+  footer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    backgroundColor: 'white',
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    width: 'auto',
+    height: 130,
     borderRadius: 10,
-    top:5,
   },
-  itemText: {
-    width: 80,
-    height: 80,
-    marginRight: 10,
-    borderRadius: 10,
-    color: '#FFA000',
-    paddingTop: 20,
-  },
-  itemPrice: {
-    width: 60,
-    height: 20,
-    marginRight: 10,
-    borderRadius: 5,
-    color: '#FFFFFF',
-    backgroundColor: '#FFA000',
-    position: 'relative',
-    top: 50,
-    right: 90,
-  },
-  button: {
-    width: 20,
-    height: 20,
-    borderRadius: 5,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  buttonText: {
-    fontSize: 20,
-    color: 'white',
-    bottom: 5,
+  tamTinhText: {
+    fontSize: 18,
   },
   checkoutText: {
-    marginTop: 10,
+    fontSize: 26,
+    fontWeight: 'bold',
     color: '#FFA000',
-    padding: 10,
-    borderRadius: 10,
-    right: 100,
-    fontSize: 20,
+  },
+  money: {
+    fontSize: 26,
+    fontWeight: 'bold',
+    color: '#FFA000',
+    left: 300,
+    position: 'absolute',
+    top: 10,
+    marginRight: 30,
   },
   checkoutButton: {
-    marginTop: 10,
     backgroundColor: '#2E7D32',
-    padding: 10,
     borderRadius: 10,
-    width: 300,
-    height: 50,
-    marginBottom: 10,
+    width: 350,
+    height: 70,
+    top: 55,
+    left: 30,
     textAlign: 'center',
+    position: 'absolute',
+    right: 30,
   },
   checkoutButtonText: {
     color: 'white',
+    fontSize: 26,
+    fontWeight: 'bold',
     textAlign: 'center',
-  },
-  quantityContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    top: 20,
-  },
-  shopContent: {
-    width: 300,
-    height: 50,
-  },
-  shopText: {
-    fontSize: 25,
-    color: '#2E7D32',
-    fontFamily: 'Roboto',
-    right: 10,
-    fontWeight: 'bold',
-    bottom: 50,
-  },
-  chevronIcon: {
-    color: '#2E7D32',
-    fontSize: 30,
-    left: 150,
-    bottom: 17,
-  },
-  checkboxIcon: {
-    color: '#2E7D32',
-    fontSize: 35,
-    right: 2,
-    top: 70,
-  },
-  checkboxIconText: {
-    color: '#2E7D32',
-    fontSize: 35,
-    right: 40,
-    top: 20,
-  },
-  deleteButton: {
-    backgroundColor: 'red',
-    justifyContent: 'center',
-    alignItems: 'center',
-    width: 80,
-    height: 90,
-    borderRadius: 10,
-    gap: 10,
-    top: 20,
-  },
-  deleteButtonText: {
-    color: 'white',
-    fontWeight: 'bold',
-  },
-  item: {
-    flexDirection: 'row',
-    gap: 10,
-    backgroundColor: 'white',
-    borderRadius: 10,
-    width: 350,
-    height: 90,
-    borderColor: 'white',
-    elevation: 10,
+    top: 15,
   },
 });
 
