@@ -4,6 +4,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+// import {ProductDetailScreen} from './src/Screens/Product/ProductDetail';
 import ProductDetailScreen from './src/Screens/Product/ProductDetail';
 import HomePage from './src/Screens/HomeScreens';
 import ChatScreen from './src/Screens/ChatScreen';
@@ -11,6 +12,7 @@ import ProfileScreen from './src/Screens/ProfileScreen';
 import CartScreen from './src/Screens/CartScreen';
 import Payment from './src/Screens/Payment/Payment';
 import ShopOwnerScreen from './src/Screens/Shop/ShopOwner';
+import Seller from './src/Seller/Seller';
 import AddProduct from './src/Seller/AddProduct';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
