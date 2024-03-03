@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   View,
   Text,
@@ -13,21 +13,23 @@ import Banner from '../components/Homepage/Banner';
 import FeaturedProductsList from '../components/Homepage/FeaturedProductsList';
 import SuggestionsList from '../components/Homepage/SuggestionsList';
 import {useQuery} from '@tanstack/react-query';
+import api from '../api/request';
+import axios from 'axios';
 
 const HomePage = ({navigation}: any) => {
   const [selectedItem, setSelectedItem] = useState('Tất cả');
   const datas = ['Tất cả', 'Miền Bắc', 'Miền Nam', 'Miền Trung'];
-
+  
   const {isLoading, error, data} = useQuery({
     queryKey: ['products'],
     queryFn: async () => {
-      const response = await fetch(
-        'http://nodejs-app-env-1.eba-q2t7wpq3.ap-southeast-2.elasticbeanstalk.com/products',
-      );
-      return response.json();
+      const response = await api.get('products', {}, {});
+      return response;
     },
   });
-
+  if (data) {
+    console.log('data responesed:', data);
+  }
   const renderItem = ({item}: any) => (
     <TouchableOpacity
       style={[

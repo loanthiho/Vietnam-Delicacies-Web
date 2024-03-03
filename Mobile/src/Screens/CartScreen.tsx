@@ -1,22 +1,36 @@
-import React, { useEffect, useState } from 'react';
-import { ScrollView, Text, TouchableOpacity, View, StyleSheet } from 'react-native';
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import React, {useEffect, useState} from 'react';
+import {
+  ScrollView,
+  Text,
+  TouchableOpacity,
+  View,
+  StyleSheet,
+} from 'react-native';
+
+import {GestureHandlerRootView, Swipeable} from 'react-native-gesture-handler';
 
 import CartItem from '../components/Cart/CartItem';
 
-const CartScreen = ({ route, navigation }: any) => {
+import axios from 'axios';
+
+const CartScreen = ({route, navigation}: any) => {
   const [cartItems, setCartItems] = useState<any[]>([]);
   const [totalPrice, setTotalPrice] = useState<number>(0);
 
+  const fetchDataShoppingcart = async () => {
+    const res = await axios.get(
+      `http://nodejs-app-env-1.eba-q2t7wpq3.ap-southeast-2.elasticbeanstalk.com/carts`,
+      {
+        headers: {
+          Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYzMGE3ZmVkLTY2YzMtNGExYS1iNDdkLTU3MWM3YWFlYTQ0MyIsImVtYWlsIjoidGhpY3VzdG9tZXIuYTI0dGVjaG5vbG9neUBnbWFpLmNvbSIsInBhc3N3b3JkIjoiJDJhJDEwJEZkbGVtY3MwV0E3WEx3YWRzTjBGMXVYbkFKV21zdEVQWjhSM3pLeHh2UWUvMFlGYVBRa1dLIiwibmFtZSI6InRoaSBjdXN0b21lciIsImlhdCI6MTcwOTIyMzQzNn0.QuQ2zXw7HFSQs2D_XFPl_m7eSUT4lVVpuM_E6Ey0UTg`,
+        },
+      },
+    );
+    return res.data;
+  };
   useEffect(() => {
-    if (route.params && route.params.selectedItem) {
-      const selectedItem = route.params.selectedItem;
-      selectedItem.key = Math.random().toString(); 
-      selectedItem.quantity = 1;
-      setCartItems(prevCartItems => [...prevCartItems, selectedItem]);
-    }
-  }, [route.params]);
+    fetchDataShoppingcart().then(res => setCartItems(res.data));
+  }, []);
 
   const updateTotalPrice = (priceChange: number) => {
     setTotalPrice(prevTotalPrice => prevTotalPrice + priceChange);
@@ -24,18 +38,18 @@ const CartScreen = ({ route, navigation }: any) => {
 
   useEffect(() => {
     let sum = 0;
-    cartItems.forEach(item => {
-      if (item.isChecked) {
-        sum += item.price * item.quantity;
-      }
-    });
+    // cartItems.forEach(item => {
+    //   if (item.isChecked) {
+    //     sum += item.price * item.quantity;
+    //   }
+    // });
     setTotalPrice(sum);
   }, [cartItems]);
 
   const increaseQuantity = (itemId: string) => {
     setCartItems(prevCartItems =>
       prevCartItems.map(item =>
-        item.key === itemId ? { ...item, quantity: item.quantity + 1 } : item,
+        item.key === itemId ? {...item, quantity: item.quantity + 1} : item,
       ),
     );
   };
@@ -44,7 +58,7 @@ const CartScreen = ({ route, navigation }: any) => {
     setCartItems(prevCartItems =>
       prevCartItems.map(item =>
         item.key === itemId && item.quantity > 1
-          ? { ...item, quantity: item.quantity - 1 }
+          ? {...item, quantity: item.quantity - 1}
           : item,
       ),
     );
@@ -59,16 +73,18 @@ const CartScreen = ({ route, navigation }: any) => {
   return (
     <GestureHandlerRootView style={styles.container}>
       <ScrollView>
-        {cartItems.map((item, index) => ( 
-          <CartItem
-            key={index.toString()} 
-            item={item}
-            increaseQuantity={increaseQuantity}
-            decreaseQuantity={decreaseQuantity}
-            removeItem={removeItem}
-            updateTotalPrice={updateTotalPrice}
-          />
-        ))}
+        {cartItems && cartItems.length > 0
+          ? cartItems?.map((item, index) => (
+              <CartItem
+                key={index.toString()}
+                item={item}
+                increaseQuantity={increaseQuantity}
+                decreaseQuantity={decreaseQuantity}
+                removeItem={removeItem}
+                updateTotalPrice={updateTotalPrice}
+              />
+            ))
+          : null}
       </ScrollView>
       <View>
         <View style={styles.footer}>
@@ -80,7 +96,7 @@ const CartScreen = ({ route, navigation }: any) => {
             style={styles.checkoutButton}
             onPress={() =>
               navigation.navigate('Payment', {
-                selectedItem: cartItems,
+                selectedItem: cartItems
               })
             }>
             <Text style={styles.checkoutButtonText}>Thanh toán</Text>
@@ -94,6 +110,7 @@ const CartScreen = ({ route, navigation }: any) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    padding:10
   },
   footer: {
     flexDirection: 'row',

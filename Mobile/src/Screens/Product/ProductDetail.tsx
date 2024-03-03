@@ -6,25 +6,16 @@ import {
   Image,
   TouchableOpacity,
   ScrollView,
-  Dimensions,
 } from 'react-native';
-import useAddToCart from '../../Hooks/addToCart';
-
+import {addToCart} from '../../Hooks/addToCart';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
 const ProductDetailScreen = ({route, navigation}: any) => {
   const [quantity, setQuantity] = useState(1);
-  const {mutate} = useAddToCart();
-  const addToCartHandler = (item: any) => {
-    mutate(item, {
-      onSuccess: data => {
-        navigation.navigate('Giỏ hàng');
-      },
-      onError: error => {
-        console.error('Lỗi khi thêm sản phẩm vào giỏ hàng:', error);
-      },
-    });
-    console.log('use add to cart:', item);
+
+  const addToCartHandler = (product_id: any) => {
+    console.log('id Product add to cart', product_id);
+    addToCart(product_id, navigation);
   };
 
   if (!route.params || !route.params.selectedItem) {
@@ -35,8 +26,10 @@ const ProductDetailScreen = ({route, navigation}: any) => {
     );
   }
 
-  // const {selectedItem}: {selectedItem: any} = route.params;
   const {selectedItem}: any = route.params;
+
+  console.log('my data', selectedItem);
+
   const decreaseQuantity = () => {
     if (quantity > 1) {
       setQuantity(quantity - 1);
@@ -45,6 +38,10 @@ const ProductDetailScreen = ({route, navigation}: any) => {
 
   const increaseQuantity = () => {
     setQuantity(quantity + 1);
+  };
+
+  const formatPrice = (price: number) => {
+    return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
   };
 
   return (
@@ -61,13 +58,15 @@ const ProductDetailScreen = ({route, navigation}: any) => {
           />
           <Text style={styles.text}>{selectedItem.name}</Text>
           <View style={styles.ratingContainer}>
-            <Ionicons name="star-outline" style={styles.starIcon} />
+            <Ionicons name="star" style={styles.starIcon} />
             <Text style={styles.textIcon}>4.5 - 26 phút</Text>
           </View>
-          <Text style={styles.textscript}>{selectedItem.description}</Text>
+          <ScrollView>
+            <Text style={styles.textscript}>{selectedItem.description}</Text>
+          </ScrollView>
           <View style={styles.itemPriceContainer}>
             <Text style={styles.itemPriceText}>
-              Giá: <Text>{selectedItem.price}đ</Text>
+              Giá: <Text>{formatPrice(selectedItem.price)}đ</Text>
             </Text>
           </View>
           <View style={styles.quantityContainer}>
@@ -138,12 +137,12 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   starIcon: {
-    fontSize: 20,
+    fontSize: 30,
     color: 'yellow',
     marginRight: 5,
   },
   textIcon: {
-    fontSize: 15,
+    fontSize: 20,
   },
   textscript: {
     paddingHorizontal: 20,

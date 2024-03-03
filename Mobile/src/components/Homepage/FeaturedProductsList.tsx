@@ -11,17 +11,25 @@ const FeaturedProductsList = ({ data, navigation}:any) => {
                 <TouchableOpacity
                     style={styles.featuredProducts}
                     onPress={() => navigation.navigate('ProductDetailScreen', { selectedItem: item })}>
-                    <Image
-                        source={{ uri: item.Files[0].src }}
-                        style={styles.itemPhoto}
-                        resizeMode="cover"
-                    />
+                    {item.Files.length > 0 ? (
+                            <Image
+                                source={{ uri: item.Files[0].src}}
+                                style={styles.itemPhoto}
+                                resizeMode="cover"
+                            />
+                        ) : (
+                            <Image
+                                source={require('../../assets/no_image.jpg')}
+                                style={styles.itemPhoto}
+                                resizeMode="cover"
+                            />
+                        )}
                     <View>
                         <Text style={styles.itemText}>{item.name}</Text>
                         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                            <Ionicons name="star-outline" style={styles.starIcon} />
+                            <Ionicons name="star" style={styles.starIcon} />
                             <Text style={styles.textIcon}>4.5</Text>
-                            <Ionicons name="heart-outline" style={styles.heartIcon} />
+                            <Ionicons name="cart" style={styles.cartIcon} />
                         </View>
                     </View>
                 </TouchableOpacity>
@@ -52,27 +60,25 @@ const styles = StyleSheet.create({
     },
     itemText: {
         color: 'black',
-        marginTop: 5,
-        paddingLeft: 40,
-        top: 10,
-        fontSize: 16,
+        marginTop: 20,
+        fontSize: 16, 
+        textAlign:'center', 
+        marginBottom:10,
     },
     starIcon: {
-        fontSize: 15,
+        fontSize: 25,
         color: 'yellow',
-        top: 20,
         paddingLeft: 10,
     },
     textIcon: {
         paddingLeft: 40,
-        top: 20,
         right: 30,
+        fontSize: 15,
     },
-    heartIcon: {
-        fontSize: 20,
-        color: 'red',
+    cartIcon: {
+        fontSize: 25,
+        color: '#2E7D32',
         paddingLeft: 20,
-        top: 20,
     },
 });
 

@@ -1,15 +1,31 @@
 import axios from 'axios';
 
 const baseAxios = axios.create({
-    baseURL: `http://localhost:3000/`
+    baseURL: `http://nodejs-app-env-1.eba-q2t7wpq3.ap-southeast-2.elasticbeanstalk.com/`
 });
 
 const api = {
-    get: (enpoint: string, params: {}, headers: {}) => baseAxios.get(enpoint, { params, headers, }),
-    post: (enpoint: string, data: {}, params: {}, headers: {}) => baseAxios.post(enpoint, data, { params, headers, }),
-    patch: (enpoint: string, data: {}, params: {}, headers: {}) => baseAxios.patch(enpoint, data, { params, headers, }),
-    put: (enpoint: string, data: {}, params: {}, headers: {}) => baseAxios.put(enpoint, data, { params, headers, }),
-    delete: (enpoint: string, data: {}, params: {}, headers: {}) => baseAxios.delete(enpoint, { params, headers, }),
+    get: async (endpoint: string, params = {}, headers = {}) => {
+        const res = await baseAxios.get(endpoint, { params, headers });
+        return res.data;
+    },
+    post: async (endpoint: string, data = {}, params = {}, headers = {}) => {
+        const res = await baseAxios.post(endpoint, data, { params, headers });
+        return res.data;
+    },
+    patch: async (endpoint: string, data = {}, params = {}, headers = {}) => {
+        const res = await baseAxios.patch(endpoint, data, { params, headers });
+        return res.data;
+    },
+    put: async (endpoint: string, data = {}, params = {}, headers = {}) => {
+        const res = await baseAxios.put(endpoint, data, { params, headers });
+        return res.data;
+    },
+    delete: async (endpoint: string, data = {}, params = {}, headers = {}) => {
+        const res = await baseAxios.delete(endpoint, { params, headers, data });
+        return res.data;
+    }
 }
+    
 
 export default api;

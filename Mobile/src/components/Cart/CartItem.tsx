@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { View, Text, Image, TouchableOpacity, StyleSheet } from 'react-native';
+import React, {useState} from 'react';
+import {View, Text, Image, TouchableOpacity, StyleSheet} from 'react-native';
 import Swipeable from 'react-native-gesture-handler/Swipeable';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
@@ -14,9 +14,19 @@ const CartItem = ({
 
   const toggleCheckbox = () => {
     setIsChecked(!isChecked);
-    updateTotalPrice(!isChecked ? item.price * item.quantity : -item.price * item.quantity);
+    const priceChange = isChecked
+      ? -item.Product.price * item.quantity
+      : item.Product.price * item.quantity;
+
+    updateTotalPrice(priceChange);
+    console.log('so luong', item.quantity);
   };
 
+  const defaultImagePath = require('../../assets/no_image.jpg');
+
+  const formatPrice = (price: {toString: () => string}) => {
+    return price?.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+  };
   return (
     <Swipeable
       renderRightActions={() => (
@@ -28,20 +38,28 @@ const CartItem = ({
       )}>
       <View style={styles.itemContainer}>
         <View style={styles.item}>
-          <Image source={{ uri: item.Files[0]?.src }} style={styles.itemImage} />
-          <Text style={styles.itemText}>{item.name}</Text>
-          <Text style={styles.itemPrice}>{item.price}đ</Text>
+          <Image
+            source={{
+              uri: item.Product?.Files[0]?.src,
+            }}
+            style={styles.itemImage}
+          />
+
+          <Text style={styles.itemText}>{item.Product?.name}</Text>
+          <Text style={styles.itemPrice}>
+            {formatPrice(item.Product?.price)}đ
+          </Text>
           <View style={styles.quantityContainer}>
             <TouchableOpacity
               onPress={() => decreaseQuantity(item.key)}
-              style={[styles.button, { backgroundColor: '#FFA000' }]}>
+              style={[styles.button, {backgroundColor: '#FFA000'}]}>
               <Text style={styles.buttonText}>-</Text>
             </TouchableOpacity>
-            <Text>{item.quantity}</Text>
+            <Text style={styles.quantity}>{item.Product?.quantity}</Text>
             <TouchableOpacity
               onPress={() => increaseQuantity(item.key)}
-              style={[styles.button, { backgroundColor: '#FFA000' }]}>
-              <Text style={styles.buttonText}> +</Text>
+              style={[styles.button, {backgroundColor: '#FFA000'}]}>
+              <Text style={styles.buttonText}>+</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -65,9 +83,10 @@ const CartItem = ({
 
 const styles = StyleSheet.create({
   itemContainer: {
-    paddingTop: 20,
+    paddingTop: 10,
     justifyContent: 'center',
     alignItems: 'center',
+    marginBottom: -20,
   },
   itemImage: {
     width: 80,
@@ -92,7 +111,7 @@ const styles = StyleSheet.create({
     marginRight: 10,
     borderRadius: 5,
     color: '#FFFFFF',
-    backgroundColor: '#FFA000',
+    backgroundColor: '#2E7D32',
     position: 'absolute',
     top: 60,
     right: 160,
@@ -148,9 +167,13 @@ const styles = StyleSheet.create({
     width: 80,
     position: 'absolute',
   },
+  quantity: {
+    backgroundColor: 'red',
+    fontSize: 10,
+  },
   checkboxButton: {
     color: '#2E7D32',
-    fontSize: 40,
+    fontSize: 20,
     right: 170,
     bottom: 70,
   },
