@@ -1,24 +1,36 @@
-import React, { useState } from 'react';
-import { View, Text, TextInput, Button, StyleSheet, ImageBackground, Image, TouchableOpacity, ScrollView } from 'react-native';
+import React, {useState} from 'react';
+import {
+  View,
+  Text,
+  TextInput,
+  Button,
+  StyleSheet,
+  ImageBackground,
+  Image,
+  TouchableOpacity,
+  ScrollView,
+} from 'react-native';
 import signupSchema from './Validation';
 import * as yup from 'yup';
+import {setDataCombine} from '../../../api/storage';
+import {KeyboardAvoidingView} from 'react-native';
 
-const SignUp: React.FC = ({ navigation }: any) => {
+const SignUp: React.FC = ({navigation}: any) => {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
     password: '',
-    role: ''
+    role: '',
   });
-  const [errors, setErrors] = useState<{ [key: string]: string }>({});
+  const [errors, setErrors] = useState<{[key: string]: string}>({});
 
   const handleChange = (field: string, value: string) => {
     setFormData({
       ...formData,
       [field]: value,
-    })
+    });
     validateField(field, value);
-  }
+  };
   const validateField = async (field: string, value: string) => {
     try {
       await yup.reach(signupSchema, field).validate(value);
@@ -38,75 +50,141 @@ const SignUp: React.FC = ({ navigation }: any) => {
     }
   };
 
-  const handleSubmit = async (formData: any) => {
+  const handleSubmit = async () => {
     try {
-      await signupSchema.validate(formData, { abortEarly: false });
-
+      await signupSchema.validate(formData, {abortEarly: false});
+      if (
+        errors?.name === '' &&
+        errors?.email === '' &&
+        errors?.password === ''
+      ) {
+        console.log('data want to push:', formData);
+        await setDataCombine(formData);
+        return navigation.navigate('ChooseRole');
+      }
     } catch (error) {
-      // validate the data ---------------------
       if (error instanceof yup.ValidationError) {
-        const newErrors = {};
-        error.inner.forEach(err => {
-          newErrors[err.path] = err.message;
+        error.inner.forEach((err, index) => {
+          setErrors({
+            ...errors,
+            [err.path]: err.message,
+          });
         });
-        setErrors(newErrors);
       }
     }
-  }
+  };
 
   return (
-    // <ScrollView>
-    <View style={{ flex: 1 }} source={require('../../../assets/img_login_sigup/background-sign-up.jpg')}>
-
-      <View style={styles.container}>
-        <View style={{}}>
+    <ScrollView>
+      <View style={{flex: 1}}>
+        <View style={styles.container}>
           <View>
-            <Image resizeMode='contain' source={require('../../../assets/img_login_sigup/Logo-app.png')}></Image>
+            <View>
+              <Image
+                resizeMode="contain"
+                source={require('../../../assets/img_login_sigup/Logo-app.png')}></Image>
+            </View>
+          </View>
+          <TextInput
+            style={styles.input}
+            placeholder="Tên người dùng"
+            value={formData.name}
+            placeholderTextColor={'gray'}
+            onChangeText={text => handleChange('name', text)}
+          />
+          {errors?.name && <Text style={styles.error}>{errors?.name}</Text>}
+          <TextInput
+            style={styles.input}
+            placeholder="Email"
+            value={formData.email}
+            placeholderTextColor={'black'}
+            onChangeText={text => handleChange('email', text)}
+          />
+          {errors?.email && <Text style={styles.error}>{errors?.email}</Text>}
+          <TextInput
+            style={styles.input}
+            placeholder="Mật khẩu"
+            secureTextEntry
+            placeholderTextColor={'black'}
+            value={formData.password}
+            onChangeText={text => handleChange('password', text)}
+          />
+          {errors?.password && (
+            <Text style={styles.error}>{errors?.password}</Text>
+          )}
+
+          <TouchableOpacity
+            onPress={handleSubmit}
+            style={{
+              padding: 10,
+              margin: 20,
+              width: '100%',
+              alignItems: 'center',
+              borderRadius: 15,
+              backgroundColor: '#FFA000',
+            }}>
+            <Text style={{color: 'white', fontSize: 24}}> Đăng Ký</Text>
+          </TouchableOpacity>
+
+          <View style={{flexDirection: 'row'}}>
+            <Text
+              style={{
+                width: '45%',
+                borderBottomWidth: 1,
+                borderColor: 'black',
+                borderBottomRightRadius: 50,
+              }}></Text>
+            <Text style={{color: 'black', fontWeight: '600'}}>OR</Text>
+            <Text
+              style={{
+                width: '45%',
+                borderBottomWidth: 1,
+                borderColor: 'black',
+                borderBottomLeftRadius: 50,
+              }}></Text>
+          </View>
+
+          <View
+            style={{
+              flexDirection: 'row',
+              gap: 20,
+              marginTop: 10,
+              marginBottom: 10,
+            }}>
+            <TouchableOpacity
+              style={{
+                padding: 20,
+                borderWidth: 1,
+                borderColor: 'red',
+                borderTopWidth: 1,
+              }}>
+              <Image
+                style={{width: 45, height: 45, borderRadius: 50}}
+                source={require('../../../assets/img_login_sigup/facebook.jpeg')}></Image>
+            </TouchableOpacity>
+
+            <TouchableOpacity style={{padding: 20, borderWidth: 1}}>
+              <Image
+                style={{width: 45, height: 45, borderRadius: 50}}
+                source={require('../../../assets/img_login_sigup/Google__G__logo.svg.png')}></Image>
+            </TouchableOpacity>
+          </View>
+          <View
+            style={{
+              flexDirection: 'row',
+              justifyContent: 'center',
+              margin: 10,
+            }}>
+            <Text style={{color: '#012345'}}>Đã có tài khoản?</Text>
+            <TouchableOpacity>
+              <Text style={{color: '#FFA000'}}> Đăng nhập</Text>
+            </TouchableOpacity>
           </View>
         </View>
-        <TextInput
-          style={styles.input}
-          placeholder="Tên người dùng"
-          value={formData.name}
-          onChangeText={(text) => handleChange('name', text)}
-        />
-        {errors?.name && <Text style={styles.error}>{errors?.name}</Text>}
-        <TextInput
-          style={styles.input}
-          placeholder="Email"
-          value={formData.email}
-          onChangeText={(text) => handleChange('email', text)}
-        />
-        {errors?.email && <Text style={styles.error}>{errors?.email}</Text>}
-        <TextInput
-          style={styles.input}
-          placeholder="Mật khẩu"
-          secureTextEntry
-          value={formData.password}
-          onChangeText={(text) => handleChange('password', text)}
-        />
-        {errors?.password && <Text style={styles.error}>{errors?.password}</Text>}
-        <Button title="Đăng Ký" onPress={handleSubmit} />
-
-        <View style={{ flexDirection: 'row' }}>
-          <Text style={{ width: '45%', borderBottomWidth: 1, borderColor: 'black', borderBottomRightRadius: 50 }}></Text>
-          <Text>OR</Text>
-          <Text style={{ width: '45%', borderBottomWidth: 1, borderColor: 'black', borderBottomLeftRadius: 50 }}></Text>
-        </View>
-
-        <View style={{ flexDirection: 'row', gap: 20, marginTop: 10, marginBottom: 10 }}>
-          <TouchableOpacity style={{ padding: 20, borderWidth: 1, borderColor: 'red', borderTopWidth: 1 }}>
-            <Image style={{ width: 45, height: 45, borderRadius: 50, }} source={require('../../../assets/img_login_sigup/facebook.jpeg')} ></Image>
-          </TouchableOpacity>
-
-          <TouchableOpacity style={{ padding: 20, borderWidth: 1 }}>
-            <Image style={{ width: 45, height: 45, borderRadius: 50, }} source={require('../../../assets/img_login_sigup/Google__G__logo.svg.png')} ></Image>
-          </TouchableOpacity>
-        </View>
       </View>
-    </View>
+    </ScrollView>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -122,12 +200,14 @@ const styles = StyleSheet.create({
   },
   input: {
     width: '100%',
-    height: 40,
+    padding: 16,
     borderWidth: 1,
     borderColor: '#ccc',
-    borderRadius: 5,
+    borderRadius: 15,
     marginBottom: 10,
     paddingHorizontal: 10,
+    color: 'black',
+    fontSize: 14,
   },
   error: {
     color: 'red',

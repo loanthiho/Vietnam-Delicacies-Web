@@ -1,15 +1,45 @@
 import axios from 'axios';
+// import { userAccessToken } from './storage';
 
+// const getUserAccessToken = async () => {
+//     try {
+//         const userCredentials = await userAccessToken();
+//         if (userCredentials) {
+
+//         }
+//     } catch (error) {
+
+//     }
+// }
 const baseAxios = axios.create({
-    baseURL: `http://localhost:3000/`
+    baseURL: `http://nodejs-app-env-1.eba-q2t7wpq3.ap-southeast-2.elasticbeanstalk.com/`
+    // headers: {
+    //     Authorization: userCredentials !== null ? `Bearer ${userCredentials.token}` : null,
+    // }
 });
 
 const api = {
-    get: (enpoint: string, params: {}, headers: {}) => baseAxios.get(enpoint, { params, headers, }),
-    post: (enpoint: string, data: {}, params: {}, headers: {}) => baseAxios.post(enpoint, data, { params, headers, }),
-    patch: (enpoint: string, data: {}, params: {}, headers: {}) => baseAxios.patch(enpoint, data, { params, headers, }),
-    put: (enpoint: string, data: {}, params: {}, headers: {}) => baseAxios.put(enpoint, data, { params, headers, }),
-    delete: (enpoint: string, data: {}, params: {}, headers: {}) => baseAxios.delete(enpoint, { params, headers, }),
+    get: async (enpoint: string, params: {}, headers: {}) => {
+        const response = await baseAxios.get(enpoint, { params, headers, });
+        return response.data;
+    },
+    post: async (enpoint: string, data: {}, params: {}, headers: {}) => {
+        const response = await baseAxios.post(enpoint, data, { params, headers, })
+        return response.data;
+    },
+    patch: async (enpoint: string, data: {}, params: {}, headers: {}) => {
+        const response = await baseAxios.patch(enpoint, data, { params, headers, })
+        return response.data;
+    },
+    put: async (enpoint: string, data: {}, params: {}, headers: {}) => {
+        const response = await baseAxios.put(enpoint, data, { params, headers, })
+        return response.data;
+    },
+    delete: async (enpoint: string, data: {}, params: {}, headers: {}) => {
+        const response = await baseAxios.delete(enpoint, { params, headers, });
+        return response.data
+
+    }
 }
 
 export default api;
