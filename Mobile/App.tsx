@@ -55,7 +55,7 @@ const App = () => {
           screenOptions={{
             headerShown: false,
           }}
-          initialRouteName="Main">
+          initialRouteName="SignUp">
           <Stack.Screen
             name="ProductDetailScreen"
             component={ProductDetailScreen}
@@ -72,6 +72,8 @@ const App = () => {
             name="Main"
             component={TabNavigator}
           />
+          <Stack.Screen name='SignUp' component={SignUp} />
+          <Stack.Screen name='ChooseRole' component={ChooseRole} />
         </Stack.Navigator>
       </NavigationContainer>
     </QueryClientProvider>

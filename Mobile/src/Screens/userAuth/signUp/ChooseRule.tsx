@@ -9,18 +9,54 @@ import {
 import colors from '../../../ultils/_colors';
 import userSignUp from './useSignUp';
 import { getUserCombineData } from '../../../api/storage';
+import { useMutation } from '@tanstack/react-query';
+import api from '../../../api/request';
 
 const ChooseRole = ({ navigation }: any) => {
     // const { signUp, onChange, userCredentials } = userSignUp;
-    const [role, setRole] = useState<string>('customer')
+    const [role, setRole] = useState<string>('customer');
+    const [formData, setFormData] = useState<{}>({});
+
+    const onChangeRole = async (role: string) => {
+        setRole(role);
+        setFormData({
+            ...formData,
+            role: role
+        })
+    }
     const fectDataUserLocal = async () => {
-        const dataUser = await getUserCombineData();
+        try {
+            const dataUser = await getUserCombineData();
+            if (dataUser) {
+                setFormData({
+                    ...dataUser,
+                    role: role
+                })
+            }
+        } catch (error) {
+            console.log("Error when fetch combine:", error);
+        }
     }
     useEffect(() => {
         fectDataUserLocal();
-    }, [])
+    }, []);
+
+    const mutation = useMutation({
+        mutationFn: async (data: {}) => {
+            return await api.post('users/sign-up', data, {}, {})
+        }
+    })
+
+    const handleConfirm = async () => {
+        mutation.mutate(formData);
+        console.log("data post to=>", formData)
+    }
     return (
         <View style={styles.choose_role__container}>
+            {
+                mutation.isPending ? (<Text style={{ color: 'black' }}>Posting ...</Text>)
+                    : mutation.isError ? (<Text style={{ color: 'red' }}>An error occurred: {mutation.error.message}</Text>) : null
+            }
             <View
                 style={{
                     rowGap: 20,
@@ -28,7 +64,11 @@ const ChooseRole = ({ navigation }: any) => {
                 }}>
                 <Image source={require('../../../assets/img_login_sigup/Logo-app.png')} />
                 <TouchableOpacity
-                    style={[styles.role__touchable]}>
+                    onPress={() => onChangeRole('customer')}
+                    style={[
+                        styles.role__touchable,
+                        role === 'customer' ? { borderWidth: 3, } : null
+                    ]}>
                     <View style={{ flexDirection: 'row', justifyContent: 'space-around' }}>
                         <Image
                             style={{ width: 100, height: 100 }}
@@ -48,7 +88,11 @@ const ChooseRole = ({ navigation }: any) => {
                     </View>
                 </TouchableOpacity>
                 <TouchableOpacity
-                    style={[styles.role__touchable]}>
+                    onPress={() => onChangeRole('seller')}
+                    style={[
+                        styles.role__touchable,
+                        role === 'seller' ? { borderWidth: 3 } : null
+                    ]}>
                     <View style={styles.role__touchable_frame}>
                         <Image
                             style={styles.role__image}
@@ -68,11 +112,14 @@ const ChooseRole = ({ navigation }: any) => {
                     </View>
                 </TouchableOpacity>
                 <View style={styles.action_button}>
-                    <TouchableOpacity style={[styles.goback_button]}>
+                    <TouchableOpacity style={[styles.goback_button]} onPress={() => navigation.goBack()}>
                         <Text style={styles.goback_button__text}>Quay Lại</Text>
                     </TouchableOpacity>
 
-                    <TouchableOpacity style={[styles.goback_button]}>
+                    <TouchableOpacity
+                        onPress={handleConfirm}
+                        style={[styles.goback_button]}
+                    >
                         <Text style={styles.comfirm_button__text}>Xác nhận</Text>
                     </TouchableOpacity>
                 </View>

@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import {
   View,
   Text,
@@ -12,17 +12,17 @@ import {
 } from 'react-native';
 import signupSchema from './Validation';
 import * as yup from 'yup';
-import {setDataCombine} from '../../../api/storage';
-import {KeyboardAvoidingView} from 'react-native';
+import { setDataCombine } from '../../../api/storage';
+import { KeyboardAvoidingView } from 'react-native';
 
-const SignUp: React.FC = ({navigation}: any) => {
+const SignUp: React.FC = ({ navigation }: any) => {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
     password: '',
     role: '',
   });
-  const [errors, setErrors] = useState<{[key: string]: string}>({});
+  const [errors, setErrors] = useState<{ [key: string]: string }>({});
 
   const handleChange = (field: string, value: string) => {
     setFormData({
@@ -52,7 +52,7 @@ const SignUp: React.FC = ({navigation}: any) => {
 
   const handleSubmit = async () => {
     try {
-      await signupSchema.validate(formData, {abortEarly: false});
+      await signupSchema.validate(formData, { abortEarly: false });
       if (
         errors?.name === '' &&
         errors?.email === '' &&
@@ -76,7 +76,7 @@ const SignUp: React.FC = ({navigation}: any) => {
 
   return (
     <ScrollView>
-      <View style={{flex: 1}}>
+      <View style={{ flex: 1 }}>
         <View style={styles.container}>
           <View>
             <View>
@@ -97,7 +97,8 @@ const SignUp: React.FC = ({navigation}: any) => {
             style={styles.input}
             placeholder="Email"
             value={formData.email}
-            placeholderTextColor={'black'}
+            placeholderTextColor={'gray'}
+
             onChangeText={text => handleChange('email', text)}
           />
           {errors?.email && <Text style={styles.error}>{errors?.email}</Text>}
@@ -105,7 +106,7 @@ const SignUp: React.FC = ({navigation}: any) => {
             style={styles.input}
             placeholder="Mật khẩu"
             secureTextEntry
-            placeholderTextColor={'black'}
+            placeholderTextColor={'gray'}
             value={formData.password}
             onChangeText={text => handleChange('password', text)}
           />
@@ -123,10 +124,10 @@ const SignUp: React.FC = ({navigation}: any) => {
               borderRadius: 15,
               backgroundColor: '#FFA000',
             }}>
-            <Text style={{color: 'white', fontSize: 24}}> Đăng Ký</Text>
+            <Text style={{ color: 'white', fontSize: 24 }}> Đăng Ký</Text>
           </TouchableOpacity>
 
-          <View style={{flexDirection: 'row'}}>
+          <View style={{ flexDirection: 'row' }}>
             <Text
               style={{
                 width: '45%',
@@ -134,7 +135,7 @@ const SignUp: React.FC = ({navigation}: any) => {
                 borderColor: 'black',
                 borderBottomRightRadius: 50,
               }}></Text>
-            <Text style={{color: 'black', fontWeight: '600'}}>OR</Text>
+            <Text style={{ color: 'black', fontWeight: '600' }}>OR</Text>
             <Text
               style={{
                 width: '45%',
@@ -153,19 +154,16 @@ const SignUp: React.FC = ({navigation}: any) => {
             }}>
             <TouchableOpacity
               style={{
-                padding: 20,
-                borderWidth: 1,
-                borderColor: 'red',
-                borderTopWidth: 1,
+                padding: 15
               }}>
               <Image
-                style={{width: 45, height: 45, borderRadius: 50}}
+                style={{ width: 45, height: 45, borderRadius: 50 }}
                 source={require('../../../assets/img_login_sigup/facebook.jpeg')}></Image>
             </TouchableOpacity>
 
-            <TouchableOpacity style={{padding: 20, borderWidth: 1}}>
+            <TouchableOpacity style={{ padding: 15 }}>
               <Image
-                style={{width: 45, height: 45, borderRadius: 50}}
+                style={{ width: 45, height: 45, borderRadius: 50 }}
                 source={require('../../../assets/img_login_sigup/Google__G__logo.svg.png')}></Image>
             </TouchableOpacity>
           </View>
@@ -175,9 +173,9 @@ const SignUp: React.FC = ({navigation}: any) => {
               justifyContent: 'center',
               margin: 10,
             }}>
-            <Text style={{color: '#012345'}}>Đã có tài khoản?</Text>
+            <Text style={{ color: '#012345' }}>Đã có tài khoản?</Text>
             <TouchableOpacity>
-              <Text style={{color: '#FFA000'}}> Đăng nhập</Text>
+              <Text style={{ color: '#FFA000' }}> Đăng nhập</Text>
             </TouchableOpacity>
           </View>
         </View>
