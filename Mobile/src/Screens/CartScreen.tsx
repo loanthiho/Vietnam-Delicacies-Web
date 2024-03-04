@@ -12,6 +12,7 @@ import {GestureHandlerRootView, Swipeable} from 'react-native-gesture-handler';
 import CartItem from '../components/Cart/CartItem';
 
 import axios from 'axios';
+import {token} from '../api/request';
 
 const CartScreen = ({route, navigation}: any) => {
   const [cartItems, setCartItems] = useState<any[]>([]);
@@ -19,10 +20,10 @@ const CartScreen = ({route, navigation}: any) => {
 
   const fetchDataShoppingcart = async () => {
     const res = await axios.get(
-      `http://nodejs-app-env-1.eba-q2t7wpq3.ap-southeast-2.elasticbeanstalk.com/carts`,
+      `https://972f-2401-d800-25d1-71ab-dd89-e81e-b165-cabd.ngrok-free.app/carts`,
       {
         headers: {
-          Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYzMGE3ZmVkLTY2YzMtNGExYS1iNDdkLTU3MWM3YWFlYTQ0MyIsImVtYWlsIjoidGhpY3VzdG9tZXIuYTI0dGVjaG5vbG9neUBnbWFpLmNvbSIsInBhc3N3b3JkIjoiJDJhJDEwJEZkbGVtY3MwV0E3WEx3YWRzTjBGMXVYbkFKV21zdEVQWjhSM3pLeHh2UWUvMFlGYVBRa1dLIiwibmFtZSI6InRoaSBjdXN0b21lciIsImlhdCI6MTcwOTIyMzQzNn0.QuQ2zXw7HFSQs2D_XFPl_m7eSUT4lVVpuM_E6Ey0UTg`,
+          Authorization: `Bearer ${token}`,
         },
       },
     );
@@ -46,22 +47,56 @@ const CartScreen = ({route, navigation}: any) => {
     setTotalPrice(sum);
   }, [cartItems]);
 
-  const increaseQuantity = (itemId: string) => {
+  const increaseQuantity = async (itemId: string) => {
     setCartItems(prevCartItems =>
       prevCartItems.map(item =>
-        item.key === itemId ? {...item, quantity: item.quantity + 1} : item,
+        item.id === itemId && item.quantity < 50
+          ? {...item, quantity: item.quantity + 1}
+          : item,
       ),
     );
+    console.log('Increasing ...');
+    // try {
+    //   const rIncrease = await axios.post(
+    //     `http://nodejs-app-env-1.eba-q2t7wpq3.ap-southeast-2.elasticbeanstalk.com/carts/update-qty/${itemId}`,
+    //     null,
+    //     {
+    //       params: {action: 'increase'},
+    //       headers: {Authorization: `Bearer ${token}`},
+    //     },
+    //   );
+    //   if (rIncrease) {
+    //     console.log('Increase successfully:', rIncrease);
+    //   }
+    // } catch (error) {
+    //   console.error('Lỗi khi increase product cart:', error);
+    // }
   };
 
-  const decreaseQuantity = (itemId: string) => {
+  const decreaseQuantity = async (itemId: string) => {
     setCartItems(prevCartItems =>
       prevCartItems.map(item =>
-        item.key === itemId && item.quantity > 1
+        item.id === itemId && item.quantity > 1
           ? {...item, quantity: item.quantity - 1}
           : item,
       ),
     );
+    console.log('Decreasing ...');
+    // try {
+    //   const rIncrease = await axios.post(
+    //     `http://nodejs-app-env-1.eba-q2t7wpq3.ap-southeast-2.elasticbeanstalk.com/carts/update-qty/${itemId}`,
+    //     null,
+    //     {
+    //       params: {action: 'decrease'},
+    //       headers: {Authorization: `Bearer ${token}`},
+    //     },
+    //   );
+    //   if (rIncrease) {
+    //     console.log('decrease successfully:', rIncrease.data);
+    //   }
+    // } catch (error) {
+    //   console.error('Lỗi khi increase product cart:', error);
+    // }
   };
 
   const removeItem = (itemId: string) => {
@@ -88,15 +123,17 @@ const CartScreen = ({route, navigation}: any) => {
       </ScrollView>
       <View>
         <View style={styles.footer}>
-          <Text style={styles.checkoutText}>
-            Tổng <Text style={styles.tamTinhText}>(tạm tính):</Text>
-          </Text>
-          <Text style={styles.money}>{totalPrice}đ</Text>
+          <View style={styles.groupTotal}>
+            <Text style={styles.checkoutText}>
+              Tổng <Text style={styles.tamTinhText}>(tạm tính):</Text>
+            </Text>
+            <Text style={styles.money}>{totalPrice}đ</Text>
+          </View>
           <TouchableOpacity
             style={styles.checkoutButton}
             onPress={() =>
               navigation.navigate('Payment', {
-                selectedItem: cartItems
+                selectedItem: cartItems,
               })
             }>
             <Text style={styles.checkoutButtonText}>Thanh toán</Text>
@@ -110,52 +147,40 @@ const CartScreen = ({route, navigation}: any) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding:10
+    padding: 10,
   },
   footer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    backgroundColor: 'white',
-    paddingHorizontal: 20,
     paddingVertical: 10,
-    width: 'auto',
-    height: 130,
-    borderRadius: 10,
   },
   tamTinhText: {
-    fontSize: 18,
+    fontSize: 14,
+  },
+
+  groupTotal: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 10,
   },
   checkoutText: {
-    fontSize: 26,
+    fontSize: 20,
     fontWeight: 'bold',
     color: '#FFA000',
   },
   money: {
-    fontSize: 26,
+    fontSize: 20,
     fontWeight: 'bold',
     color: '#FFA000',
-    left: 300,
-    position: 'absolute',
-    top: 10,
-    marginRight: 30,
   },
   checkoutButton: {
     backgroundColor: '#2E7D32',
     borderRadius: 10,
-    width: 350,
-    height: 70,
-    top: 55,
-    left: 30,
-    textAlign: 'center',
-    position: 'absolute',
-    right: 30,
   },
   checkoutButtonText: {
     color: 'white',
-    fontSize: 26,
+    fontSize: 20,
     fontWeight: 'bold',
     textAlign: 'center',
-    top: 15,
+    padding: 10,
   },
 });
 

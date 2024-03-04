@@ -4,8 +4,10 @@ import api, {token} from '../api/request';
 export const addToCart = async (id_product: string, navigation: any) => {
   try {
     console.log('posting ...');
-    const res = await api.post(
-      `carts/${id_product}`,{},{},
+    console.log('id product befor add:', id_product);
+    const res = await axios.post(
+      `https://972f-2401-d800-25d1-71ab-dd89-e81e-b165-cabd.ngrok-free.app/carts/${id_product}`,
+      null,
       {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -13,20 +15,18 @@ export const addToCart = async (id_product: string, navigation: any) => {
       },
     );
     if (res) {
-      console.log('response', res);
       return navigation.navigate('Giỏ hàng');
     } else {
       console.log('can not add to cart ');
     }
   } catch (error) {
-    console.log("khong them duoc",error);
+    console.log('khong them duoc', error);
   }
 };
 
 const fetchDataShoppingcart = async () => {
-  const res = await api.get(
-    `carts`,
-    {},
+  const res = await axios.get(
+    'https://972f-2401-d800-25d1-71ab-dd89-e81e-b165-cabd.ngrok-free.app/carts',
     {
       headers: {
         Authorization: `Bearer ${token}`,
