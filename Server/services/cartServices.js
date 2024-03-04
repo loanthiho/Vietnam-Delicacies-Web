@@ -1,6 +1,6 @@
 const { Op } = require('sequelize');
 const { ProductCart, Cart, User, Product, File } = require('../models');
-const { resSuccessData, resNotFound, resInternalError, resUnauthorized, resSuccess } = require('../utils/response');
+const { resSuccessData, resNotFound, resInternalError, resUnauthorized, resSuccess, resBadRequest } = require('../utils/response');
 const { query } = require('express');
 
 const getOneProductCart = async (req, res, next) => {
@@ -121,7 +121,7 @@ const updateQty = async (req, res, next) => {
     const productCart = await ProductCart.findOne({ where: { id: product_cart_id } });
     if (productCart) {
         if (action === "increase") {
-            qty = productCart.quantity + 1;
+            qty = productCart.quantity > 49 ? 50 : productCart.quantity + 1;
             const udt_success = await ProductCart.update({ quantity: qty, status: req.body.status }, { where: { id: productCart.id } })
             if (udt_success) {
                 const productCartUpdated = await ProductCart.findByPk(product_cart_id);
@@ -134,7 +134,7 @@ const updateQty = async (req, res, next) => {
                 resNotFound(res, "Update quantity failed")
             }
         } else if (action === "decrease") {
-            qty = productCart.quantity < 1 ? 1 : productCart.quantity - 1;
+            qty = productCart.quantity < 2 ? 1 : productCart.quantity - 1;
             const udt_success = await ProductCart.update({ quantity: qty, quantity: qty, status: req.body.status }, { where: { id: productCart.id } })
             if (udt_success) {
                 const productCartUpdated = await ProductCart.findByPk(product_cart_id);
@@ -146,6 +146,9 @@ const updateQty = async (req, res, next) => {
             } else {
                 resNotFound(res, "Update quantity failed")
             }
+        }
+        else {
+            resBadRequest(res, "Need params: increase or decrease");
         }
     } else {
         resNotFound(res, "Product not found!")
