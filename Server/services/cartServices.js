@@ -11,10 +11,6 @@ const getOneProductCart = async (req, res, next) => {
     } else { resNotFound(res, "productCart not found") }
 }
 
-const getProductCartInId = async (req, res, next) => {
-
-}
-
 const getAllProductCart = async (req, res, next) => {
     try {
         var q = {};
