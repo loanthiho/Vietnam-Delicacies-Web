@@ -21,7 +21,7 @@ const ShopOwnerScreen = ({
 }) => {
   const {selectedItem}: {selectedItem: any} = route.params;
 
-  const {isLoading, error, data} = useQuery({
+  const {data} = useQuery({
     queryKey: ['products'],
     queryFn: async () => {
       const response = await api.get('products', {}, {});
