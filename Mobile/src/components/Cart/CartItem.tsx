@@ -137,8 +137,8 @@ const styles = StyleSheet.create({
     width: 60,
     height: 100,
     borderRadius: 10,
-    top: 20,
-    marginHorizontal: 20,
+    top: 10,
+    marginHorizontal: 10,
   },
   deleteButtonText: {
     color: 'white',
@@ -173,7 +173,7 @@ const styles = StyleSheet.create({
   },
   checkboxButton: {
     color: '#2E7D32',
-    fontSize: 20,
+    fontSize: 40,
     right: 170,
     bottom: 70,
   },

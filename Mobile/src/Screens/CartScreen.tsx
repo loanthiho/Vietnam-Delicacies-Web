@@ -19,7 +19,7 @@ const CartScreen = ({route, navigation}: any) => {
 
   const fetchDataShoppingcart = async () => {
     const res = await axios.get(
-      `http://nodejs-app-env-1.eba-q2t7wpq3.ap-southeast-2.elasticbeanstalk.com/carts`,
+      `https://86fb-113-176-99-140.ngrok-free.app/carts`,
       {
         headers: {
           Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYzMGE3ZmVkLTY2YzMtNGExYS1iNDdkLTU3MWM3YWFlYTQ0MyIsImVtYWlsIjoidGhpY3VzdG9tZXIuYTI0dGVjaG5vbG9neUBnbWFpLmNvbSIsInBhc3N3b3JkIjoiJDJhJDEwJEZkbGVtY3MwV0E3WEx3YWRzTjBGMXVYbkFKV21zdEVQWjhSM3pLeHh2UWUvMFlGYVBRa1dLIiwibmFtZSI6InRoaSBjdXN0b21lciIsImlhdCI6MTcwOTIyMzQzNn0.QuQ2zXw7HFSQs2D_XFPl_m7eSUT4lVVpuM_E6Ey0UTg`,
@@ -38,11 +38,11 @@ const CartScreen = ({route, navigation}: any) => {
 
   useEffect(() => {
     let sum = 0;
-    // cartItems.forEach(item => {
-    //   if (item.isChecked) {
-    //     sum += item.price * item.quantity;
-    //   }
-    // });
+    cartItems.forEach(item => {
+      if (item.isChecked) {
+        sum += item.price * item.quantity;
+      }
+    });
     setTotalPrice(sum);
   }, [cartItems]);
 
