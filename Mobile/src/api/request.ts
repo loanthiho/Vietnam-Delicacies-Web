@@ -1,7 +1,8 @@
 import axios from 'axios';
-
+export const token =
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImJmMWNmNjEwLTg3NDgtNDhlYy1hNWU4LTZkMDcwODZjOTNjNCIsImVtYWlsIjoiZGkuaG8yNGdtYWlsLmNvbSIsInBhc3N3b3JkIjoiJDJhJDEwJDNqcktpb1YwQk16MldBNmNZWC5OZi5YVVRCOHlRcDUwcmpBbzJKdC93QnZoMGp6NGFjVmFhIiwibmFtZSI6IkRpIEhvIiwiaWF0IjoxNzA5NTM2MTQzfQ.GjUo09rUAKWt7BwvuvgoQ71BmUbue3vKFnXCHR20-2Y';
 const baseAxios = axios.create({
-    baseURL: `http://nodejs-app-env-1.eba-q2t7wpq3.ap-southeast-2.elasticbeanstalk.com/`
+  baseURL: `https://e8aa-113-176-99-140.ngrok-free.app/`,
 });
 
 const api = {
