@@ -1,4 +1,4 @@
-const { Product,ProductCart, Province, User, Category, File, Review } = require("../models")
+const { Product, ProductCart, Province, User, Category, File, Review } = require("../models")
 const { resSuccessData, resInternalError, resCreated, resNotFound } = require("../utils/response")
 const cloudinary = require('../utils/cloudinary');
 const { Op } = require("sequelize");
@@ -143,7 +143,7 @@ const removeProduct = async (req, res, next) => {
             resNotFound(res, "Not Found Product");
         }
     }
-  }
+}
 
 module.exports = {
     createProduct,
