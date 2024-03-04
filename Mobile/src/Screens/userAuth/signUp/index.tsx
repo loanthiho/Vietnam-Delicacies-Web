@@ -14,6 +14,9 @@ import signupSchema from './Validation';
 import * as yup from 'yup';
 import { setDataCombine } from '../../../api/storage';
 import { KeyboardAvoidingView } from 'react-native';
+import checkExistEmail from './isExistEmail';
+import { useQuery } from '@tanstack/react-query';
+import axios from 'axios';
 
 const SignUp: React.FC = ({ navigation }: any) => {
   const [formData, setFormData] = useState({
@@ -23,7 +26,6 @@ const SignUp: React.FC = ({ navigation }: any) => {
     role: '',
   });
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
-
   const handleChange = (field: string, value: string) => {
     setFormData({
       ...formData,
@@ -58,7 +60,6 @@ const SignUp: React.FC = ({ navigation }: any) => {
         errors?.email === '' &&
         errors?.password === ''
       ) {
-        console.log('data want to push:', formData);
         await setDataCombine(formData);
         return navigation.navigate('ChooseRole');
       }

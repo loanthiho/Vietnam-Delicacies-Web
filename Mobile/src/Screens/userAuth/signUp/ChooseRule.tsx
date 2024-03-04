@@ -11,12 +11,14 @@ import userSignUp from './useSignUp';
 import { getUserCombineData } from '../../../api/storage';
 import { useMutation } from '@tanstack/react-query';
 import api from '../../../api/request';
+import LoaderKit from 'react-native-loader-kit';
+import { showMessage } from 'react-native-flash-message';
 
 const ChooseRole = ({ navigation }: any) => {
     // const { signUp, onChange, userCredentials } = userSignUp;
     const [role, setRole] = useState<string>('customer');
-    const [formData, setFormData] = useState<{}>({});
-
+    const [formData, setFormData] = useState<object>({});
+    // const [disableChooseRole, setDisableChooseRole] = useState<boolean>(false);
     const onChangeRole = async (role: string) => {
         setRole(role);
         setFormData({
@@ -47,16 +49,27 @@ const ChooseRole = ({ navigation }: any) => {
         }
     })
 
+    useEffect(() => {
+        if (mutation.isSuccess) {
+            showMessage({
+                message: "Successful Register!",
+                type: "success",
+            })
+        }
+        if (mutation.isError) {
+            showMessage({
+                message: "Failed when register!",
+                type: "danger",
+            })
+        }
+    }, [mutation.isError, mutation.isSuccess])
+
+
     const handleConfirm = async () => {
         mutation.mutate(formData);
-        console.log("data post to=>", formData)
     }
     return (
         <View style={styles.choose_role__container}>
-            {
-                mutation.isPending ? (<Text style={{ color: 'black' }}>Posting ...</Text>)
-                    : mutation.isError ? (<Text style={{ color: 'red' }}>An error occurred: {mutation.error.message}</Text>) : null
-            }
             <View
                 style={{
                     rowGap: 20,
@@ -118,9 +131,20 @@ const ChooseRole = ({ navigation }: any) => {
 
                     <TouchableOpacity
                         onPress={handleConfirm}
-                        style={[styles.goback_button]}
+                        style={[styles.goback_button, { flexDirection: 'row', columnGap: 20 }]}
                     >
                         <Text style={styles.comfirm_button__text}>Xác nhận</Text>
+                        {
+                            mutation.isPending ?
+                                <View style={{ justifyContent: 'center' }}>
+                                    <LoaderKit
+                                        style={{ width: 20, height: 20 }}
+                                        name={'BallPulse'} // Optional: see list of animations below
+                                        color={'white'} // Optional: color can be: 'red', 'green',... or '#ddd', '#ffffff',...
+                                    />
+                                </View>
+                                : null
+                        }
                     </TouchableOpacity>
                 </View>
             </View>
@@ -133,7 +157,7 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: 'white',
         padding: 10,
-        justifyContent: 'center'
+        justifyContent: 'center',
     },
     role__touchable: {
         width: '100%',

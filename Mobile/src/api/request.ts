@@ -13,7 +13,11 @@ import axios from 'axios';
 //     }
 // }
 const baseAxios = axios.create({
-  baseURL: `http://nodejs-app-env-1.eba-q2t7wpq3.ap-southeast-2.elasticbeanstalk.com/`,
+  // -- AWS baseURL______
+  // baseURL: `http://nodejs-app-env-1.eba-q2t7wpq3.ap-southeast-2.elasticbeanstalk.com/`,
+
+  // -- Local baseURL_____
+  baseURL: `https://c7ff-2402-9d80-432-2a7-494d-201c-b63e-910.ngrok-free.app/`,
 });
 
 const api = {

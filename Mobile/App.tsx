@@ -17,6 +17,8 @@ import AddProduct from './src/Seller/AddProduct';
 import SignUp from './src/Screens/userAuth/signUp';
 import ChooseRole from './src/Screens/userAuth/signUp/ChooseRule';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import FlashMessage from "react-native-flash-message";
+import SignIn from './src/Screens/userAuth/logIn';
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
@@ -55,7 +57,7 @@ const App = () => {
           screenOptions={{
             headerShown: false,
           }}
-          initialRouteName="SignUp">
+          initialRouteName="SignIn">
           <Stack.Screen
             name="ProductDetailScreen"
             component={ProductDetailScreen}
@@ -74,8 +76,10 @@ const App = () => {
           />
           <Stack.Screen name='SignUp' component={SignUp} />
           <Stack.Screen name='ChooseRole' component={ChooseRole} />
+          <Stack.Screen name='SignIn' component={SignIn} />
         </Stack.Navigator>
       </NavigationContainer>
+      <FlashMessage position="top" />
     </QueryClientProvider>
   );
 };
