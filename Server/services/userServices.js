@@ -3,29 +3,13 @@ const jwt = require('jsonwebtoken');
 const bcryptjs = require('bcryptjs');
 const { resSuccessData, resBadRequest, resInternalError } = require('../utils/response');
 
-// const createUser = async (req, res, next) => {
-//     await User.create(req.body)
-//         .then(result => {
-//             res.status(201).json({
-//                 message: "User create successfully",
-//                 data: result
-//             })
-//         })
-//         .catch(error => {
-//             res.status(500).json({
-//                 error: error,
-//                 message: "Server error!"
-//             })
-//         })
-// };
 const getAllUser = async (req, res, next) => {
-    await User.findAll({
-        include: {
-            model: Province,
-        }
-    })
-        .then(result => resSuccessData(res, result))
-        .catch(error => resInternalError(res, err = { error, msg: "Server Error!" }));
+    const rUser = await User.findAll();
+    if (rUser) {
+        return resSuccessData(res, rUser)
+    } else {
+        resInternalError(res, err = { error: "error", msg: "Server Error!" })
+    }
 };
 
 const createCart = async (res, user_id, dataRes) => {
@@ -40,24 +24,27 @@ const userSignUp = async (req, res, next) => {
     const user = {
         name: req.body.name,
         email: req.body.email,
-        password: await bcryptjs.hash(req.body.password, 10),
+        password: req.body.password,
         role: req.body.role
     };
+    if (user && user.password && user.name && user.email) {
+        user.password = await bcryptjs.hash(req.body.password, 10)
+    } else {
+        resBadRequest(res, "Invalid user credentials")
+    }
+
     const userDb = await User.findOne({ where: { email: req.body.email } });
     if (!userDb) {
         const dataRes = {};
-        await User.create(user)
-            .then(result => {
-                const { id, role } = result;
-                dataRes.user = result;
-                if (role === "customer") {
-                    createCart(res, id, dataRes);
-                } else {
-                    resSuccessData(res, result, "Sigup successfully")
-                }
-            })
-    }
-    else {
+        const resultCreateUser = await User.create(user);
+        if (resultCreateUser) {
+            const { id } = resultCreateUser;
+            createCart(res, id, resultCreateUser);
+        }
+        else {
+            resInternalError(res, "Failed create user")
+        }
+    } else {
         resBadRequest(res, "This email ready exists!");
     }
 };

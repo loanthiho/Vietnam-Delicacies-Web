@@ -9,10 +9,9 @@ import {
   FlatList,
 } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import {useQuery} from '@tanstack/react-query';
+import api from '../../api/request';
 import SuggestionsList from '../../components/Homepage/SuggestionsList';
-import FeaturedProductsList from '../../components/Homepage/FeaturedProductsList';
-
-
 const ShopOwnerScreen = ({
   navigation,
   route,
@@ -21,9 +20,17 @@ const ShopOwnerScreen = ({
   route: any;
 }) => {
   const {selectedItem}: {selectedItem: any} = route.params;
+
+  const {data} = useQuery({
+    queryKey: ['products'],
+    queryFn: async () => {
+      const response = await api.get('products', {}, {});
+      return response;
+    },
+  });
   console.log('my product', selectedItem);
 
-  const renderFeaturedProduct = ({item}: any) => {
+  const renderProductOwner = ({item}: any) => {
     return (
       <View>
         <Image
@@ -69,9 +76,10 @@ const ShopOwnerScreen = ({
         data={selectedItem}
         numColumns={2}
         contentContainerStyle={styles.productList}
-        renderItem={renderFeaturedProduct}
+        renderItem={renderProductOwner}
         keyExtractor={item => item.key}
       />
+       <SuggestionsList data={data} navigation={navigation} />
     </View>
   );
 };
@@ -80,6 +88,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 10,
+    marginHorizontal: 10,
   },
   header: {
     flexDirection: 'row',
@@ -191,7 +200,8 @@ const styles = StyleSheet.create({
   },
   productList: {
     flexDirection: 'column',
-    gap: 20,
+    gap: 40,
+    marginHorizontal: 10,
   },
 });
 
