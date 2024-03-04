@@ -1,5 +1,7 @@
+const { Op } = require('sequelize');
 const { ProductCart, Cart, User, Product, File } = require('../models');
-const { resSuccessData, resNotFound, resInternalError, resUnauthorized, resSuccess } = require('../utils/response')
+const { resSuccessData, resNotFound, resInternalError, resUnauthorized, resSuccess } = require('../utils/response');
+const { query } = require('express');
 
 const getOneProductCart = async (req, res, next) => {
     const id = req.params.id;
@@ -9,23 +11,50 @@ const getOneProductCart = async (req, res, next) => {
     } else { resNotFound(res, "productCart not found") }
 }
 
+const getProductCartInId = async (req, res, next) => {
+
+}
+
 const getAllProductCart = async (req, res, next) => {
     try {
-        await Cart.findAll({ where: { user_id: req.userData.id } })
-            .then(result_cart => {
-                var cart_id = result_cart[0].id;
-                ProductCart.findAll({
-                    where: { cart_id: cart_id },
-                    include: [{ model: Product, include: [File] }]
-                })
-                    .then(result_product_cart => resSuccessData(res, result_product_cart, "product cart"))
-                    .catch(err_pro_cart => resNotFound(res, err_pro_cart))
-            })
-            .catch(err => resNotFound(res, err = { serverError: err, error: "User didn't create cart! Or User NOT FOUND" }));
+        var q = {};
+        const { ids } = req.body;
+        if (ids && ids.length > 0) {
+            q.id = {
+                [Op.in]: ids
+            }
+        }
+        var user_id = req.userData.id;
+        const rCart = await Cart.findOne({ where: { user_id: user_id } });
+        if (rCart) {
+            const rProductCart = await ProductCart.findAll({
+                where: { ...q },
+                include: [{ model: Product, include: [File] }]
+            });
+            if (rProductCart) {
+                resSuccessData(res, rProductCart)
+            }
+        } else {
+            resNotFound(res, "User Not found");
+        }
+
     } catch (err) {
-        resInternalError(res, error = { err, msg: "Error request to database!" });
+        resInternalError(res, undefined)
     }
 }
+// .then(result_cart => {
+//     var cart_id = result_cart[0].id;
+//     ProductCart.findAll({
+//         where: { cart_id: cart_id },
+//         include: [{ model: Product, include: [File] }]
+//     })
+//         .then(result_product_cart => resSuccessData(res, result_product_cart, "product cart"))
+//         .catch(err_pro_cart => resNotFound(res, err_pro_cart))
+// })
+// .catch(err => resNotFound(res, err = { serverError: err, error: "User didn't create cart! Or User NOT FOUND" }));
+// } catch (err) {
+//     resInternalError(res, error = { err, msg: "Error request to database!" });
+// }
 
 const addToCart = async (req, res, next) => {
     const user_id = req.userData.id;
