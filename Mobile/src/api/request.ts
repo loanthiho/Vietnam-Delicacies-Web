@@ -17,9 +17,8 @@ const baseAxios = axios.create({
   // baseURL: `http://nodejs-app-env-1.eba-q2t7wpq3.ap-southeast-2.elasticbeanstalk.com/`,
 
   // -- Local baseURL_____
-  baseURL: `https://c7ff-2402-9d80-432-2a7-494d-201c-b63e-910.ngrok-free.app/`,
+  baseURL: `https://ee79-113-176-99-140.ngrok-free.app/`, // Can be usually change!
 });
-
 const api = {
   get: async (enpoint: string, params: {}, headers: {}) => {
     const response = await baseAxios.get(enpoint, {params, headers});
@@ -37,7 +36,7 @@ const api = {
     const response = await baseAxios.put(enpoint, data, {params, headers});
     return response.data;
   },
-  delete: async (enpoint: string, data: {}, params: {}, headers: {}) => {
+  delete: async (enpoint: string, params: {}, headers: {}) => {
     const response = await baseAxios.delete(enpoint, {params, headers});
     return response.data;
   },

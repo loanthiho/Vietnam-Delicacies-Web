@@ -175,7 +175,9 @@ const SignUp: React.FC = ({ navigation }: any) => {
               margin: 10,
             }}>
             <Text style={{ color: '#012345' }}>Đã có tài khoản?</Text>
-            <TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => navigation.navigate('SignIn')}
+            >
               <Text style={{ color: '#FFA000' }}> Đăng nhập</Text>
             </TouchableOpacity>
           </View>

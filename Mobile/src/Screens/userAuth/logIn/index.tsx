@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import * as yup from 'yup';
 import signupSchema from './validation';
 import LoaderKit from 'react-native-loader-kit';
@@ -16,6 +16,8 @@ import {
 } from 'react-native';
 import useLogin from '../../../Hooks/useLogin';
 import { showMessage } from 'react-native-flash-message';
+import axios from 'axios';
+import { getUserAccessToken, setUserAccessToken } from '../../../api/storage';
 
 const SignIn: React.FC = ({ navigation }: any) => {
     const { mutation } = useLogin();
@@ -26,6 +28,25 @@ const SignIn: React.FC = ({ navigation }: any) => {
         role: '',
     });
     const [errors, setErrors] = useState<{ [key: string]: string }>({});
+
+    const checkMess = async () => {
+        if (mutation.isSuccess) {
+            showMessage({
+                message: "Login successfully!",
+                type: "success",
+            })
+        }
+        if (mutation.isError) {
+            showMessage({
+                message: "Login Failed!",
+                type: "danger",
+            })
+        }
+    }
+
+    useEffect(() => {
+        checkMess()
+    }, [mutation.isError, mutation.isSuccess])
     const handleChange = (field: string, value: string) => {
         setUserCredentials({
             ...userCredentials,
@@ -51,28 +72,15 @@ const SignIn: React.FC = ({ navigation }: any) => {
             }
         }
     };
+
     const handleSubmit = async () => {
         try {
             await signupSchema.validate(userCredentials, { abortEarly: false });
             if (errors?.email === '' && errors?.password === '') {
                 mutation.mutate(userCredentials);
-                if (mutation.isSuccess) {
-                    showMessage({
-                        message: "Login successfully!",
-                        type: "success",
-                    })
-                }
-                if (mutation.isError) {
-                    showMessage({
-                        message: "Login Failed!",
-                        type: "danger",
-                    })
-                }
-
+                await setUserAccessToken(mutation.data);
             }
-            // return navigation.navigate('Main');
         }
-
         catch (error) {
             if (error instanceof yup.ValidationError) {
                 error.inner.forEach((err, index) => {
@@ -126,19 +134,19 @@ const SignIn: React.FC = ({ navigation }: any) => {
                             borderRadius: 15,
                             backgroundColor: '#FFA000',
                         }}>
-                        <View style={{ flex: 1 }}>
-                            <Text style={{ color: 'white', fontSize: 24, flexBasis: 3 }}> Đăng Nhập</Text>
-                            {
-                                mutation.isPending ?
-                                    <View style={{ justifyContent: 'center', flexBasis: 1 }}>
+                        <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'center' }}>
+                            <Text style={{ color: 'white', fontSize: 24, flex: 4, textAlign: 'right' }}> Đăng Nhập</Text>
+                            <View style={{ flex: 2, justifyContent: 'center', alignItems: 'center' }}>
+                                {
+                                    mutation.isPending ?
                                         <LoaderKit
                                             style={{ width: 20, height: 20 }}
                                             name={'BallPulse'} // Optional: see list of animations below
                                             color={'white'} // Optional: color can be: 'red', 'green',... or '#ddd', '#ffffff',...
                                         />
-                                    </View>
-                                    : null
-                            }
+                                        : null
+                                }
+                            </View>
                         </View>
                     </TouchableOpacity>
 
@@ -189,7 +197,9 @@ const SignIn: React.FC = ({ navigation }: any) => {
                             margin: 10,
                         }}>
                         <Text style={{ color: '#012345' }}>Bạn chưa có tài khoản?</Text>
-                        <TouchableOpacity>
+                        <TouchableOpacity
+                            onPress={() => navigation.navigate('SignUp')}
+                        >
                             <Text style={{ color: '#FFA000' }}> Đăng ký</Text>
                         </TouchableOpacity>
                     </View>
