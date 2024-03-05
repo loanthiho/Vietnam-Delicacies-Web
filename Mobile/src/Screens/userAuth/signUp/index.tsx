@@ -60,8 +60,10 @@ const SignUp: React.FC = ({ navigation }: any) => {
         errors?.email === '' &&
         errors?.password === ''
       ) {
+        console.log("data form submit:", formData)
         await setDataCombine(formData);
-        return navigation.navigate('ChooseRole');
+        checkExistEmail(formData.email);
+        // return navigation.navigate('ChooseRole');
       }
     } catch (error) {
       if (error instanceof yup.ValidationError) {

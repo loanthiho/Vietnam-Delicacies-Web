@@ -41,7 +41,17 @@ const getUserCombineData = async () => {
     return null;
   }
 };
+
+const LogOut = async () => {
+  try {
+    await AsyncStorage.removeItem('user');
+    console.log('Data deleted successfully.');
+  } catch (error) {
+    console.log('Error deleting data:', error);
+  }
+};
 export {
+  LogOut,
   getUserAccessToken,
   setUserAccessToken,
   setDataCombine,

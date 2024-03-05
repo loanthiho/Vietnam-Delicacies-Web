@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   ScrollView,
   Text,
@@ -7,16 +7,17 @@ import {
   StyleSheet,
 } from 'react-native';
 
-import {GestureHandlerRootView, Swipeable} from 'react-native-gesture-handler';
+import { GestureHandlerRootView, Swipeable } from 'react-native-gesture-handler';
 
 import CartItem from '../components/Cart/CartItem';
 
 import axios from 'axios';
+import CheckAuth from '../services/checkAuth';
 
-const CartScreen = ({route, navigation}: any) => {
+const CartScreen = ({ route, navigation }: any) => {
   const [cartItems, setCartItems] = useState<any[]>([]);
   const [totalPrice, setTotalPrice] = useState<number>(0);
-
+  CheckAuth({ navigation });
   const fetchDataShoppingcart = async () => {
     const res = await axios.get(
       `http://nodejs-app-env-1.eba-q2t7wpq3.ap-southeast-2.elasticbeanstalk.com/carts`,
@@ -49,7 +50,7 @@ const CartScreen = ({route, navigation}: any) => {
   const increaseQuantity = (itemId: string) => {
     setCartItems(prevCartItems =>
       prevCartItems.map(item =>
-        item.key === itemId ? {...item, quantity: item.quantity + 1} : item,
+        item.key === itemId ? { ...item, quantity: item.quantity + 1 } : item,
       ),
     );
   };
@@ -58,7 +59,7 @@ const CartScreen = ({route, navigation}: any) => {
     setCartItems(prevCartItems =>
       prevCartItems.map(item =>
         item.key === itemId && item.quantity > 1
-          ? {...item, quantity: item.quantity - 1}
+          ? { ...item, quantity: item.quantity - 1 }
           : item,
       ),
     );
@@ -75,15 +76,15 @@ const CartScreen = ({route, navigation}: any) => {
       <ScrollView>
         {cartItems && cartItems.length > 0
           ? cartItems?.map((item, index) => (
-              <CartItem
-                key={index.toString()}
-                item={item}
-                increaseQuantity={increaseQuantity}
-                decreaseQuantity={decreaseQuantity}
-                removeItem={removeItem}
-                updateTotalPrice={updateTotalPrice}
-              />
-            ))
+            <CartItem
+              key={index.toString()}
+              item={item}
+              increaseQuantity={increaseQuantity}
+              decreaseQuantity={decreaseQuantity}
+              removeItem={removeItem}
+              updateTotalPrice={updateTotalPrice}
+            />
+          ))
           : null}
       </ScrollView>
       <View>
@@ -110,7 +111,7 @@ const CartScreen = ({route, navigation}: any) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding:10
+    padding: 10
   },
   footer: {
     flexDirection: 'row',

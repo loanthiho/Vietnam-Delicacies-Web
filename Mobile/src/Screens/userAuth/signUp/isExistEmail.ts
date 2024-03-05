@@ -2,6 +2,12 @@ import {useQuery} from '@tanstack/react-query';
 import api from '../../../api/request';
 
 const checkExistEmail = (email: string) => {
+  console.log('emil need to check:', email);
+  const fetchDataUser = async () => {
+    const res = await api.get('users', {}, {});
+    return res.data;
+  };
+
   const {data, isError, isPending, error} = useQuery({
     queryKey: ['userData'],
     queryFn: fetchDataUser,
@@ -21,10 +27,6 @@ const checkExistEmail = (email: string) => {
   if (isPending) {
     console.log('Fetching user data...');
   }
-};
-const fetchDataUser = async () => {
-  const res = await api.get('users', {}, {});
-  return res;
 };
 
 export default checkExistEmail;

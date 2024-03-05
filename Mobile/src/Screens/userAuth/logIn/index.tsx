@@ -16,11 +16,10 @@ import {
 } from 'react-native';
 import useLogin from '../../../Hooks/useLogin';
 import { showMessage } from 'react-native-flash-message';
-import axios from 'axios';
-import { getUserAccessToken, setUserAccessToken } from '../../../api/storage';
+import { setUserAccessToken } from '../../../api/storage';
 
-const SignIn: React.FC = ({ navigation }: any) => {
-    const { mutation } = useLogin();
+const SignIn: React.FC = ({ navigation, route }: any) => {
+    const { mutation, errorMess } = useLogin()
     const [userCredentials, setUserCredentials] = useState({
         name: '',
         email: '',
@@ -28,7 +27,6 @@ const SignIn: React.FC = ({ navigation }: any) => {
         role: '',
     });
     const [errors, setErrors] = useState<{ [key: string]: string }>({});
-
     const checkMess = async () => {
         if (mutation.isSuccess) {
             showMessage({
@@ -38,7 +36,7 @@ const SignIn: React.FC = ({ navigation }: any) => {
         }
         if (mutation.isError) {
             showMessage({
-                message: "Login Failed!",
+                message: errorMess,
                 type: "danger",
             })
         }
@@ -46,7 +44,18 @@ const SignIn: React.FC = ({ navigation }: any) => {
 
     useEffect(() => {
         checkMess()
-    }, [mutation.isError, mutation.isSuccess])
+        if (mutation.isSuccess) {
+            const previousScreen = route.params?.previousScreen;
+            if (previousScreen) {
+                // Nếu có, quay lại màn hình trước đó
+                return navigation.navigate(previousScreen);
+            } else {
+                // Nếu không, điều hướng tới màn hình chính
+                return navigation.navigate('Main');
+            }
+        }
+    }, [mutation.isError, mutation.isSuccess, errorMess])
+
     const handleChange = (field: string, value: string) => {
         setUserCredentials({
             ...userCredentials,
@@ -54,6 +63,7 @@ const SignIn: React.FC = ({ navigation }: any) => {
         });
         validateField(field, value);
     };
+
     const validateField = async (field: string, value: string) => {
         try {
             await yup.reach(signupSchema, field).validate(value);
@@ -77,8 +87,15 @@ const SignIn: React.FC = ({ navigation }: any) => {
         try {
             await signupSchema.validate(userCredentials, { abortEarly: false });
             if (errors?.email === '' && errors?.password === '') {
-                mutation.mutate(userCredentials);
-                await setUserAccessToken(mutation.data);
+                try {
+                    mutation.mutate(userCredentials);
+                    if (mutation.isSuccess) {
+                        const { token, user } = mutation.data.data;
+                        await setUserAccessToken({ token, user });
+                    }
+                } catch (error) {
+                    console.error("Error when login:", error);
+                }
             }
         }
         catch (error) {
@@ -237,4 +254,5 @@ const styles = StyleSheet.create({
         marginBottom: 5,
     },
 });
+
 export default SignIn;
