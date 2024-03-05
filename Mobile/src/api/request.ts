@@ -1,30 +1,48 @@
 import axios from 'axios';
-export const token =
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImVkNWE3NGU3LTgwZDUtNDllOS1iMDAxLTNlNWQxY2UxYjQ3NCIsImVtYWlsIjoiZGkxLmhvMjRnbWFpbC5jb20iLCJwYXNzd29yZCI6IiQyYSQxMCRMSGFZSm45YWhQbzh1elZKaXZnT0x1Q2FKMXV0dU1tWWRlUFpiTlQ2cTNxY2pHOHEwVlQ3YSIsIm5hbWUiOiJEaSBIbyIsImlhdCI6MTcwOTUzODgxMX0.xYYgaEY7XmxtGNukHZxB5RlzSBe1rSjd3mhZc7doYMY';
-const baseAxios = axios.create({
-  baseURL: `https://972f-2401-d800-25d1-71ab-dd89-e81e-b165-cabd.ngrok-free.app/`,
-});
+import {getUserAccessToken} from './storage';
 
+var TOKEN = '';
+const getUAToken = async () => {
+  try {
+    const userCredentials = await getUserAccessToken();
+    if (userCredentials) {
+      TOKEN = userCredentials.token;
+    }
+  } catch (error) {
+    console.log('Error while get token');
+  }
+};
+
+getUAToken();
+const baseAxios = axios.create({
+  // -- AWS baseURL______
+  baseURL: `http://nodejs-app-env-1.eba-q2t7wpq3.ap-southeast-2.elasticbeanstalk.com/`,
+  // -- Local baseURL_____
+  // baseURL: `https://e220-2402-9d80-41f-98da-34-d086-e91a-266.ngrok-free.app/`, // Can be usually change!
+  // headers: {
+  //   Authorization: `Bearer ${TOKEN ? TOKEN : null}`,
+  // },
+});
 const api = {
-  get: async (endpoint: string, params = {}, headers = {}) => {
-    const res = await baseAxios.get(endpoint, {params, headers});
-    return res.data;
+  get: async (enpoint: string, params: {}, headers: {}) => {
+    const response = await baseAxios.get(enpoint, {params, headers});
+    return response;
   },
-  post: async (endpoint: string, data = {}, params = {}, headers = {}) => {
-    const res = await baseAxios.post(endpoint, data, {params, headers});
-    return res;
+  post: async (enpoint: string, data: {}, params: {}, headers: {}) => {
+    const response = await baseAxios.post(enpoint, data, {params, headers});
+    return response;
   },
-  patch: async (endpoint: string, data = {}, params = {}, headers = {}) => {
-    const res = await baseAxios.patch(endpoint, data, {params, headers});
-    return res.data;
+  patch: async (enpoint: string, data: {}, params: {}, headers: {}) => {
+    const response = await baseAxios.patch(enpoint, data, {params, headers});
+    return response;
   },
-  put: async (endpoint: string, data = {}, params = {}, headers = {}) => {
-    const res = await baseAxios.put(endpoint, data, {params, headers});
-    return res.data;
+  put: async (enpoint: string, data: {}, params: {}, headers: {}) => {
+    const response = await baseAxios.put(enpoint, data, {params, headers});
+    return response;
   },
-  delete: async (endpoint: string, data = {}, params = {}, headers = {}) => {
-    const res = await baseAxios.delete(endpoint, {params, headers, data});
-    return res.data;
+  delete: async (enpoint: string, params: {}, headers: {}) => {
+    const response = await baseAxios.delete(enpoint, {params, headers});
+    return response;
   },
 };
 

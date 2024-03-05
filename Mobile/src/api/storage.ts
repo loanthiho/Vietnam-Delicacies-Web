@@ -1,24 +1,59 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const setTotalPriceLocal = async (price: any) => {
+const getUserAccessToken = async () => {
   try {
-    await AsyncStorage.setItem('totalPrice', JSON.stringify(price));
-  } catch (error) {
-    console.log('Error setting combine user data:', error);
-  }
-};
-
-const getTotalPriceLocal = async () => {
-  try {
-    const result = await AsyncStorage.getItem('totalPrice');
+    const result = await AsyncStorage.getItem('user');
     if (result) {
       return JSON.parse(result);
     }
     return null;
   } catch (error) {
-    console.log('Error Error get total price:', error);
+    console.log('Error getting data user:', error);
     return null;
   }
 };
 
-export {setTotalPriceLocal, getTotalPriceLocal};
+const setUserAccessToken = async (data: any) => {
+  try {
+    await AsyncStorage.setItem('user', JSON.stringify(data));
+  } catch (error) {
+    console.log('Error setting data user:', error);
+  }
+};
+
+const setDataCombine = async (data: any) => {
+  try {
+    await AsyncStorage.setItem('userCBData', JSON.stringify(data));
+  } catch (error) {
+    console.log('Error setting combine user data:', error);
+  }
+};
+
+const getUserCombineData = async () => {
+  try {
+    const result = await AsyncStorage.getItem('userCBData');
+    if (result) {
+      return JSON.parse(result);
+    }
+    return null;
+  } catch (error) {
+    console.log('Error getting combine data:', error);
+    return null;
+  }
+};
+
+const LogOut = async () => {
+  try {
+    await AsyncStorage.removeItem('user');
+    console.log('Data deleted successfully.');
+  } catch (error) {
+    console.log('Error deleting data:', error);
+  }
+};
+export {
+  LogOut,
+  getUserAccessToken,
+  setUserAccessToken,
+  setDataCombine,
+  getUserCombineData,
+};

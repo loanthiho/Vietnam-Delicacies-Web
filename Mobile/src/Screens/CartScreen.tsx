@@ -1,4 +1,4 @@
-import React, {useEffect, useMemo, useState} from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import {
   ScrollView,
   Text,
@@ -7,15 +7,18 @@ import {
   StyleSheet,
 } from 'react-native';
 
-import {GestureHandlerRootView} from 'react-native-gesture-handler';
+import { GestureHandlerRootView, Swipeable } from 'react-native-gesture-handler';
 
 import CartItem from '../components/Cart/CartItem';
 
 import axios from 'axios';
-import {token} from '../api/request';
+import CheckAuth from '../services/checkAuth';
+import { getUserAccessToken } from '../api/storage';
 
-const CartScreen = ({route, navigation}: any) => {
+const CartScreen = ({ route, navigation }: any) => {
   const [cartItems, setCartItems] = useState<any[]>([]);
+  const [token, setToken] = useState<any>('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImRkZTIwNzlhLThiNzUtNGQ2Yy1hOTMzLWJkY2Y2ZGQ5MzQyNCIsImVtYWlsIjoibG9hbkBnbWFpbC5jb20iLCJwYXNzd29yZCI6IiQyYSQxMCRJcHovRUdqTjR1RERMYXprbC5ia28uMkNVUDNlRW5QRnhVRi8yWkkxbi9sUlFOUFZQZTROaSIsIm5hbWUiOiJ0aGkgYSIsImlhdCI6MTcwOTY1MzcwNX0.2tOS8RduIZ6NC69rcvkQJjC_6CkKPFiCOr0Tbr9AUVQ');
+  CheckAuth({ navigation });
 
   const totalPrice = useMemo(
     () =>
@@ -49,7 +52,7 @@ const CartScreen = ({route, navigation}: any) => {
           return item;
         }
         const newQuantity = Math.min(Math.max(item.quantity + diff, 1), 50);
-        return {...item, quantity: newQuantity};
+        return { ...item, quantity: newQuantity };
       }),
     );
 
@@ -57,8 +60,8 @@ const CartScreen = ({route, navigation}: any) => {
       `http://nodejs-app-env-1.eba-q2t7wpq3.ap-southeast-2.elasticbeanstalk.com/carts/update-qty/${itemId}`,
       null,
       {
-        params: {action: diff > 0 ? 'increase' : 'decrease'},
-        headers: {Authorization: `Bearer ${token}`},
+        params: { action: diff > 0 ? 'increase' : 'decrease' },
+        headers: { Authorization: `Bearer ${token}` },
       },
     );
     if (rIncrease) {
@@ -72,7 +75,7 @@ const CartScreen = ({route, navigation}: any) => {
         if (item.id !== itemId) {
           return item;
         }
-        return {...item, selected};
+        return { ...item, selected };
       }),
     );
   };
@@ -104,14 +107,14 @@ const CartScreen = ({route, navigation}: any) => {
       <ScrollView>
         {cartItems && cartItems.length > 0
           ? cartItems?.map((item, index) => (
-              <CartItem
-                key={index.toString()}
-                item={item}
-                changeQuantity={changeQuantity}
-                changeSelectedItem={changeSelectedItem}
-                removeItem={removeItem}
-              />
-            ))
+            <CartItem
+              key={index.toString()}
+              item={item}
+              changeQuantity={changeQuantity}
+              changeSelectedItem={changeSelectedItem}
+              removeItem={removeItem}
+            />
+          ))
           : null}
       </ScrollView>
       <View>

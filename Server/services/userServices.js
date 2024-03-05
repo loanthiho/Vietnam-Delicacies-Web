@@ -1,7 +1,7 @@
 const { User, Cart, Province } = require('../models');
 const jwt = require('jsonwebtoken');
 const bcryptjs = require('bcryptjs');
-const { resSuccessData, resBadRequest, resInternalError } = require('../utils/response');
+const { resSuccessData, resBadRequest, resInternalError, resNotFound } = require('../utils/response');
 
 const getAllUser = async (req, res, next) => {
     const rUser = await User.findAll();
@@ -12,6 +12,14 @@ const getAllUser = async (req, res, next) => {
     }
 };
 
+const getUserByEmail = async (req, res, next) => {
+    const { email } = req.params;
+    const result = await User.findOne({ where: { email: email } });
+    if (result) {
+        return resSuccessData(res, result, "Get usser by email successfully")
+    }
+    resNotFound(res, "Email haven't use yet!")
+}
 const createCart = async (res, user_id, dataRes) => {
     const newCart = await Cart.create({ user_id });
     if (newCart) {
@@ -115,5 +123,6 @@ const userSignIn = async (req, res, next) => {
 module.exports = {
     getAllUser,
     userSignUp,
-    userSignIn
+    userSignIn,
+    getUserByEmail
 };
