@@ -81,6 +81,9 @@ const App = () => {
       </NavigationContainer>
       <FlashMessage position="top" />
     </QueryClientProvider>
+    // <>
+    // <Seller />
+    // </>
   );
 };
 

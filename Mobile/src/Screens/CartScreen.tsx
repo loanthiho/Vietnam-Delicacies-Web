@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import {
   ScrollView,
   Text,
@@ -16,14 +16,24 @@ import CheckAuth from '../services/checkAuth';
 
 const CartScreen = ({ route, navigation }: any) => {
   const [cartItems, setCartItems] = useState<any[]>([]);
-  const [totalPrice, setTotalPrice] = useState<number>(0);
   CheckAuth({ navigation });
+
+  const totalPrice = useMemo(
+    () =>
+      cartItems.reduce?.((total, item) => {
+        return item.selected
+          ? total + item.Product.price * item.quantity
+          : total;
+      }, 0),
+    [cartItems],
+  );
+
   const fetchDataShoppingcart = async () => {
     const res = await axios.get(
       `http://nodejs-app-env-1.eba-q2t7wpq3.ap-southeast-2.elasticbeanstalk.com/carts`,
       {
         headers: {
-          Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYzMGE3ZmVkLTY2YzMtNGExYS1iNDdkLTU3MWM3YWFlYTQ0MyIsImVtYWlsIjoidGhpY3VzdG9tZXIuYTI0dGVjaG5vbG9neUBnbWFpLmNvbSIsInBhc3N3b3JkIjoiJDJhJDEwJEZkbGVtY3MwV0E3WEx3YWRzTjBGMXVYbkFKV21zdEVQWjhSM3pLeHh2UWUvMFlGYVBRa1dLIiwibmFtZSI6InRoaSBjdXN0b21lciIsImlhdCI6MTcwOTIyMzQzNn0.QuQ2zXw7HFSQs2D_XFPl_m7eSUT4lVVpuM_E6Ey0UTg`,
+          Authorization: `Bearer ${token}`,
         },
       },
     );
@@ -33,42 +43,61 @@ const CartScreen = ({ route, navigation }: any) => {
     fetchDataShoppingcart().then(res => setCartItems(res.data));
   }, []);
 
-  const updateTotalPrice = (priceChange: number) => {
-    setTotalPrice(prevTotalPrice => prevTotalPrice + priceChange);
+  const changeQuantity = async (itemId: string, diff: number) => {
+    setCartItems(prevCartItems =>
+      prevCartItems.map(item => {
+        if (item.id !== itemId) {
+          return item;
+        }
+        const newQuantity = Math.min(Math.max(item.quantity + diff, 1), 50);
+        return { ...item, quantity: newQuantity };
+      }),
+    );
+
+    const rIncrease = await axios.post(
+      `http://nodejs-app-env-1.eba-q2t7wpq3.ap-southeast-2.elasticbeanstalk.com/carts/update-qty/${itemId}`,
+      null,
+      {
+        params: { action: diff > 0 ? 'increase' : 'decrease' },
+        headers: { Authorization: `Bearer ${token}` },
+      },
+    );
+    if (rIncrease) {
+      console.log('decrease successfully:', rIncrease.data);
+    }
   };
 
-  useEffect(() => {
-    let sum = 0;
-    // cartItems.forEach(item => {
-    //   if (item.isChecked) {
-    //     sum += item.price * item.quantity;
-    //   }
-    // });
-    setTotalPrice(sum);
-  }, [cartItems]);
-
-  const increaseQuantity = (itemId: string) => {
+  const changeSelectedItem = async (itemId: string, selected: boolean) => {
     setCartItems(prevCartItems =>
-      prevCartItems.map(item =>
-        item.key === itemId ? { ...item, quantity: item.quantity + 1 } : item,
-      ),
+      prevCartItems.map(item => {
+        if (item.id !== itemId) {
+          return item;
+        }
+        return { ...item, selected };
+      }),
     );
   };
 
-  const decreaseQuantity = (itemId: string) => {
+  const removeItem = async (itemId: string) => {
     setCartItems(prevCartItems =>
-      prevCartItems.map(item =>
-        item.key === itemId && item.quantity > 1
-          ? { ...item, quantity: item.quantity - 1 }
-          : item,
-      ),
+      prevCartItems.filter(item => item.id !== itemId),
     );
-  };
 
-  const removeItem = (itemId: string) => {
-    setCartItems(prevCartItems =>
-      prevCartItems.filter(item => item.key !== itemId),
-    );
+    try {
+      const conRemove = await axios.delete(
+        `http://nodejs-app-env-1.eba-q2t7wpq3.ap-southeast-2.elasticbeanstalk.com/carts/${itemId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      );
+      if (conRemove) {
+        console.log('Remove successfully:', conRemove);
+      }
+    } catch (error) {
+      console.error('Lỗi khi remove product cart:', error);
+    }
   };
 
   return (
@@ -79,25 +108,28 @@ const CartScreen = ({ route, navigation }: any) => {
             <CartItem
               key={index.toString()}
               item={item}
-              increaseQuantity={increaseQuantity}
-              decreaseQuantity={decreaseQuantity}
+              changeQuantity={changeQuantity}
+              changeSelectedItem={changeSelectedItem}
               removeItem={removeItem}
-              updateTotalPrice={updateTotalPrice}
             />
           ))
           : null}
       </ScrollView>
       <View>
         <View style={styles.footer}>
-          <Text style={styles.checkoutText}>
-            Tổng <Text style={styles.tamTinhText}>(tạm tính):</Text>
-          </Text>
-          <Text style={styles.money}>{totalPrice}đ</Text>
+          <View style={styles.groupTotal}>
+            <Text style={styles.checkoutText}>
+              Tổng <Text style={styles.tamTinhText}>(tạm tính)</Text>
+            </Text>
+            <Text style={styles.money}>
+              {totalPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.')}đ
+            </Text>
+          </View>
           <TouchableOpacity
             style={styles.checkoutButton}
             onPress={() =>
               navigation.navigate('Payment', {
-                selectedItem: cartItems
+                selectedItem: cartItems,
               })
             }>
             <Text style={styles.checkoutButtonText}>Thanh toán</Text>
@@ -114,49 +146,40 @@ const styles = StyleSheet.create({
     padding: 10
   },
   footer: {
-    flexDirection: 'row',
+    padding: 10,
     justifyContent: 'space-between',
-    backgroundColor: 'white',
-    paddingHorizontal: 20,
+    flexDirection: 'row',
     paddingVertical: 10,
-    width: 'auto',
-    height: 130,
-    borderRadius: 10,
   },
   tamTinhText: {
-    fontSize: 18,
+    fontSize: 14,
+  },
+
+  groupTotal: {
+    // flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 10,
   },
   checkoutText: {
-    fontSize: 26,
+    fontSize: 20,
     fontWeight: 'bold',
     color: '#FFA000',
   },
   money: {
-    fontSize: 26,
+    fontSize: 20,
     fontWeight: 'bold',
     color: '#FFA000',
-    left: 300,
-    position: 'absolute',
-    top: 10,
-    marginRight: 30,
   },
   checkoutButton: {
-    backgroundColor: '#2E7D32',
-    borderRadius: 10,
-    width: 350,
-    height: 70,
-    top: 55,
-    left: 30,
-    textAlign: 'center',
-    position: 'absolute',
-    right: 30,
+    alignSelf: 'center',
   },
   checkoutButtonText: {
     color: 'white',
-    fontSize: 26,
+    backgroundColor: '#2E7D32',
+    borderRadius: 10,
+    fontSize: 16,
     fontWeight: 'bold',
-    textAlign: 'center',
-    top: 15,
+    padding: 10,
   },
 });
 
