@@ -55,6 +55,7 @@ const ChooseRole = ({ navigation }: any) => {
                 message: "Successful Register!",
                 type: "success",
             })
+            return navigation.navigate('SignIn')
         }
         if (mutation.isError) {
             showMessage({
@@ -67,6 +68,9 @@ const ChooseRole = ({ navigation }: any) => {
 
     const handleConfirm = async () => {
         mutation.mutate(formData);
+        if (mutation.isSuccess) {
+            return navigation.navigate('SignIn')
+        }
     }
     return (
         <View style={styles.choose_role__container}>

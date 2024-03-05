@@ -128,7 +128,9 @@ const SignIn: React.FC = ({ navigation, route }: any) => {
 
                         onChangeText={text => handleChange('email', text)}
                     />
-                    {errors?.email && <Text style={styles.error}>{errors?.email}</Text>}
+                    <View style={styles.groupErr}>
+                        {errors?.email && <Text style={styles.error}>{errors?.email}</Text>}
+                    </View>
                     <TextInput
                         style={styles.input}
                         placeholder="Mật khẩu"
@@ -137,9 +139,11 @@ const SignIn: React.FC = ({ navigation, route }: any) => {
                         value={userCredentials.password}
                         onChangeText={text => handleChange('password', text)}
                     />
-                    {errors?.password && (
-                        <Text style={styles.error}>{errors?.password}</Text>
-                    )}
+                    <View style={styles.groupErr}>
+                        {errors?.password && (
+                            <Text style={styles.error}>{errors?.password}</Text>
+                        )}
+                    </View>
 
                     <TouchableOpacity
                         onPress={handleSubmit}
@@ -244,15 +248,21 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         borderColor: '#ccc',
         borderRadius: 15,
-        marginBottom: 10,
         paddingHorizontal: 10,
         color: 'black',
         fontSize: 14,
     },
     error: {
+        marginLeft: 5,
         color: 'red',
         marginBottom: 5,
+        alignSelf: "flex-start"
     },
+
+    groupErr: {
+        height: 30,
+        alignSelf: "flex-start"
+    }
 });
 
 export default SignIn;

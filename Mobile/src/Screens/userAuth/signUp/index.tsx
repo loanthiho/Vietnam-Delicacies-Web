@@ -116,7 +116,11 @@ const SignUp: React.FC = ({ navigation }: any) => {
             placeholderTextColor={'gray'}
             onChangeText={text => handleChange('name', text)}
           />
-          {errors?.name && <Text style={styles.error}>{errors?.name}</Text>}
+          <View style={styles.groupErr}>
+            {errors?.name && (
+              <Text style={styles.error}>{errors?.name}</Text>
+            )}
+          </View>
           <TextInput
             style={styles.input}
             placeholder="Email"
@@ -125,7 +129,11 @@ const SignUp: React.FC = ({ navigation }: any) => {
 
             onChangeText={text => handleChange('email', text)}
           />
-          {errors?.email && <Text style={styles.error}>{errors?.email}</Text>}
+          <View style={styles.groupErr}>
+            {errors?.email && (
+              <Text style={styles.error}>{errors?.email}</Text>
+            )}
+          </View>
           <TextInput
             style={styles.input}
             placeholder="Mật khẩu"
@@ -134,30 +142,40 @@ const SignUp: React.FC = ({ navigation }: any) => {
             value={formData.password}
             onChangeText={text => handleChange('password', text)}
           />
-          {errors?.password && (
-            <Text style={styles.error}>{errors?.password}</Text>
-          )}
+          <View style={styles.groupErr}>
+            {errors?.password && (
+              <Text style={styles.error}>{errors?.password}</Text>
+            )}
+          </View>
 
           <TouchableOpacity
             onPress={handleSubmit}
             style={{
+              flex: 1,
               padding: 10,
               margin: 20,
               width: '100%',
               alignItems: 'center',
               borderRadius: 15,
               backgroundColor: '#FFA000',
+              flexDirection: "row",
+              gap: 15,
+              justifyContent: "center"
             }}>
-            <Text style={{ color: 'white', fontSize: 24 }}> Đăng Ký</Text>
-            {
-              isLoading ?
-                <LoaderKit
-                  style={{ width: 20, height: 20 }}
-                  name={'BallPulse'} // Optional: see list of animations below
-                  color={'white'} // Optional: color can be: 'red', 'green',... or '#ddd', '#ffffff',...
-                />
-                : null
-            }
+            <Text style={{ color: 'white', fontSize: 24, flex: 2, textAlign: 'right' }}> Đăng Ký</Text>
+            <View style={{ flex: 1, flexDirection: 'row', alignSelf: 'center' }}>
+
+              {
+                isLoading ?
+                  <LoaderKit
+                    style={{ width: 20, height: 20 }}
+                    name={'BallPulse'} // Optional: see list of animations below
+                    color={'white'} // Optional: color can be: 'red', 'green',... or '#ddd', '#ffffff',...
+                  />
+                  : null
+              }
+            </View>
+
           </TouchableOpacity>
 
           <View style={{ flexDirection: 'row' }}>
@@ -237,15 +255,19 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#ccc',
     borderRadius: 15,
-    marginBottom: 10,
     paddingHorizontal: 10,
     color: 'black',
     fontSize: 14,
   },
   error: {
+    marginLeft: 5,
     color: 'red',
     marginBottom: 5,
   },
+  groupErr: {
+    height: 30,
+    alignSelf: "flex-start"
+  }
 });
 
 export default SignUp;
