@@ -13,9 +13,10 @@ const getAllUser = async (req, res, next) => {
 };
 
 const getUserByEmail = async (req, res, next) => {
-    const { email } = req.query;
+    const { email } = req.params;
     const result = await User.findOne({ where: { email: email } });
     if (result) {
+        console.log(result);
         return resSuccessData(res, result, "Get usser by email successfully")
     }
     resNotFound(res, "Email haven't use yet!")

@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { showMessage } from 'react-native-flash-message';
 import {
   View,
   Text,
@@ -10,15 +11,15 @@ import {
   TouchableOpacity,
   ScrollView,
 } from 'react-native';
+import LoaderKit from 'react-native-loader-kit';
+
 import signupSchema from './Validation';
 import * as yup from 'yup';
 import { setDataCombine } from '../../../api/storage';
-import { KeyboardAvoidingView } from 'react-native';
-import checkExistEmail from './isExistEmail';
-import { useQuery } from '@tanstack/react-query';
-import axios from 'axios';
+import useCheckEmail from './useCheckExistEmail';
 
 const SignUp: React.FC = ({ navigation }: any) => {
+  const { isExistEmail } = useCheckEmail();
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -26,6 +27,8 @@ const SignUp: React.FC = ({ navigation }: any) => {
     role: '',
   });
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
+  const [isEE, setIsEE] = useState<boolean>(false);
+  const [isLoading, setIsloading] = useState<boolean>(false);
   const handleChange = (field: string, value: string) => {
     setFormData({
       ...formData,
@@ -52,8 +55,18 @@ const SignUp: React.FC = ({ navigation }: any) => {
     }
   };
 
+  useEffect(() => {
+    if (isEE) {
+      showMessage({
+        type: "danger",
+        message: "Email has ready exist!"
+      })
+    }
+    setIsEE(false)
+  }, [isLoading]);
   const handleSubmit = async () => {
     try {
+      setIsloading(true)
       await signupSchema.validate(formData, { abortEarly: false });
       if (
         errors?.name === '' &&
@@ -62,8 +75,16 @@ const SignUp: React.FC = ({ navigation }: any) => {
       ) {
         console.log("data form submit:", formData)
         await setDataCombine(formData);
-        checkExistEmail(formData.email);
-        // return navigation.navigate('ChooseRole');
+        const isExistE = await isExistEmail(formData.email);
+        console.log("type of isExistEmail:", typeof isExistE, isExistE);
+        if (isExistE) {
+          setIsEE(true);
+          setIsloading(false);
+          console.log("data user:", isEE)
+        } else {
+          setIsloading(false);
+          return navigation.navigate('ChooseRole');
+        }
       }
     } catch (error) {
       if (error instanceof yup.ValidationError) {
@@ -128,6 +149,15 @@ const SignUp: React.FC = ({ navigation }: any) => {
               backgroundColor: '#FFA000',
             }}>
             <Text style={{ color: 'white', fontSize: 24 }}> Đăng Ký</Text>
+            {
+              isLoading ?
+                <LoaderKit
+                  style={{ width: 20, height: 20 }}
+                  name={'BallPulse'} // Optional: see list of animations below
+                  color={'white'} // Optional: color can be: 'red', 'green',... or '#ddd', '#ffffff',...
+                />
+                : null
+            }
           </TouchableOpacity>
 
           <View style={{ flexDirection: 'row' }}>
