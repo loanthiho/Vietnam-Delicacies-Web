@@ -57,7 +57,7 @@ const App = () => {
           screenOptions={{
             headerShown: false,
           }}
-          initialRouteName="SignIn">
+          initialRouteName="Main">
           <Stack.Screen
             name="ProductDetailScreen"
             component={ProductDetailScreen}
