@@ -13,9 +13,11 @@ import CartItem from '../components/Cart/CartItem';
 
 import axios from 'axios';
 import CheckAuth from '../services/checkAuth';
+import { getUserAccessToken } from '../api/storage';
 
 const CartScreen = ({ route, navigation }: any) => {
   const [cartItems, setCartItems] = useState<any[]>([]);
+  const [token, setToken] = useState<any>('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImRkZTIwNzlhLThiNzUtNGQ2Yy1hOTMzLWJkY2Y2ZGQ5MzQyNCIsImVtYWlsIjoibG9hbkBnbWFpbC5jb20iLCJwYXNzd29yZCI6IiQyYSQxMCRJcHovRUdqTjR1RERMYXprbC5ia28uMkNVUDNlRW5QRnhVRi8yWkkxbi9sUlFOUFZQZTROaSIsIm5hbWUiOiJ0aGkgYSIsImlhdCI6MTcwOTY1MzcwNX0.2tOS8RduIZ6NC69rcvkQJjC_6CkKPFiCOr0Tbr9AUVQ');
   CheckAuth({ navigation });
 
   const totalPrice = useMemo(
@@ -143,7 +145,7 @@ const CartScreen = ({ route, navigation }: any) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 10
+    padding: 10,
   },
   footer: {
     padding: 10,

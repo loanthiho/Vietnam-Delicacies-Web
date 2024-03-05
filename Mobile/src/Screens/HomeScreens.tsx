@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -12,32 +12,32 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import Banner from '../components/Homepage/Banner';
 import FeaturedProductsList from '../components/Homepage/FeaturedProductsList';
 import SuggestionsList from '../components/Homepage/SuggestionsList';
-import {useQuery} from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import api from '../api/request';
 import axios from 'axios';
 
-const HomePage = ({navigation}: any) => {
+const HomePage = ({ navigation }: any) => {
   const [selectedItem, setSelectedItem] = useState('Tất cả');
   const datas = ['Tất cả', 'Miền Bắc', 'Miền Nam', 'Miền Trung'];
-  
-  const {isLoading, error, data} = useQuery({
+
+  const { isLoading, error, data } = useQuery({
     queryKey: ['products'],
     queryFn: async () => {
       const response = await api.get('products', {}, {});
-      return response;
+      return response.data;
     },
   });
-  if (data) {
-    console.log('data responesed:', data);
-  }
-  const renderItem = ({item}: any) => (
+  // if (data) {
+  //   console.log('data responesed:', data);
+  // }
+  const renderItem = ({ item }: any) => (
     <TouchableOpacity
       style={[
         styles.itemOption,
-        {backgroundColor: selectedItem === item ? '#2E7D32' : 'white'},
+        { backgroundColor: selectedItem === item ? '#2E7D32' : 'white' },
       ]}
       onPress={() => setSelectedItem(item)}>
-      <Text style={{color: selectedItem === item ? 'white' : 'black'}}>
+      <Text style={{ color: selectedItem === item ? 'white' : 'black' }}>
         {item}
       </Text>
     </TouchableOpacity>
@@ -77,7 +77,7 @@ const HomePage = ({navigation}: any) => {
         />
       </View>
 
-      <View style={{flex: 1}}>
+      <View style={{ flex: 1 }}>
         <FlatList
           data={data}
           keyExtractor={item => item.key}
@@ -85,7 +85,7 @@ const HomePage = ({navigation}: any) => {
           ListHeaderComponent={
             <>
               <Banner />
-              <Text style={{fontSize: 20, fontWeight: 'bold'}}>
+              <Text style={{ fontSize: 20, fontWeight: 'bold' }}>
                 Sản phẩm nổi bật{' '}
               </Text>
             </>
@@ -93,7 +93,7 @@ const HomePage = ({navigation}: any) => {
           ListFooterComponent={
             <>
               <FeaturedProductsList data={data} navigation={navigation} />
-              <Text style={{fontSize: 20, fontWeight: 'bold'}}>
+              <Text style={{ fontSize: 20, fontWeight: 'bold' }}>
                 Sản phẩm đề xuất
               </Text>
               <SuggestionsList data={data} navigation={navigation} />

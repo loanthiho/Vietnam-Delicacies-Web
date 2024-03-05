@@ -16,12 +16,12 @@ const getUAToken = async () => {
 getUAToken();
 const baseAxios = axios.create({
   // -- AWS baseURL______
-  // baseURL: `http://nodejs-app-env-1.eba-q2t7wpq3.ap-southeast-2.elasticbeanstalk.com/`,
+  baseURL: `http://nodejs-app-env-1.eba-q2t7wpq3.ap-southeast-2.elasticbeanstalk.com/`,
   // -- Local baseURL_____
-  baseURL: `https://e220-2402-9d80-41f-98da-34-d086-e91a-266.ngrok-free.app/`, // Can be usually change!
-  headers: {
-    Authorization: `Bearer ${TOKEN ? TOKEN : null}`,
-  },
+  // baseURL: `https://e220-2402-9d80-41f-98da-34-d086-e91a-266.ngrok-free.app/`, // Can be usually change!
+  // headers: {
+  //   Authorization: `Bearer ${TOKEN ? TOKEN : null}`,
+  // },
 });
 const api = {
   get: async (enpoint: string, params: {}, headers: {}) => {
