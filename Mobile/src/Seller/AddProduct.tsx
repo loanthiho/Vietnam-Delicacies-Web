@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import ProductImg from './ProductImg';
 import {Formik} from 'formik';
@@ -13,6 +13,7 @@ import {
   ScrollView,
   ActivityIndicator,
   StatusBar,
+  TouchableWithoutFeedback,
 } from 'react-native';
 import {Dropdown} from 'react-native-element-dropdown';
 import axios from 'axios';
@@ -42,6 +43,10 @@ const AddProduct = () => {
   const [isFocused, setIsFocused] = useState(false);
   const [isFocusedDetail, setIsFocusedDetail] = useState(false);
 
+  //Onpress
+  const priceInputRef = useRef(null);
+  const quantityInputRef = useRef(null);
+  const weightInputRef = useRef(null);
   //img
   const [img, setImg] = useState<string>('');
 
@@ -82,6 +87,12 @@ const AddProduct = () => {
     setIsFocused(true);
   };
 
+  const handlePress = inputRef => {
+    if (inputRef && inputRef.current) {
+      inputRef.current.focus();
+    }
+  };
+
   const handleBlur = () => {
     setIsFocused(false);
   };
@@ -95,8 +106,7 @@ const AddProduct = () => {
   };
 
   //domain
-  const apiDomain =
-    'http://nodejs-app-env-1.eba-q2t7wpq3.ap-southeast-2.elasticbeanstalk.com/domains';
+  const apiDomain = 'https://8d03-113-176-99-140.ngrok-free.app/domains';
   useEffect(() => {
     axios
       .get(apiDomain)
@@ -130,8 +140,7 @@ const AddProduct = () => {
   //domain
 
   //categories
-  const apiCategory =
-    'http://nodejs-app-env-1.eba-q2t7wpq3.ap-southeast-2.elasticbeanstalk.com/categories';
+  const apiCategory = 'https://8d03-113-176-99-140.ngrok-free.app/categories';
   useEffect(() => {
     axios
       .get(apiCategory)
@@ -164,9 +173,13 @@ const AddProduct = () => {
   };
 
   const token =
-    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjU3N2IwMTU3LTBkMDQtNDJkOC1iZmUxLTc2MzQyNDU1Zjc5ZiIsImVtYWlsIjoiZGkuaG8yNGdtYWlsLmNvbSIsInBhc3N3b3JkIjoiJDJhJDEwJEtmVS5mVW5lQlE0VFB1UkJxWENMWmVNR3lXcEtnNHpMS2NCa2JJUWg1QVo5LlBHN2RvaU5lIiwibmFtZSI6IkRpIEhvIiwiaWF0IjoxNzA5NDU1NTEyfQ.2kuxkqvavVSZNBtYSSjy5dcdP6O-2hXnDRMsCc56FQQ';
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjU3N2IwMTU3LTBkMDQtNDJkOC1iZmUxLTc2MzQyNDU1Zjc5ZiIsImVtYWlsIjoiZGkuaG8yNGdtYWlsLmNvbSIsInBhc3N3b3JkIjoiJDJhJDEwJEtmVS5mVW5lQlE0VFB1UkJxWENMWmVNR3lXcEtnNHpMS2NCa2JJUWg1QVo5LlBHN2RvaU5lIiwibmFtZSI6IkRpIEhvIiwiaWF0IjoxNzA5NTIwNTI3fQ.B4t59KH3rLA6anvfJHz2F7W651N5EmZTNYTpUI3ZfP8';
 
   const saveProduct = async () => {
+    if (nameProduct === '') {
+      Alert.alert('Vui lòng nhập thông tin');
+      return;
+    }
     setIsLoading(false);
     let ojb = {
       category_id: categoryId,
@@ -194,8 +207,7 @@ const AddProduct = () => {
 
     // console.log('data trước khi post', formData);
     // console.log('img trước khi post', img);
-    let url_api =
-      'http://nodejs-app-env-1.eba-q2t7wpq3.ap-southeast-2.elasticbeanstalk.com/products';
+    let url_api = 'https://8d03-113-176-99-140.ngrok-free.app/products';
     try {
       const response = await axios.post(url_api, formData, {
         headers: {
@@ -354,12 +366,18 @@ const AddProduct = () => {
               {touched.category && errors.category && (
                 <Text style={styles.errorTsx}>{errors.category}</Text>
               )}
+
               <View>
                 <View style={styles.group}>
-                  <Text style={[styles.textIcon, styles.titleName]}>
-                    Giá (vnđ)
-                  </Text>
+                  <TouchableWithoutFeedback
+                    onPress={() => handlePress(priceInputRef)}>
+                    <Text style={[styles.textIcon, styles.titleName]}>
+                      Giá (vnđ)
+                    </Text>
+                  </TouchableWithoutFeedback>
                   <TextInput
+                    ref={priceInputRef}
+                    onFocus={() => handlePress(priceInputRef)}
                     onBlur={() => setFieldTouched('priceProduct')}
                     style={[styles.textInput, {textAlign: 'right'}]}
                     placeholder="Giá"
@@ -375,12 +393,18 @@ const AddProduct = () => {
                   <Text style={styles.errorTsx}>{errors.priceProduct}</Text>
                 )}
               </View>
+
               <View>
                 <View style={styles.group}>
-                  <Text style={[styles.textIcon, styles.titleName]}>
-                    Số lượng
-                  </Text>
+                  <TouchableWithoutFeedback
+                    onPress={() => handlePress(quantityInputRef)}>
+                    <Text style={[styles.textIcon, styles.titleName]}>
+                      Số lượng
+                    </Text>
+                  </TouchableWithoutFeedback>
                   <TextInput
+                    ref={quantityInputRef}
+                    onFocus={() => handlePress(quantityInputRef)}
                     onBlur={() => setFieldTouched('quantityProduct')}
                     style={[styles.textInput, {textAlign: 'right'}]}
                     placeholder="Số lượng"
@@ -398,12 +422,18 @@ const AddProduct = () => {
                   <Text style={styles.errorTsx}>{errors.quantityProduct}</Text>
                 )}
               </View>
+
               <View>
                 <View style={styles.group}>
-                  <Text style={[styles.textIcon, styles.titleName]}>
-                    Cân nặng (kg)
-                  </Text>
+                  <TouchableWithoutFeedback
+                    onPress={() => handlePress(weightInputRef)}>
+                    <Text style={[styles.textIcon, styles.titleName]}>
+                      Cân nặng (kg)
+                    </Text>
+                  </TouchableWithoutFeedback>
                   <TextInput
+                    ref={weightInputRef}
+                    onFocus={() => handlePress(weightInputRef)}
                     onBlur={() => setFieldTouched('weightProduct')}
                     value={
                       formatQuantity(weightProduct) || values.weightProduct
@@ -421,6 +451,7 @@ const AddProduct = () => {
                   <Text style={styles.errorTsx}>{errors.weightProduct}</Text>
                 )}
               </View>
+
               <TouchableOpacity
                 onPress={saveProduct}
                 disabled={!isValid}

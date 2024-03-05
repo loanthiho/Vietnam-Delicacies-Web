@@ -1,23 +1,24 @@
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const setUserCredentials = async (data: any) => {
-    await AsyncStorage.setItem('user', JSON.stringify(data))
-        .then(res => ({ msg: "Storage data user successfully" }))
-        .catch(err => console.log("Error Storage user credentials", err));
+const setTotalPriceLocal = async (price: any) => {
+  try {
+    await AsyncStorage.setItem('totalPrice', JSON.stringify(price));
+  } catch (error) {
+    console.log('Error setting combine user data:', error);
+  }
 };
 
-
-const getUserCredentials = async () => await AsyncStorage.getItem('user',
-    (error, result) => {
-        if (error) {
-            return console.log("Error get data user:", error);
-        }
-        else if (result) {
-            return JSON.parse(result);
-        }
+const getTotalPriceLocal = async () => {
+  try {
+    const result = await AsyncStorage.getItem('totalPrice');
+    if (result) {
+      return JSON.parse(result);
     }
-)
+    return null;
+  } catch (error) {
+    console.log('Error Error get total price:', error);
+    return null;
+  }
+};
 
-
-
-export { getUserCredentials, setUserCredentials }
+export {setTotalPriceLocal, getTotalPriceLocal};

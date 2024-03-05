@@ -74,6 +74,9 @@ const App = () => {
         </Stack.Navigator>
       </NavigationContainer>
     </QueryClientProvider>
+    // <>
+    // <Seller />
+    // </>
   );
 };
 
