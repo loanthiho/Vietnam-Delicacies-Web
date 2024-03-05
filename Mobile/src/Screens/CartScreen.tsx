@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useMemo, useState} from 'react';
 import {
   ScrollView,
   Text,
@@ -7,7 +7,7 @@ import {
   StyleSheet,
 } from 'react-native';
 
-import {GestureHandlerRootView, Swipeable} from 'react-native-gesture-handler';
+import {GestureHandlerRootView} from 'react-native-gesture-handler';
 
 import CartItem from '../components/Cart/CartItem';
 
@@ -16,11 +16,20 @@ import {token} from '../api/request';
 
 const CartScreen = ({route, navigation}: any) => {
   const [cartItems, setCartItems] = useState<any[]>([]);
-  const [totalPrice, setTotalPrice] = useState<number>(0);
+
+  const totalPrice = useMemo(
+    () =>
+      cartItems.reduce?.((total, item) => {
+        return item.selected
+          ? total + item.Product.price * item.quantity
+          : total;
+      }, 0),
+    [cartItems],
+  );
 
   const fetchDataShoppingcart = async () => {
     const res = await axios.get(
-      `https://972f-2401-d800-25d1-71ab-dd89-e81e-b165-cabd.ngrok-free.app/carts`,
+      `http://nodejs-app-env-1.eba-q2t7wpq3.ap-southeast-2.elasticbeanstalk.com/carts`,
       {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -33,76 +42,61 @@ const CartScreen = ({route, navigation}: any) => {
     fetchDataShoppingcart().then(res => setCartItems(res.data));
   }, []);
 
-  const updateTotalPrice = (priceChange: number) => {
-    setTotalPrice(prevTotalPrice => prevTotalPrice + priceChange);
+  const changeQuantity = async (itemId: string, diff: number) => {
+    setCartItems(prevCartItems =>
+      prevCartItems.map(item => {
+        if (item.id !== itemId) {
+          return item;
+        }
+        const newQuantity = Math.min(Math.max(item.quantity + diff, 1), 50);
+        return {...item, quantity: newQuantity};
+      }),
+    );
+
+    const rIncrease = await axios.post(
+      `http://nodejs-app-env-1.eba-q2t7wpq3.ap-southeast-2.elasticbeanstalk.com/carts/update-qty/${itemId}`,
+      null,
+      {
+        params: {action: diff > 0 ? 'increase' : 'decrease'},
+        headers: {Authorization: `Bearer ${token}`},
+      },
+    );
+    if (rIncrease) {
+      console.log('decrease successfully:', rIncrease.data);
+    }
   };
 
-  useEffect(() => {
-    let sum = 0;
-    // cartItems.forEach(item => {
-    //   if (item.isChecked) {
-    //     sum += item.price * item.quantity;
-    //   }
-    // });
-    setTotalPrice(sum);
-  }, [cartItems]);
-
-  const increaseQuantity = async (itemId: string) => {
+  const changeSelectedItem = async (itemId: string, selected: boolean) => {
     setCartItems(prevCartItems =>
-      prevCartItems.map(item =>
-        item.id === itemId && item.quantity < 50
-          ? {...item, quantity: item.quantity + 1}
-          : item,
-      ),
+      prevCartItems.map(item => {
+        if (item.id !== itemId) {
+          return item;
+        }
+        return {...item, selected};
+      }),
     );
-    console.log('Increasing ...');
-    // try {
-    //   const rIncrease = await axios.post(
-    //     `http://nodejs-app-env-1.eba-q2t7wpq3.ap-southeast-2.elasticbeanstalk.com/carts/update-qty/${itemId}`,
-    //     null,
-    //     {
-    //       params: {action: 'increase'},
-    //       headers: {Authorization: `Bearer ${token}`},
-    //     },
-    //   );
-    //   if (rIncrease) {
-    //     console.log('Increase successfully:', rIncrease);
-    //   }
-    // } catch (error) {
-    //   console.error('Lỗi khi increase product cart:', error);
-    // }
   };
 
-  const decreaseQuantity = async (itemId: string) => {
+  const removeItem = async (itemId: string) => {
     setCartItems(prevCartItems =>
-      prevCartItems.map(item =>
-        item.id === itemId && item.quantity > 1
-          ? {...item, quantity: item.quantity - 1}
-          : item,
-      ),
+      prevCartItems.filter(item => item.id !== itemId),
     );
-    console.log('Decreasing ...');
-    // try {
-    //   const rIncrease = await axios.post(
-    //     `http://nodejs-app-env-1.eba-q2t7wpq3.ap-southeast-2.elasticbeanstalk.com/carts/update-qty/${itemId}`,
-    //     null,
-    //     {
-    //       params: {action: 'decrease'},
-    //       headers: {Authorization: `Bearer ${token}`},
-    //     },
-    //   );
-    //   if (rIncrease) {
-    //     console.log('decrease successfully:', rIncrease.data);
-    //   }
-    // } catch (error) {
-    //   console.error('Lỗi khi increase product cart:', error);
-    // }
-  };
 
-  const removeItem = (itemId: string) => {
-    setCartItems(prevCartItems =>
-      prevCartItems.filter(item => item.key !== itemId),
-    );
+    try {
+      const conRemove = await axios.delete(
+        `http://nodejs-app-env-1.eba-q2t7wpq3.ap-southeast-2.elasticbeanstalk.com/carts/${itemId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      );
+      if (conRemove) {
+        console.log('Remove successfully:', conRemove);
+      }
+    } catch (error) {
+      console.error('Lỗi khi remove product cart:', error);
+    }
   };
 
   return (
@@ -113,10 +107,9 @@ const CartScreen = ({route, navigation}: any) => {
               <CartItem
                 key={index.toString()}
                 item={item}
-                increaseQuantity={increaseQuantity}
-                decreaseQuantity={decreaseQuantity}
+                changeQuantity={changeQuantity}
+                changeSelectedItem={changeSelectedItem}
                 removeItem={removeItem}
-                updateTotalPrice={updateTotalPrice}
               />
             ))
           : null}
@@ -125,9 +118,11 @@ const CartScreen = ({route, navigation}: any) => {
         <View style={styles.footer}>
           <View style={styles.groupTotal}>
             <Text style={styles.checkoutText}>
-              Tổng <Text style={styles.tamTinhText}>(tạm tính):</Text>
+              Tổng <Text style={styles.tamTinhText}>(tạm tính)</Text>
             </Text>
-            <Text style={styles.money}>{totalPrice}đ</Text>
+            <Text style={styles.money}>
+              {totalPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.')}đ
+            </Text>
           </View>
           <TouchableOpacity
             style={styles.checkoutButton}
@@ -150,6 +145,9 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   footer: {
+    padding: 10,
+    justifyContent: 'space-between',
+    flexDirection: 'row',
     paddingVertical: 10,
   },
   tamTinhText: {
@@ -157,7 +155,7 @@ const styles = StyleSheet.create({
   },
 
   groupTotal: {
-    flexDirection: 'row',
+    // flexDirection: 'row',
     justifyContent: 'space-between',
     marginBottom: 10,
   },
@@ -172,14 +170,14 @@ const styles = StyleSheet.create({
     color: '#FFA000',
   },
   checkoutButton: {
-    backgroundColor: '#2E7D32',
-    borderRadius: 10,
+    alignSelf: 'center',
   },
   checkoutButtonText: {
     color: 'white',
-    fontSize: 20,
+    backgroundColor: '#2E7D32',
+    borderRadius: 10,
+    fontSize: 16,
     fontWeight: 'bold',
-    textAlign: 'center',
     padding: 10,
   },
 });

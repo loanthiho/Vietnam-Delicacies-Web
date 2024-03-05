@@ -5,25 +5,14 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 
 const CartItem = ({
   item,
-  increaseQuantity,
-  decreaseQuantity,
+  changeQuantity,
+  changeSelectedItem,
   removeItem,
-  updateTotalPrice,
 }: any) => {
-  const [isChecked, setIsChecked] = useState(false);
 
-  const toggleCheckbox = () => {
-    setIsChecked(!isChecked);
-    const priceChange = isChecked
-      ? -item.Product.price * item.quantity
-      : item.Product.price * item.quantity;
 
-    updateTotalPrice(priceChange);
-    console.log('so luong', item.quantity);
-  };
-
+  const toggleCheckbox = () => changeSelectedItem(item.id, !item.selected);
   const defaultImagePath = require('../../assets/no_image.jpg');
-
   const formatPrice = (price: {toString: () => string}) => {
     return price?.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
   };
@@ -33,13 +22,13 @@ const CartItem = ({
       renderRightActions={() => (
         <TouchableOpacity
           style={styles.deleteButton}
-          onPress={() => removeItem(item.key)}>
+          onPress={() => removeItem(item.id)}>
           <Text style={styles.deleteButtonText}>Xoá</Text>
         </TouchableOpacity>
       )}>
       <View style={styles.itemContainer}>
         <TouchableOpacity onPress={toggleCheckbox}>
-          {isChecked ? (
+          {item.selected ? (
             <MaterialCommunityIcons
               name="checkbox-marked"
               style={styles.checkboxButton}
@@ -70,13 +59,13 @@ const CartItem = ({
 
             <View style={styles.quantityContainer}>
               <TouchableOpacity
-                onPress={() => decreaseQuantity(item.id)}
+                onPress={async () => await changeQuantity(item.id, -1)}
                 style={[styles.button, {backgroundColor: '#FFA000'}]}>
                 <Text style={styles.buttonText}>-</Text>
               </TouchableOpacity>
               <Text style={styles.quantity}>{item?.quantity}</Text>
               <TouchableOpacity
-                onPress={() => increaseQuantity(item.id)}
+                onPress={async () => await changeQuantity(item.id, 1)}
                 style={[styles.button, {backgroundColor: '#FFA000'}]}>
                 <Text style={styles.buttonText}>+</Text>
               </TouchableOpacity>
@@ -137,12 +126,14 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
   button: {
-    width: 20,
+    width: 26,
     borderRadius: 5,
+    alignSelf: 'flex-end',
+    alignItems: 'flex-end',
   },
   buttonText: {
     backgroundColor: '#ffa000',
-    fontSize: 20,
+    fontSize: 18,
     alignSelf: 'center',
     color: 'white',
   },
@@ -176,11 +167,13 @@ const styles = StyleSheet.create({
     right: 6,
     flexDirection: 'row',
     gap: 10,
-    alignSelf: 'center',
+    alignSelf: 'flex-end',
+    bottom: 12,
   },
   quantity: {
     fontSize: 12,
     alignSelf: 'center',
+    color: '#000',
   },
   checkboxButton: {
     color: '#2E7D32',

@@ -6,7 +6,7 @@ export const addToCart = async (id_product: string, navigation: any) => {
     console.log('posting ...');
     console.log('id product befor add:', id_product);
     const res = await axios.post(
-      `https://972f-2401-d800-25d1-71ab-dd89-e81e-b165-cabd.ngrok-free.app/carts/${id_product}`,
+      `http://nodejs-app-env-1.eba-q2t7wpq3.ap-southeast-2.elasticbeanstalk.com/carts/${id_product}`,
       null,
       {
         headers: {
@@ -26,7 +26,7 @@ export const addToCart = async (id_product: string, navigation: any) => {
 
 const fetchDataShoppingcart = async () => {
   const res = await axios.get(
-    'https://972f-2401-d800-25d1-71ab-dd89-e81e-b165-cabd.ngrok-free.app/carts',
+    'http://nodejs-app-env-1.eba-q2t7wpq3.ap-southeast-2.elasticbeanstalk.com/carts',
     {
       headers: {
         Authorization: `Bearer ${token}`,
