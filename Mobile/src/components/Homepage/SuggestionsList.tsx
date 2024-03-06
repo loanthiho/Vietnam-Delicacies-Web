@@ -2,7 +2,7 @@ import React from 'react';
 import { View, Text, FlatList, TouchableOpacity, Image, StyleSheet } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
-const SuggestionsList = ({ data,navigation }:any) => {
+const SuggestionsList = ({ data, navigation }: any) => {
     return (
         <FlatList
             horizontal={false}
@@ -19,9 +19,9 @@ const SuggestionsList = ({ data,navigation }:any) => {
                     onPress={() => navigation.navigate('ProductDetailScreen', { selectedItem: item })}>
                         <View style={styles.groupProduct}> 
                     <View style={styles.featuredProducts}>
-                    {item.Files.length > 0 ? (
+                        {item.Files.length > 0 ? (
                             <Image
-                                source={{ uri: item.Files[0].src}}
+                                source={{ uri: item.Files[0].src }}
                                 style={styles.itemPhoto}
                                 resizeMode="cover"
                             />
@@ -47,7 +47,7 @@ const SuggestionsList = ({ data,navigation }:any) => {
                     </View>
                 </TouchableOpacity>
             )}
-            keyExtractor={item => item.key}
+            keyExtractor={item => item.id}
         />
     );
 };

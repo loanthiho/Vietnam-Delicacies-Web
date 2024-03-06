@@ -1,49 +1,57 @@
 import axios from 'axios';
 import {getUserAccessToken} from './storage';
 
-var TOKEN = '';
-const getUAToken = async () => {
-  try {
-    const userCredentials = await getUserAccessToken();
-    if (userCredentials) {
-      TOKEN = userCredentials.token;
+const buildAxios = async (auth: boolean = true) => {
+  let headers = {};
+  if (auth) {
+    console.log('before token');
+    const tokenData = await getUserAccessToken();
+    console.log(' token', tokenData);
+    if (!tokenData) {
+      // redirect to login
     }
-  } catch (error) {
-    console.log('Error while get token');
+    headers = {Authorization: `Bearer ${tokenData.token}`};
   }
+  return axios.create({
+    // baseURL: `http://nodejs-app-env-1.eba-q2t7wpq3.ap-southeast-2.elasticbeanstalk.com/`,
+    baseURL: `https://e624-2402-9d80-41c-33f-8503-cce1-f332-d297.ngrok-free.app/`,
+    headers,
+  });
 };
 
-getUAToken();
-const baseAxios = axios.create({
-  // -- AWS baseURL______
-  baseURL: `http://nodejs-app-env-1.eba-q2t7wpq3.ap-southeast-2.elasticbeanstalk.com/`,
-  // -- Local baseURL_____
-  // baseURL: `https://e220-2402-9d80-41f-98da-34-d086-e91a-266.ngrok-free.app/`, // Can be usually change!
-  // headers: {
-  //   Authorization: `Bearer ${TOKEN ? TOKEN : null}`,
-  // },
-});
+const performRequest = async (
+  method: string,
+  endpoint: string,
+  auth: boolean = true,
+  data: {} = {},
+  params: {} = {},
+  headers: {} = {},
+) => {
+  console.log('perform', method);
+  const client = await buildAxios(auth);
+  console.log('client', client);
+  const response = await client.request({
+    method,
+    url: endpoint,
+    params,
+    headers,
+    data,
+  });
+  console.log('res', response);
+  return response;
+};
+
 const api = {
-  get: async (enpoint: string, params: {}, headers: {}) => {
-    const response = await baseAxios.get(enpoint, {params, headers});
-    return response;
-  },
-  post: async (enpoint: string, data: {}, params: {}, headers: {}) => {
-    const response = await baseAxios.post(enpoint, data, {params, headers});
-    return response;
-  },
-  patch: async (enpoint: string, data: {}, params: {}, headers: {}) => {
-    const response = await baseAxios.patch(enpoint, data, {params, headers});
-    return response;
-  },
-  put: async (enpoint: string, data: {}, params: {}, headers: {}) => {
-    const response = await baseAxios.put(enpoint, data, {params, headers});
-    return response;
-  },
-  delete: async (enpoint: string, params: {}, headers: {}) => {
-    const response = await baseAxios.delete(enpoint, {params, headers});
-    return response;
-  },
+  get: async (endpoint: string, {params, headers, auth}: any = {}) =>
+    performRequest('get', endpoint, auth, {}, params, headers),
+  post: async (endpoint: string, {params, data, headers, auth}: any = {}) =>
+    performRequest('post', endpoint, auth, data, params, headers),
+  patch: async (endpoint: string, {params, data, headers, auth}: any = {}) =>
+    performRequest('patch', endpoint, auth, data, params, headers),
+  put: async (endpoint: string, {params, data, headers, auth}: any = {}) =>
+    performRequest('put', endpoint, auth, data, params, headers),
+  delete: async (endpoint: string, {params, data, headers, auth}: any = {}) =>
+    performRequest('delete', endpoint, auth, {}, params, headers),
 };
 
 export default api;

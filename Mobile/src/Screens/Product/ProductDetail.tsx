@@ -10,28 +10,18 @@ import {
 import {addToCart} from '../../Hooks/addToCart';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import {getUserAccessToken} from '../../api/storage';
+import {useQueryClient} from '@tanstack/react-query';
 
 const ProductDetailScreen = ({route, navigation}: any) => {
   const [quantity, setQuantity] = useState(1);
-  const [token, setToken] = useState('');
+  const queryClient = useQueryClient();
 
-  const addToCartHandler = (product_id: any) => {
+  const addToCartHandler = async (product_id: any) => {
     console.log('id Product add to cart', product_id);
-    if (token) {
-      // addToCart(product_id, navigation, token);
-      console.log('token:', token);
-    } else {
-      console.log('there is no token!');
-    }
+    await addToCart(product_id);
+    queryClient.invalidateQueries({queryKey: ['shoppingCart']});
+    navigation.navigate('Giỏ hàng', {id: product_id});
   };
-  const fetToken = async () => {
-    const token = (await getUserAccessToken()).token;
-    setToken(token);
-  };
-  useEffect(() => {
-    fetToken();
-  }, []);
-
   if (!route.params || !route.params.selectedItem) {
     return (
       <ScrollView style={styles.container}>
@@ -42,7 +32,7 @@ const ProductDetailScreen = ({route, navigation}: any) => {
 
   const {selectedItem}: any = route.params;
 
-  console.log('my data', selectedItem);
+  // console.log('my data', selectedItem);
 
   const decreaseQuantity = () => {
     if (quantity > 1) {

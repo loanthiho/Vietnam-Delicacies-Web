@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import {
   View,
   Text,
@@ -9,7 +9,7 @@ import {
   FlatList,
 } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import {useQuery} from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import api from '../../api/request';
 import SuggestionsList from '../../components/Homepage/SuggestionsList';
 const ShopOwnerScreen = ({
@@ -19,28 +19,28 @@ const ShopOwnerScreen = ({
   navigation: any;
   route: any;
 }) => {
-  const {selectedItem}: {selectedItem: any} = route.params;
+  const { selectedItem }: { selectedItem: any } = route.params;
 
-  const {data} = useQuery({
+  const { data } = useQuery({
     queryKey: ['products'],
     queryFn: async () => {
-      const response = await api.get('products', {}, {});
+      const response = await api.get('products', { auth: false });
       return response;
     },
   });
-  console.log('my product', selectedItem);
+  // console.log('my product', selectedItem);
 
-  const renderProductOwner = ({item}: any) => {
+  const renderProductOwner = ({ item }: any) => {
     return (
       <View>
         <Image
-          source={{uri: item.Files[0].src}}
+          source={{ uri: item.Files[0].src }}
           style={styles.itemPhoto}
           resizeMode="cover"
         />
         <View>
           <Text style={styles.itemText}>{item.name}</Text>
-          <View style={{flexDirection: 'row', alignItems: 'center'}}>
+          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
             <Ionicons name="star-outline" style={styles.starIcon} />
             <Text style={styles.textIcon}>4.5</Text>
             <Ionicons name="heart-outline" style={styles.heartIcon} />
@@ -79,7 +79,7 @@ const ShopOwnerScreen = ({
         renderItem={renderProductOwner}
         keyExtractor={item => item.key}
       />
-       <SuggestionsList data={data} navigation={navigation} />
+      <SuggestionsList data={data} navigation={navigation} />
     </View>
   );
 };

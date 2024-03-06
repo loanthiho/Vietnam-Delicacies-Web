@@ -1,4 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {useNavigation} from '@react-navigation/native';
 
 const getUserAccessToken = async () => {
   try {
@@ -42,10 +43,12 @@ const getUserCombineData = async () => {
   }
 };
 
-const LogOut = async () => {
+const LogOut = async (navigation: any) => {
   try {
-    await AsyncStorage.removeItem('user');
-    console.log('Data deleted successfully.');
+    await AsyncStorage.removeItem('user').then(res => {
+      console.log('Data deleted successfully.');
+      return navigation.navigate('SignIn');
+    });
   } catch (error) {
     console.log('Error deleting data:', error);
   }

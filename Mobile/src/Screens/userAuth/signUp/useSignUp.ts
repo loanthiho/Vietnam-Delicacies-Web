@@ -34,12 +34,10 @@ const useSignUp = (): signUpHook => {
     const mutation = useMutation({
       mutationKey: ['signUp'],
       mutationFn: async () => {
-        const response = await api.post(
-          'users/sign-up',
-          userCredentials,
-          {},
-          {},
-        );
+        const response = await api.post('users/sign-up', {
+          auth: false,
+          data: userCredentials,
+        });
         return response;
       },
     });

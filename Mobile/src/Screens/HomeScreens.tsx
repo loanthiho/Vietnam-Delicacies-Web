@@ -24,16 +24,12 @@ const HomePage = ({navigation}: any) => {
   const {isLoading, error, data} = useQuery({
     queryKey: ['products'],
     queryFn: async () => {
-      const response = await axios.get(
-        `http://nodejs-app-env-1.eba-q2t7wpq3.ap-southeast-2.elasticbeanstalk.com/products`,
-      );
+      const response = await api.get('products', { auth: false });
       return response.data;
     },
   });
-  // if (data) {
-  //   console.log('data responesed:', data);
-  // }
-  const renderItem = ({item}: any) => (
+
+  const renderItem = ({ item }: any) => (
     <TouchableOpacity
       style={[
         styles.itemOption,

@@ -45,7 +45,8 @@ const ChooseRole = ({ navigation }: any) => {
 
     const mutation = useMutation({
         mutationFn: async (data: {}) => {
-            return await api.post('users/sign-up', data, {}, {})
+            console.log('sign up data', data)
+            return await api.post('users/sign-up', { data, auth: false })
         }
     })
 
