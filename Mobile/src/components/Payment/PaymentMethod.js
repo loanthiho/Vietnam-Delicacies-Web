@@ -35,6 +35,10 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    borderRadius: 10,
+    marginHorizontal: 5,
+    padding: 10,
+    paddingLeft:0,
   },
   paymentMethodButton: {
     padding: 20,
@@ -42,7 +46,7 @@ const styles = StyleSheet.create({
     borderColor: '#CCCCCC',
     borderRadius: 10,
     marginBottom: 10,
-    width: 320,
+    width: 300,
     height: 70,
     justifyContent: 'center', 
     margin: 10,
@@ -60,7 +64,7 @@ const styles = StyleSheet.create({
   paymentMethodText: {
     fontWeight: 'bold',
     color: '#333333',
-    fontSize: 20,
+    fontSize: 17,
     marginLeft: 10, 
   },
   zalopay: {

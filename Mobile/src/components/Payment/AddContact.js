@@ -20,7 +20,7 @@ const Contact = ({ navigation }) => {
       await AsyncStorage.setItem('phoneNumber', phoneNumber);
       await AsyncStorage.setItem('address', address);
       console.log('Thông tin liên hệ đã được lưu vào AsyncStorage.');
-      navigation.navigate('Payment');
+      navigation.navigate('PaymentScreen');
     } catch (error) {
       console.error('Lỗi khi lưu thông tin liên hệ vào AsyncStorage:', error);
     }

@@ -130,8 +130,8 @@ const CartScreen = ({ route, navigation }: any) => {
           <TouchableOpacity
             style={styles.checkoutButton}
             onPress={() =>
-              navigation.navigate('Payment', {
-                selectedItem: cartItems,
+              navigation.navigate('PaymentScreen', {
+                // selectedItem: cartItems,
               })
             }>
             <Text style={styles.checkoutButtonText}>Thanh toán</Text>

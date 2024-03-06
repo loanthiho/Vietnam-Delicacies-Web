@@ -83,7 +83,7 @@ const styles = StyleSheet.create({
   },
   title: {
     paddingLeft: 10,
-    fontSize: 20,
+    fontSize: 15,
     fontWeight: 'bold',
     color: '#FFA000',
     marginBottom: 10,

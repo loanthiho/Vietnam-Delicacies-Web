@@ -39,7 +39,7 @@ const EditContact = ({ navigation }) => {
       await AsyncStorage.setItem('address', address);
       setSave(true)
       console.log('Thông tin liên hệ đã được lưu vào AsyncStorage.');
-      navigation.navigate('Payment');
+      navigation.navigate('PaymentScreen');
     } catch (error) {
       console.error('Lỗi khi lưu thông tin liên hệ vào AsyncStorage:', error);
       setSave(false)

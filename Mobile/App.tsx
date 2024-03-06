@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
@@ -19,8 +19,9 @@ import AddProduct from './src/Seller/AddProduct';
 import SignUp from './src/Screens/userAuth/signUp';
 import ChooseRole from './src/Screens/userAuth/signUp/ChooseRule';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import FlashMessage from "react-native-flash-message";
+import FlashMessage from 'react-native-flash-message';
 import SignIn from './src/Screens/userAuth/logIn';
+
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
@@ -39,13 +40,15 @@ const TabNavigator = () => {
           } else if (route.name === 'Tôi') {
             iconName = focused ? 'person' : 'person-outline';
           }
-          return <Ionicons name={iconName} size={size} color="#2E7d32" />;
+          return <Ionicons name={iconName} size={28} color="#2E7d32" />;
         },
-      })}>
-      <Tab.Screen name="Trang chủ" component={HomePage} />
-      <Tab.Screen name="Giỏ hàng" component={CartScreen} />
-      <Tab.Screen name="Tin nhắn" component={ChatScreen} />
-      <Tab.Screen name="Tôi" component={ProfileScreen} />
+        tabBarLabel: '',
+      })}
+    >
+      <Tab.Screen name="Trang chủ" component={HomePage} options={{ headerShown: false }} />
+      <Tab.Screen name="Giỏ hàng" component={CartScreen} options={{ headerShown: false }}/>
+      <Tab.Screen name="Tin nhắn" component={ChatScreen} options={{ headerShown: false }}/>
+      <Tab.Screen name="Tôi" component={ProfileScreen} options={{ headerShown: false }}/>
     </Tab.Navigator>
   );
 };
@@ -56,30 +59,19 @@ const App = () => {
     <QueryClientProvider client={queryClient}>
       <NavigationContainer>
         <Stack.Navigator
-          screenOptions={{
-            headerShown: false,
-          }}
-          initialRouteName="Main">
+          screenOptions={{ headerShown: false}}
+          initialRouteName="Main"
+        >
           <Stack.Screen
             name="ProductDetailScreen"
             component={ProductDetailScreen}
           />
-          <Stack.Screen
-            name="ShopOwnerScreen"
-            component={ShopOwnerScreen}
-          />
-          <Stack.Screen
-            name="Payment"
-            component={Payment}
-          />
-          <Stack.Screen
-            name="Main"
-            component={TabNavigator}
-          />
-          <Stack.Screen name='SignUp' component={SignUp} />
-          <Stack.Screen name='ChooseRole' component={ChooseRole} />
-          <Stack.Screen name='SignIn' component={SignIn} />
-          <Stack.Screen name="Payment" component={Payment} />
+          <Stack.Screen name="PaymentScreen" component={Payment} />
+          <Stack.Screen name="ShopOwnerScreen" component={ShopOwnerScreen} />
+          <Stack.Screen name="Main" component={TabNavigator} />
+          <Stack.Screen name="SignUp" component={SignUp} />
+          <Stack.Screen name="ChooseRole" component={ChooseRole} />
+          <Stack.Screen name="SignIn" component={SignIn} />
           <Stack.Screen name="Contact" component={Contact} />
           <Stack.Screen name="EditContact" component={EditContact} />
           <Stack.Screen name="AddressComponent" component={AddressComponent} />
@@ -87,9 +79,6 @@ const App = () => {
       </NavigationContainer>
       <FlashMessage position="top" />
     </QueryClientProvider>
-    // <>
-    // <Seller />
-    // </>
   );
 };
 

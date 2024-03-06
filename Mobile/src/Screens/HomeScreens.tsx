@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   View,
   Text,
@@ -8,36 +8,39 @@ import {
   TextInput,
   FlatList,
 } from 'react-native';
+import LoaderKit from 'react-native-loader-kit';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import Banner from '../components/Homepage/Banner';
 import FeaturedProductsList from '../components/Homepage/FeaturedProductsList';
 import SuggestionsList from '../components/Homepage/SuggestionsList';
-import { useQuery } from '@tanstack/react-query';
+import {useQuery} from '@tanstack/react-query';
 import api from '../api/request';
 import axios from 'axios';
 
-const HomePage = ({ navigation }: any) => {
+const HomePage = ({navigation}: any) => {
   const [selectedItem, setSelectedItem] = useState('Tất cả');
   const datas = ['Tất cả', 'Miền Bắc', 'Miền Nam', 'Miền Trung'];
 
-  const { isLoading, error, data } = useQuery({
+  const {isLoading, error, data} = useQuery({
     queryKey: ['products'],
     queryFn: async () => {
-      const response = await api.get('products', {}, {});
+      const response = await axios.get(
+        `http://nodejs-app-env-1.eba-q2t7wpq3.ap-southeast-2.elasticbeanstalk.com/products`,
+      );
       return response.data;
     },
   });
   // if (data) {
   //   console.log('data responesed:', data);
   // }
-  const renderItem = ({ item }: any) => (
+  const renderItem = ({item}: any) => (
     <TouchableOpacity
       style={[
         styles.itemOption,
-        { backgroundColor: selectedItem === item ? '#2E7D32' : 'white' },
+        {backgroundColor: selectedItem === item ? '#2E7D32' : 'white'},
       ]}
       onPress={() => setSelectedItem(item)}>
-      <Text style={{ color: selectedItem === item ? 'white' : 'black' }}>
+      <Text style={{color: selectedItem === item ? 'white' : 'black'}}>
         {item}
       </Text>
     </TouchableOpacity>
@@ -47,6 +50,13 @@ const HomePage = ({ navigation }: any) => {
   if (error) return <Text>Error: {error.message}</Text>;
   return (
     <View style={styles.container}>
+      {isLoading ? (
+        <LoaderKit
+          style={{width: 40, height: 40}}
+          name={'BallPulse'} // Optional: see list of animations below
+          color={'white'} // Optional: color can be: 'red', 'green',... or '#ddd', '#ffffff',...
+        />
+      ) : null}
       <View style={styles.header}>
         <Text style={styles.textheader}>Đặc sản Việt</Text>
         <TouchableOpacity style={styles.profileImageContainer}>
@@ -77,7 +87,7 @@ const HomePage = ({ navigation }: any) => {
         />
       </View>
 
-      <View style={{ flex: 1 }}>
+      <View style={{flex: 1}}>
         <FlatList
           data={data}
           keyExtractor={item => item.key}
@@ -85,7 +95,7 @@ const HomePage = ({ navigation }: any) => {
           ListHeaderComponent={
             <>
               <Banner />
-              <Text style={{ fontSize: 20, fontWeight: 'bold' }}>
+              <Text style={{fontSize: 18, fontWeight: 'bold'}}>
                 Sản phẩm nổi bật{' '}
               </Text>
             </>
@@ -93,7 +103,7 @@ const HomePage = ({ navigation }: any) => {
           ListFooterComponent={
             <>
               <FeaturedProductsList data={data} navigation={navigation} />
-              <Text style={{ fontSize: 20, fontWeight: 'bold' }}>
+              <Text style={{fontSize: 18, fontWeight: 'bold'}}>
                 Sản phẩm đề xuất
               </Text>
               <SuggestionsList data={data} navigation={navigation} />
@@ -118,6 +128,7 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: 'bold',
     fontStyle: 'italic',
+    color: "#ffa000"
   },
   profileImageContainer: {
     borderRadius: 50,
@@ -131,25 +142,25 @@ const styles = StyleSheet.create({
   search: {
     flexDirection: 'row',
     alignItems: 'center',
-    padding: 10,
     borderRadius: 20,
     paddingEnd: 30,
     backgroundColor: '#ffffff',
     marginTop: 20,
   },
   searchIcon: {
-    fontSize: 34,
+    marginLeft:15,
+    fontSize: 20,
     color: 'black',
   },
   searchInput: {
     flex: 1,
-    marginLeft: 20,
-    fontSize: 20,
+    fontSize: 16,
   },
   itemOption: {
-    margin: 10,
-    width: 100,
-    padding: 10,
+    marginTop: 10,
+    marginBottom: 10,
+    marginRight: 10,
+    padding:10,
     borderRadius: 15,
     textAlign: 'center',
     justifyContent: 'center',

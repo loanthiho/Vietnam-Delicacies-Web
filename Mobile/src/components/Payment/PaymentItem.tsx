@@ -25,7 +25,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 5,
     marginTop: 10,
     padding: 10,
-    width: 320,
+    width: 300,
     height: 85,
   },
   quantityContainer: {

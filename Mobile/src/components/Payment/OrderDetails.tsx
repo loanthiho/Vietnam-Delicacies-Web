@@ -39,7 +39,10 @@ const OrderDetailComponent = ({
 
 const styles = StyleSheet.create({
   container: {
+    borderRadius: 10,
+    marginHorizontal: 5,
     padding: 10,
+    paddingLeft:0,
   },
   detailText: {
     fontSize: 18,
