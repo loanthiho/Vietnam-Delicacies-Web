@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import {
   View,
   Text,
@@ -7,10 +7,10 @@ import {
   TouchableOpacity,
   ScrollView,
 } from 'react-native';
-import {addToCart} from '../../Hooks/addToCart';
+import { addToCart } from '../../Hooks/addToCart';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
-const ProductDetailScreen = ({route, navigation}: any) => {
+const ProductDetailScreen = ({ route, navigation }: any) => {
   const [quantity, setQuantity] = useState(1);
 
   const addToCartHandler = (product_id: any) => {
@@ -26,7 +26,7 @@ const ProductDetailScreen = ({route, navigation}: any) => {
     );
   }
 
-  const {selectedItem}: any = route.params;
+  const { selectedItem }: any = route.params;
 
   console.log('my data', selectedItem);
 
@@ -45,15 +45,14 @@ const ProductDetailScreen = ({route, navigation}: any) => {
   };
 
   return (
-    <View>
+    <View style={{ flex: 1 }}>
       <TouchableOpacity onPress={() => navigation.goBack()}>
         <Ionicons name="arrow-back-outline" style={styles.arrowLeft} />
       </TouchableOpacity>
-
       <ScrollView>
         <View style={styles.container}>
           <Image
-            source={{uri: selectedItem?.Files[0]?.src}}
+            source={{ uri: selectedItem?.Files[0]?.src }}
             style={styles.image}
           />
           <Text style={styles.text}>{selectedItem.name}</Text>
@@ -64,30 +63,31 @@ const ProductDetailScreen = ({route, navigation}: any) => {
           <ScrollView>
             <Text style={styles.textscript}>{selectedItem.description}</Text>
           </ScrollView>
-          <View style={styles.itemPriceContainer}>
-            <Text style={styles.itemPriceText}>
-              Giá: <Text>{formatPrice(selectedItem.price)}đ</Text>
-            </Text>
-          </View>
-          <View style={styles.quantityContainer}>
-            <TouchableOpacity
-              onPress={decreaseQuantity}
-              style={[styles.button, {backgroundColor: '#FFA000'}]}>
-              <Text style={styles.buttonText}>-</Text>
-            </TouchableOpacity>
+          <View style={styles.infoContainer}>
+            <View style={styles.itemPriceContainer}>
+              <Text style={styles.itemPriceText}>
+                <Text>{formatPrice(selectedItem.price)}đ</Text>
+              </Text>
+            </View>
+            <View style={styles.quantityContainer}>
+              <TouchableOpacity
+                onPress={decreaseQuantity}
+                style={[styles.button, { backgroundColor: '#FFA000' }]}>
+                <Text style={styles.buttonText}>-</Text>
+              </TouchableOpacity>
 
-            <Text style={styles.quantityText}>{quantity}</Text>
+              <Text style={styles.quantityText}>{quantity}</Text>
 
-            <TouchableOpacity
-              onPress={increaseQuantity}
-              style={[styles.button, {backgroundColor: '#FFA000'}]}>
-              <Text style={styles.buttonText}>+</Text>
-            </TouchableOpacity>
+              <TouchableOpacity
+                onPress={increaseQuantity}
+                style={[styles.button, { backgroundColor: '#FFA000' }]}>
+                <Text style={styles.buttonText}>+</Text>
+              </TouchableOpacity>
+            </View>
           </View>
-          <Text style={styles.comment}>Bình Luận </Text>
         </View>
       </ScrollView>
-      <View>
+      <View style={styles.buttonContainer}>
         <TouchableOpacity
           style={styles.seenContainer}
           onPress={() =>
@@ -95,7 +95,7 @@ const ProductDetailScreen = ({route, navigation}: any) => {
               selectedItem: selectedItem,
             })
           }>
-          <Text style={styles.seenButton}>Xem shop</Text>
+          <Text style={styles.seenButton}>Xem cửa hàng</Text>
         </TouchableOpacity>
 
         <TouchableOpacity
@@ -126,7 +126,7 @@ const styles = StyleSheet.create({
   },
   image: {
     width: 'auto',
-    height: 300,
+    height: 250,
     borderRadius: 10,
     justifyContent: 'center',
     alignContent: 'center',
@@ -156,7 +156,6 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     justifyContent: 'center',
     alignItems: 'center',
-    top: 40,
   },
   itemPriceText: {
     fontSize: 16,
@@ -166,7 +165,6 @@ const styles = StyleSheet.create({
   quantityContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    left: '40%',
   },
   button: {
     width: 40,
@@ -187,40 +185,50 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginRight: 10,
   },
-  comment: {
-    fontSize: 25,
-    fontWeight: 'bold',
-    color: '#FFA000',
+  buttonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    position: 'absolute',
+    bottom: 1,
+    left: 20,
+    right: 20,
+    paddingVertical: 20,
+    paddingHorizontal: 20,
   },
   cartContainer: {
     backgroundColor: '#2E7D32',
     borderRadius: 10,
-    width: 160,
-    height: 60,
-    left: '55%',
-    top: '12%',
+    width: 150,
+    height: 50,
+    textAlign: 'center',
+    justifyContent: 'center',
+    alignContent: 'center',
   },
   cartButton: {
     fontSize: 16,
     fontWeight: 'bold',
     color: 'white',
-    top: 20,
-    left: 10,
+    textAlign: 'center',
   },
   seenContainer: {
     backgroundColor: '#2E7D32',
     borderRadius: 10,
-    width: 100,
-    height: 60,
-    left: '10%',
-    top: '60%',
+    width: 150,
+    height: 50,
+    justifyContent: 'center',
+    alignContent: 'center',
+    right: 20,
   },
   seenButton: {
     fontSize: 16,
     fontWeight: 'bold',
     color: 'white',
-    top: 20,
-    left: 10,
+    textAlign: 'center',
+  },
+  infoContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 10,
   },
 });
 

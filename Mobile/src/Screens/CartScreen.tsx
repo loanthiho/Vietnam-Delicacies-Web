@@ -7,7 +7,6 @@ import {
   StyleSheet,
 } from 'react-native';
 
-import {GestureHandlerRootView, Swipeable} from 'react-native-gesture-handler';
 
 import CartItem from '../components/Cart/CartItem';
 
@@ -19,7 +18,7 @@ const CartScreen = ({route, navigation}: any) => {
 
   const fetchDataShoppingcart = async () => {
     const res = await axios.get(
-      `https://86fb-113-176-99-140.ngrok-free.app/carts`,
+      `c`,
       {
         headers: {
           Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYzMGE3ZmVkLTY2YzMtNGExYS1iNDdkLTU3MWM3YWFlYTQ0MyIsImVtYWlsIjoidGhpY3VzdG9tZXIuYTI0dGVjaG5vbG9neUBnbWFpLmNvbSIsInBhc3N3b3JkIjoiJDJhJDEwJEZkbGVtY3MwV0E3WEx3YWRzTjBGMXVYbkFKV21zdEVQWjhSM3pLeHh2UWUvMFlGYVBRa1dLIiwibmFtZSI6InRoaSBjdXN0b21lciIsImlhdCI6MTcwOTIyMzQzNn0.QuQ2zXw7HFSQs2D_XFPl_m7eSUT4lVVpuM_E6Ey0UTg`,
@@ -71,7 +70,7 @@ const CartScreen = ({route, navigation}: any) => {
   };
 
   return (
-    <GestureHandlerRootView style={styles.container}>
+    <View style={styles.container}>
       <ScrollView>
         {cartItems && cartItems.length > 0
           ? cartItems?.map((item, index) => (
@@ -103,7 +102,7 @@ const CartScreen = ({route, navigation}: any) => {
           </TouchableOpacity>
         </View>
       </View>
-    </GestureHandlerRootView>
+    </View>
   );
 };
 
@@ -142,21 +141,21 @@ const styles = StyleSheet.create({
   checkoutButton: {
     backgroundColor: '#2E7D32',
     borderRadius: 10,
-    width: 350,
+    width: 330,
     height: 70,
     top: 55,
-    left: 30,
     textAlign: 'center',
     position: 'absolute',
-    right: 30,
+    justifyContent: 'center',
+    alignItems: 'center', 
   },
   checkoutButtonText: {
     color: 'white',
     fontSize: 26,
     fontWeight: 'bold',
     textAlign: 'center',
-    top: 15,
   },
+  
 });
 
 export default CartScreen;

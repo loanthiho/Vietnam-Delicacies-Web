@@ -16,7 +16,6 @@ const SuggestionsList = ({ data,navigation }:any) => {
             }}
             renderItem={({ item }) => (
                 <TouchableOpacity
-                    style={styles.favouriteProducts}
                     onPress={() => navigation.navigate('ProductDetailScreen', { selectedItem: item })}>
                     <View style={styles.featuredProducts}>
                     {item.Files.length > 0 ? (
@@ -49,17 +48,6 @@ const SuggestionsList = ({ data,navigation }:any) => {
 };
 
 const styles = StyleSheet.create({
-    favouriteProducts: {
-        backgroundColor: 'white',
-        borderRadius: 10,
-        marginHorizontal: 5,
-        marginTop: 10,
-        marginBottom: 20,
-        width: 170,
-        height: 240,
-        elevation: 10,
-        top: 20,
-    },
     featuredProducts: {
         backgroundColor: 'white',
         borderRadius: 10,
