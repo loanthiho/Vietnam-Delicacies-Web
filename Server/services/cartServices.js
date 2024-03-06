@@ -24,7 +24,7 @@ const getAllProductCart = async (req, res, next) => {
         const rCart = await Cart.findOne({ where: { user_id: user_id } });
         if (rCart) {
             const rProductCart = await ProductCart.findAll({
-                where: { ...q },
+                where: { ...q, cart_id: rCart.id },
                 include: [{ model: Product, include: [File] }]
             });
             if (rProductCart) {

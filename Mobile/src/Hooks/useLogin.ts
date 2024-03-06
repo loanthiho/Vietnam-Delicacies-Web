@@ -6,7 +6,8 @@ const useLogin = () => {
   const [errorMess, setErrorsMess] = useState<string>('');
   const mutation = useMutation({
     mutationKey: ['signin'],
-    mutationFn: async (data: any) => api.post('users/sign-in', data, {}, {}),
+    mutationFn: async (data: any) =>
+      api.post('users/sign-in', {auth: false, data}),
     onError: (error, variable, context) => {
       if (error.response?.data) {
         setErrorsMess(error.response?.data?.message);

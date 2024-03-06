@@ -7,20 +7,21 @@ import api from '../api/request';
 
 const ChatScreen = () => {
   // LogOut();
-  const { } = useQuery({
-    queryKey: ['getCart'],
-    queryFn: async () => {
-      try {
-        const Rcarts = await api.get('carts', {}, {});
-        if (Rcarts) {
-          console.log("carts data:", Rcarts.data);
-        }
-      } catch (error) {
-        console.log("err:", error);
-      }
+  // const { } = useQuery({
+  //   queryKey: ['getCart'],
+  //   queryFn: async () => {
+  //     try {
+  //       const Rcarts = await api.get('carts');
+  //       if (Rcarts) {
+  //         console.log("carts data:", Rcarts.data);
+  //       }
 
-    }
-  })
+  //       return Rcarts.data;
+  //     } catch (error) {
+  //       console.log("err:", error);
+  //     }
+  //   }
+  // })
   return (
     <View style={styles.container}>
       <Text style={styles.text}>Welcome to Food HomePagee!</Text>

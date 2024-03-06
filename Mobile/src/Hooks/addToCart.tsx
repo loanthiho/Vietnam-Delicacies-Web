@@ -1,21 +1,17 @@
 import axios from 'axios';
-import {useQuery} from '@tanstack/react-query';
-import api, {token} from '../api/request';
-export const addToCart = async (id_product: string, navigation: any) => {
+import { QueryClient, useQuery, useQueryClient } from '@tanstack/react-query';
+import { getUserAccessToken } from '../api/storage';
+import api from '../api/request';
+
+
+export const addToCart = async (id_product: string) => {
   try {
     console.log('posting ...');
     console.log('id product befor add:', id_product);
-    const res = await axios.post(
-      `http://nodejs-app-env-1.eba-q2t7wpq3.ap-southeast-2.elasticbeanstalk.com/carts/${id_product}`,
-      null,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      },
-    );
+    const res = await api.post(`carts/${id_product}`)
     if (res) {
-      return navigation.navigate('Giỏ hàng');
+      console.log('add response:', res.data)
+      // queryClient.invalidateQueries({ queryKey: ['shoppingCart'] }).
     } else {
       console.log('can not add to cart ');
     }
@@ -25,18 +21,14 @@ export const addToCart = async (id_product: string, navigation: any) => {
 };
 
 const fetchDataShoppingcart = async () => {
-  const res = await axios.get(
-    'http://nodejs-app-env-1.eba-q2t7wpq3.ap-southeast-2.elasticbeanstalk.com/carts',
-    {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    },
-  );
-  console.log('data res:', res.data);
+  console.log('fetching')
+  const res = await api.get('carts');
   return res.data;
 };
 
 export const useShoppingCartData = () => {
-  return useQuery('shoppingCartData', fetchDataShoppingcart);
+  return useQuery({
+    queryKey: ['shoppingCart'],
+    queryFn: fetchDataShoppingcart
+  });
 };

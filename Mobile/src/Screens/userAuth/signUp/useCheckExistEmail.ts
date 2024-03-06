@@ -5,7 +5,7 @@ import axios from 'axios';
 const useCheckEmail = () => {
   const isExistEmail = async (email: string) => {
     try {
-      await api.get(`users/by-email/${email}`, {}, {});
+      await api.get(`users/by-email/${email}`, {auth: false});
       return true;
     } catch (error) {
       return false; // Return data directly, assuming you want to access data directly

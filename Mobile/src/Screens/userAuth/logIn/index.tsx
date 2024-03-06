@@ -41,18 +41,25 @@ const SignIn: React.FC = ({ navigation, route }: any) => {
             })
         }
     }
-
     useEffect(() => {
         checkMess()
         if (mutation.isSuccess) {
-            const previousScreen = route.params?.previousScreen;
-            if (previousScreen) {
-                // Nếu có, quay lại màn hình trước đó
-                return navigation.navigate(previousScreen);
-            } else {
-                // Nếu không, điều hướng tới màn hình chính
-                return navigation.navigate('Main');
-            }
+            const func = async () => {
+                const previousScreen = route.params?.previousScreen;
+
+                const { token, user } = mutation.data.data;
+                console.log('setting token', token);
+                await setUserAccessToken({ token, user });
+
+                if (previousScreen) {
+                    // Nếu có, quay lại màn hình trước đó
+                    return navigation.navigate(previousScreen);
+                } else {
+                    // Nếu không, điều hướng tới màn hình chính
+                    return navigation.navigate('Main');
+                }
+            };
+            func();
         }
     }, [mutation.isError, mutation.isSuccess, errorMess])
 
@@ -91,6 +98,7 @@ const SignIn: React.FC = ({ navigation, route }: any) => {
                     mutation.mutate(userCredentials);
                     if (mutation.isSuccess) {
                         const { token, user } = mutation.data.data;
+                        console.log('setting token', token);
                         await setUserAccessToken({ token, user });
                     }
                 } catch (error) {

@@ -23,13 +23,11 @@ const HomePage = ({ navigation }: any) => {
   const { isLoading, error, data } = useQuery({
     queryKey: ['products'],
     queryFn: async () => {
-      const response = await api.get('products', {}, {});
+      const response = await api.get('products', { auth: false });
       return response.data;
     },
   });
-  // if (data) {
-  //   console.log('data responesed:', data);
-  // }
+
   const renderItem = ({ item }: any) => (
     <TouchableOpacity
       style={[

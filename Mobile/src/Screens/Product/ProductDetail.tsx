@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -7,15 +7,21 @@ import {
   TouchableOpacity,
   ScrollView,
 } from 'react-native';
-import {addToCart} from '../../Hooks/addToCart';
+import { addToCart } from '../../Hooks/addToCart';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import { getUserAccessToken } from '../../api/storage';
+import { useQueryClient } from '@tanstack/react-query';
 
-const ProductDetailScreen = ({route, navigation}: any) => {
+const ProductDetailScreen = ({ route, navigation }: any) => {
   const [quantity, setQuantity] = useState(1);
+  const queryClient = useQueryClient();
 
-  const addToCartHandler = (product_id: any) => {
+  const addToCartHandler = async (product_id: any) => {
     console.log('id Product add to cart', product_id);
-    addToCart(product_id, navigation);
+    await addToCart(product_id);
+    queryClient.invalidateQueries({ queryKey: ['shoppingCart'] })
+    navigation.navigate('Giỏ hàng', { id: product_id });
+
   };
 
   if (!route.params || !route.params.selectedItem) {
@@ -26,9 +32,9 @@ const ProductDetailScreen = ({route, navigation}: any) => {
     );
   }
 
-  const {selectedItem}: any = route.params;
+  const { selectedItem }: any = route.params;
 
-  console.log('my data', selectedItem);
+  // console.log('my data', selectedItem);
 
   const decreaseQuantity = () => {
     if (quantity > 1) {
@@ -45,7 +51,7 @@ const ProductDetailScreen = ({route, navigation}: any) => {
   };
 
   return (
-    <View style={{flex: 1}}>
+    <View style={{ flex: 1 }}>
       <TouchableOpacity onPress={() => navigation.goBack()}>
         <Ionicons name="arrow-back-outline" style={styles.arrowLeft} />
       </TouchableOpacity>
@@ -53,7 +59,7 @@ const ProductDetailScreen = ({route, navigation}: any) => {
       <ScrollView >
         <View style={styles.container}>
           <Image
-            source={{uri: selectedItem?.Files[0]?.src}}
+            source={{ uri: selectedItem?.Files[0]?.src }}
             style={styles.image}
           />
           <Text style={styles.text}>{selectedItem.name}</Text>
@@ -75,7 +81,7 @@ const ProductDetailScreen = ({route, navigation}: any) => {
             <View style={styles.quantityContainer}>
               <TouchableOpacity
                 onPress={decreaseQuantity}
-                style={[styles.button, {backgroundColor: '#FFA000'}]}>
+                style={[styles.button, { backgroundColor: '#FFA000' }]}>
                 <Text style={styles.buttonText}>-</Text>
               </TouchableOpacity>
 
@@ -83,7 +89,7 @@ const ProductDetailScreen = ({route, navigation}: any) => {
 
               <TouchableOpacity
                 onPress={increaseQuantity}
-                style={[styles.button, {backgroundColor: '#FFA000'}]}>
+                style={[styles.button, { backgroundColor: '#FFA000' }]}>
                 <Text style={styles.buttonText}>+</Text>
               </TouchableOpacity>
             </View>
