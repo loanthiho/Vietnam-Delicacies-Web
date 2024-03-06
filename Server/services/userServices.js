@@ -2,6 +2,7 @@ const { User, Cart, Province } = require('../models');
 const jwt = require('jsonwebtoken');
 const bcryptjs = require('bcryptjs');
 const { resSuccessData, resBadRequest, resInternalError, resNotFound } = require('../utils/response');
+const { where } = require('sequelize');
 
 const getAllUser = async (req, res, next) => {
     const rUser = await User.findAll();
@@ -117,12 +118,59 @@ const userSignIn = async (req, res, next) => {
 
 }
 
+const getUserById = async (req, res, next) => {
+    try {
+        const { id } = req.params;
+        if (id) {
+            const rUser = await User.findByPk(id);
+            if (rUser) {
+                resSuccessData(res, rUser, "Get user successfully!");
+            } else {
+                resNotFound(res, "User can not be found!")
+            }
+        }
+    } catch (error) {
+        resInternalError(res, error)
+    }
 
+}
 
+const updateUser = async (req, res, next) => {
+    try {
+        const { id } = req.params;
+        const { name, phone_number, email, detail_address } = req.body
+        if (id) {
+            const rUser = await User.findByPk(id);
+            if (rUser) {
+                if (name && detail_address && phone_number) {
+                    try {
+                        const rUserU = await User.update({ ...req.body }, { where: { id: id } });
+                        if (rUser) {
+                            resSuccessData(res, rUserU, "Update user successfully!")
+                        } else {
+                            resInternalError(res, "User update Failed")
+                        }
+                    } catch (error) {
+                        resInternalError(res, err = { err: error, message: "User update failed" })
+                    }
+                } else {
+                    resBadRequest(res, "You are missing field!")
+                }
+            } else {
+                resNotFound(res, "User can not be found!")
+            }
+        }
+    } catch (error) {
+        resInternalError(res, error)
+    }
+
+}
 
 module.exports = {
     getAllUser,
     userSignUp,
     userSignIn,
-    getUserByEmail
+    getUserByEmail,
+    getUserById,
+    updateUser
 };

@@ -2,7 +2,9 @@ const {
     getAllUser,
     userSignUp,
     userSignIn,
-    getUserByEmail
+    getUserByEmail,
+    getUserById,
+    updateUser
     // getOneUser,
     // updateUser,
     // removeUser 
@@ -18,11 +20,15 @@ const getAll = (req, res, next) => getAllUser(req, res, next);
 // const update = (req, res, next) => updateUser(req, res, next);
 // const remove = (req, res, next) => removeUser(req, res, next);
 const getOneByEmail = (req, res, next) => getUserByEmail(req, res, next);
+const getOneById = (req, res, next) => getUserById(req, res, next);
+const update = (req, res, next) => updateUser(req, res, next);
 module.exports = {
     getAll,
     signUp,
     signIn,
-    getOneByEmail
+    getOneByEmail,
+    getOneById,
+    update
     // getOne,
     // update,
     // remove
