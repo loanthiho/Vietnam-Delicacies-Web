@@ -45,11 +45,12 @@ const ProductDetailScreen = ({ route, navigation }: any) => {
   };
 
   return (
-    <View style={{ flex: 1 }}>
+    <View style={{flex: 1}}>
       <TouchableOpacity onPress={() => navigation.goBack()}>
         <Ionicons name="arrow-back-outline" style={styles.arrowLeft} />
       </TouchableOpacity>
-      <ScrollView>
+
+      <ScrollView >
         <View style={styles.container}>
           <Image
             source={{ uri: selectedItem?.Files[0]?.src }}
@@ -63,16 +64,18 @@ const ProductDetailScreen = ({ route, navigation }: any) => {
           <ScrollView>
             <Text style={styles.textscript}>{selectedItem.description}</Text>
           </ScrollView>
-          <View style={styles.infoContainer}>
+
+          <View style={styles.GroupPrice}>
             <View style={styles.itemPriceContainer}>
               <Text style={styles.itemPriceText}>
-                <Text>{formatPrice(selectedItem.price)}đ</Text>
+                Giá: <Text>{formatPrice(selectedItem.price)}đ</Text>
               </Text>
             </View>
+
             <View style={styles.quantityContainer}>
               <TouchableOpacity
                 onPress={decreaseQuantity}
-                style={[styles.button, { backgroundColor: '#FFA000' }]}>
+                style={[styles.button, {backgroundColor: '#FFA000'}]}>
                 <Text style={styles.buttonText}>-</Text>
               </TouchableOpacity>
 
@@ -80,14 +83,17 @@ const ProductDetailScreen = ({ route, navigation }: any) => {
 
               <TouchableOpacity
                 onPress={increaseQuantity}
-                style={[styles.button, { backgroundColor: '#FFA000' }]}>
+                style={[styles.button, {backgroundColor: '#FFA000'}]}>
                 <Text style={styles.buttonText}>+</Text>
               </TouchableOpacity>
             </View>
           </View>
+
+          <Text style={styles.comment}>Bình Luận</Text>
         </View>
       </ScrollView>
-      <View style={styles.buttonContainer}>
+
+      <View style={styles.GruopBtn}>
         <TouchableOpacity
           style={styles.seenContainer}
           onPress={() =>
@@ -110,18 +116,18 @@ const ProductDetailScreen = ({ route, navigation }: any) => {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     paddingHorizontal: 20,
+    marginBottom: 20,
   },
   arrowLeft: {
-    fontSize: 30,
+    fontSize: 22,
   },
   text: {
-    fontSize: 25,
+    fontSize: 18,
     fontWeight: 'bold',
     color: '#ffa000',
-    marginBottom: 20,
-    marginTop: 20,
+    marginBottom: 10,
+    marginTop: 10,
     top: 10,
   },
   image: {
@@ -137,28 +143,33 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   starIcon: {
-    fontSize: 30,
-    color: 'yellow',
+    fontSize: 20,
+    color: '#ffa000',
     marginRight: 5,
   },
   textIcon: {
-    fontSize: 20,
+    fontSize: 16,
   },
   textscript: {
-    paddingHorizontal: 20,
-    fontSize: 15,
+    paddingHorizontal: 16,
+    fontSize: 14,
     marginBottom: 20,
+  },
+
+  GroupPrice: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
   },
   itemPriceContainer: {
     backgroundColor: '#FFA000',
-    width: 110,
-    height: 40,
     borderRadius: 10,
     justifyContent: 'center',
     alignItems: 'center',
+    padding: 10
   },
   itemPriceText: {
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: 'bold',
     color: 'white',
   },
@@ -167,8 +178,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   button: {
-    width: 40,
-    height: 40,
+    width: 30,
+    height: 30,
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: 10,
@@ -185,50 +196,37 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginRight: 10,
   },
-  buttonContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    position: 'absolute',
-    bottom: 1,
-    left: 20,
-    right: 20,
-    paddingVertical: 20,
-    paddingHorizontal: 20,
+  comment: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#FFA000',
   },
   cartContainer: {
     backgroundColor: '#2E7D32',
     borderRadius: 10,
-    width: 150,
-    height: 50,
-    textAlign: 'center',
-    justifyContent: 'center',
-    alignContent: 'center',
   },
   cartButton: {
+    padding: 10,
     fontSize: 16,
     fontWeight: 'bold',
     color: 'white',
-    textAlign: 'center',
+  },
+
+  GruopBtn: {
+    padding: 20,
+    justifyContent: 'space-between',
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   seenContainer: {
     backgroundColor: '#2E7D32',
     borderRadius: 10,
-    width: 150,
-    height: 50,
-    justifyContent: 'center',
-    alignContent: 'center',
-    right: 20,
   },
   seenButton: {
+    padding: 10,
     fontSize: 16,
     fontWeight: 'bold',
     color: 'white',
-    textAlign: 'center',
-  },
-  infoContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginBottom: 10,
   },
 });
 

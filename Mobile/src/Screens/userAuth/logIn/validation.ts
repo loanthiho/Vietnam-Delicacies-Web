@@ -2,11 +2,6 @@ import * as yup from 'yup';
 
 // Định nghĩa schema validation sử dụng Yup
 const signupSchema = yup.object().shape({
-  name: yup
-    .string()
-    .max(50, 'Tên người dùng không quá 50 ký tự')
-    .min(5, 'Cần ít nhất 5 ký tự')
-    .required('Vui lòng nhập tên người dùng'),
   email: yup
     .string()
     .email('Địa chỉ email không hợp lệ')

@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import {
   ScrollView,
   Text,
@@ -7,21 +7,35 @@ import {
   StyleSheet,
 } from 'react-native';
 
+import { GestureHandlerRootView, Swipeable } from 'react-native-gesture-handler';
 
 import CartItem from '../components/Cart/CartItem';
 
 import axios from 'axios';
+import CheckAuth from '../services/checkAuth';
+import { getUserAccessToken } from '../api/storage';
 
-const CartScreen = ({route, navigation}: any) => {
+const CartScreen = ({ route, navigation }: any) => {
   const [cartItems, setCartItems] = useState<any[]>([]);
-  const [totalPrice, setTotalPrice] = useState<number>(0);
+  const [token, setToken] = useState<any>('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImRkZTIwNzlhLThiNzUtNGQ2Yy1hOTMzLWJkY2Y2ZGQ5MzQyNCIsImVtYWlsIjoibG9hbkBnbWFpbC5jb20iLCJwYXNzd29yZCI6IiQyYSQxMCRJcHovRUdqTjR1RERMYXprbC5ia28uMkNVUDNlRW5QRnhVRi8yWkkxbi9sUlFOUFZQZTROaSIsIm5hbWUiOiJ0aGkgYSIsImlhdCI6MTcwOTY1MzcwNX0.2tOS8RduIZ6NC69rcvkQJjC_6CkKPFiCOr0Tbr9AUVQ');
+  CheckAuth({ navigation });
+
+  const totalPrice = useMemo(
+    () =>
+      cartItems.reduce?.((total, item) => {
+        return item.selected
+          ? total + item.Product.price * item.quantity
+          : total;
+      }, 0),
+    [cartItems],
+  );
 
   const fetchDataShoppingcart = async () => {
     const res = await axios.get(
       `c`,
       {
         headers: {
-          Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYzMGE3ZmVkLTY2YzMtNGExYS1iNDdkLTU3MWM3YWFlYTQ0MyIsImVtYWlsIjoidGhpY3VzdG9tZXIuYTI0dGVjaG5vbG9neUBnbWFpLmNvbSIsInBhc3N3b3JkIjoiJDJhJDEwJEZkbGVtY3MwV0E3WEx3YWRzTjBGMXVYbkFKV21zdEVQWjhSM3pLeHh2UWUvMFlGYVBRa1dLIiwibmFtZSI6InRoaSBjdXN0b21lciIsImlhdCI6MTcwOTIyMzQzNn0.QuQ2zXw7HFSQs2D_XFPl_m7eSUT4lVVpuM_E6Ey0UTg`,
+          Authorization: `Bearer ${token}`,
         },
       },
     );
@@ -31,42 +45,61 @@ const CartScreen = ({route, navigation}: any) => {
     fetchDataShoppingcart().then(res => setCartItems(res.data));
   }, []);
 
-  const updateTotalPrice = (priceChange: number) => {
-    setTotalPrice(prevTotalPrice => prevTotalPrice + priceChange);
+  const changeQuantity = async (itemId: string, diff: number) => {
+    setCartItems(prevCartItems =>
+      prevCartItems.map(item => {
+        if (item.id !== itemId) {
+          return item;
+        }
+        const newQuantity = Math.min(Math.max(item.quantity + diff, 1), 50);
+        return { ...item, quantity: newQuantity };
+      }),
+    );
+
+    const rIncrease = await axios.post(
+      `http://nodejs-app-env-1.eba-q2t7wpq3.ap-southeast-2.elasticbeanstalk.com/carts/update-qty/${itemId}`,
+      null,
+      {
+        params: { action: diff > 0 ? 'increase' : 'decrease' },
+        headers: { Authorization: `Bearer ${token}` },
+      },
+    );
+    if (rIncrease) {
+      console.log('decrease successfully:', rIncrease.data);
+    }
   };
 
-  useEffect(() => {
-    let sum = 0;
-    cartItems.forEach(item => {
-      if (item.isChecked) {
-        sum += item.price * item.quantity;
+  const changeSelectedItem = async (itemId: string, selected: boolean) => {
+    setCartItems(prevCartItems =>
+      prevCartItems.map(item => {
+        if (item.id !== itemId) {
+          return item;
+        }
+        return { ...item, selected };
+      }),
+    );
+  };
+
+  const removeItem = async (itemId: string) => {
+    setCartItems(prevCartItems =>
+      prevCartItems.filter(item => item.id !== itemId),
+    );
+
+    try {
+      const conRemove = await axios.delete(
+        `http://nodejs-app-env-1.eba-q2t7wpq3.ap-southeast-2.elasticbeanstalk.com/carts/${itemId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      );
+      if (conRemove) {
+        console.log('Remove successfully:', conRemove);
       }
-    });
-    setTotalPrice(sum);
-  }, [cartItems]);
-
-  const increaseQuantity = (itemId: string) => {
-    setCartItems(prevCartItems =>
-      prevCartItems.map(item =>
-        item.key === itemId ? {...item, quantity: item.quantity + 1} : item,
-      ),
-    );
-  };
-
-  const decreaseQuantity = (itemId: string) => {
-    setCartItems(prevCartItems =>
-      prevCartItems.map(item =>
-        item.key === itemId && item.quantity > 1
-          ? {...item, quantity: item.quantity - 1}
-          : item,
-      ),
-    );
-  };
-
-  const removeItem = (itemId: string) => {
-    setCartItems(prevCartItems =>
-      prevCartItems.filter(item => item.key !== itemId),
-    );
+    } catch (error) {
+      console.error('Lỗi khi remove product cart:', error);
+    }
   };
 
   return (
@@ -74,28 +107,31 @@ const CartScreen = ({route, navigation}: any) => {
       <ScrollView>
         {cartItems && cartItems.length > 0
           ? cartItems?.map((item, index) => (
-              <CartItem
-                key={index.toString()}
-                item={item}
-                increaseQuantity={increaseQuantity}
-                decreaseQuantity={decreaseQuantity}
-                removeItem={removeItem}
-                updateTotalPrice={updateTotalPrice}
-              />
-            ))
+            <CartItem
+              key={index.toString()}
+              item={item}
+              changeQuantity={changeQuantity}
+              changeSelectedItem={changeSelectedItem}
+              removeItem={removeItem}
+            />
+          ))
           : null}
       </ScrollView>
       <View>
         <View style={styles.footer}>
-          <Text style={styles.checkoutText}>
-            Tổng <Text style={styles.tamTinhText}>(tạm tính):</Text>
-          </Text>
-          <Text style={styles.money}>{totalPrice}đ</Text>
+          <View style={styles.groupTotal}>
+            <Text style={styles.checkoutText}>
+              Tổng <Text style={styles.tamTinhText}>(tạm tính)</Text>
+            </Text>
+            <Text style={styles.money}>
+              {totalPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.')}đ
+            </Text>
+          </View>
           <TouchableOpacity
             style={styles.checkoutButton}
             onPress={() =>
               navigation.navigate('Payment', {
-                selectedItem: cartItems
+                selectedItem: cartItems,
               })
             }>
             <Text style={styles.checkoutButtonText}>Thanh toán</Text>
@@ -109,51 +145,43 @@ const CartScreen = ({route, navigation}: any) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding:10
+    padding: 10,
   },
   footer: {
-    flexDirection: 'row',
+    padding: 10,
     justifyContent: 'space-between',
-    backgroundColor: 'white',
-    paddingHorizontal: 20,
+    flexDirection: 'row',
     paddingVertical: 10,
-    width: 'auto',
-    height: 130,
-    borderRadius: 10,
   },
   tamTinhText: {
-    fontSize: 18,
+    fontSize: 14,
+  },
+
+  groupTotal: {
+    // flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 10,
   },
   checkoutText: {
-    fontSize: 26,
+    fontSize: 20,
     fontWeight: 'bold',
     color: '#FFA000',
   },
   money: {
-    fontSize: 26,
+    fontSize: 20,
     fontWeight: 'bold',
     color: '#FFA000',
-    left: 300,
-    position: 'absolute',
-    top: 10,
-    marginRight: 30,
   },
   checkoutButton: {
-    backgroundColor: '#2E7D32',
-    borderRadius: 10,
-    width: 330,
-    height: 70,
-    top: 55,
-    textAlign: 'center',
-    position: 'absolute',
-    justifyContent: 'center',
-    alignItems: 'center', 
+    alignSelf: 'center',
   },
   checkoutButtonText: {
     color: 'white',
-    fontSize: 26,
+    backgroundColor: '#2E7D32',
+    borderRadius: 10,
+    fontSize: 16,
     fontWeight: 'bold',
-    textAlign: 'center',
+    padding: 10,
   },
   
 });

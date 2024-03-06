@@ -1,23 +1,59 @@
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const setUserCredentials = async (data: any) => {
-    await AsyncStorage.setItem('user', JSON.stringify(data))
-        .then(res => ({ msg: "Storage data user successfully" }))
-        .catch(err => console.log("Error Storage user credentials", err));
+const getUserAccessToken = async () => {
+  try {
+    const result = await AsyncStorage.getItem('user');
+    if (result) {
+      return JSON.parse(result);
+    }
+    return null;
+  } catch (error) {
+    console.log('Error getting data user:', error);
+    return null;
+  }
 };
 
+const setUserAccessToken = async (data: any) => {
+  try {
+    await AsyncStorage.setItem('user', JSON.stringify(data));
+  } catch (error) {
+    console.log('Error setting data user:', error);
+  }
+};
 
-const getUserCredentials = async () => await AsyncStorage.getItem('user',
-    (error, result) => {
-        if (error) {
-            return console.log("Error get data user:", error);
-        }
-        else if (result) {
-            return JSON.parse(result);
-        }
+const setDataCombine = async (data: any) => {
+  try {
+    await AsyncStorage.setItem('userCBData', JSON.stringify(data));
+  } catch (error) {
+    console.log('Error setting combine user data:', error);
+  }
+};
+
+const getUserCombineData = async () => {
+  try {
+    const result = await AsyncStorage.getItem('userCBData');
+    if (result) {
+      return JSON.parse(result);
     }
-)
+    return null;
+  } catch (error) {
+    console.log('Error getting combine data:', error);
+    return null;
+  }
+};
 
-
-
-export { getUserCredentials, setUserCredentials }
+const LogOut = async () => {
+  try {
+    await AsyncStorage.removeItem('user');
+    console.log('Data deleted successfully.');
+  } catch (error) {
+    console.log('Error deleting data:', error);
+  }
+};
+export {
+  LogOut,
+  getUserAccessToken,
+  setUserAccessToken,
+  setDataCombine,
+  getUserCombineData,
+};
