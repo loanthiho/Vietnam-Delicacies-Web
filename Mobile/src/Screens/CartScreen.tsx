@@ -19,7 +19,6 @@ import CheckAuth from '../services/checkAuth';
 import api from '../api/request';
 
 const CartScreen = ({ route, navigation }: any) => {
-
   const { data, refetch } = useShoppingCartData();
   const [selected, setSelected] = useState<boolean[]>([])
   console.log('hello', data?.length);
@@ -38,7 +37,7 @@ const CartScreen = ({ route, navigation }: any) => {
   );
 
   if (!data) {
-    return <Text> Loading data ---</Text>;
+    return <Text>Loading ... </Text>;
   }
 
   const cartItems = data.data;
@@ -107,7 +106,7 @@ const CartScreen = ({ route, navigation }: any) => {
   return (
     <GestureHandlerRootView style={styles.container}>
       <ScrollView>
-        {cartItems && cartItems.length > 0
+        {token && cartItems && cartItems.length > 0
           ? cartItems?.map((item, index) => (
             <CartItem
               key={index.toString()}
