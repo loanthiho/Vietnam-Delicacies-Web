@@ -1,4 +1,3 @@
-// PaymentScreen.js
 import React, {useState} from 'react';
 import {View, Text, StyleSheet, FlatList, ScrollView,TouchableOpacity} from 'react-native';
 import AddressComponent from '../../components/Payment/AddressComponent';
