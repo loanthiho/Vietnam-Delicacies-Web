@@ -33,23 +33,19 @@ const PaymentMethods = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderRadius: 10,
-    marginHorizontal: 5,
-    padding: 10,
-    paddingLeft:0,
+  
   },
   paymentMethodButton: {
-    padding: 20,
+    flex: 1,
+    padding: 15,
     borderWidth: 1,
     borderColor: '#CCCCCC',
     borderRadius: 10,
     marginBottom: 10,
-    width: 300,
-    height: 70,
-    justifyContent: 'center', 
-    margin: 10,
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginHorizontal: 5,
+
   },
   selectedPaymentMethod: {
     backgroundColor: '#FFA000',
@@ -68,8 +64,8 @@ const styles = StyleSheet.create({
     marginLeft: 10, 
   },
   zalopay: {
-    width: 40,
-    height: 40,
+    width: 27,
+    height: 27,
   },
 });
 

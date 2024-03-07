@@ -1,14 +1,15 @@
 import React from 'react';
 import { View, Text, Image, TouchableOpacity, StyleSheet } from 'react-native';
 
-const PaymentItemComponent = ({ item,}: any) => {
+const PaymentItemComponent = ({ item }: any) => {
   return (
     <View style={styles.itemContainer}>
-      <Image source={{ uri: item.uri }} style={styles.itemImage} />
+      <Image source={{ uri: item.Product.Files[0].src}} style={styles.itemImage} />
       <View style={styles.content}>
-        <Text style={styles.itemText}>{item.text}</Text>
-        <Text style={styles.itemPrice}>{item.price}đ</Text>
+        <Text style={styles.itemText}>{item.Product.name}</Text>
+        <Text style={styles.itemPrice}>{item.Product.price?.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.')}đ</Text>
       </View>
+      
       <View style={styles.quantityContainer}>
         <Text>x{item.quantity}</Text>
       </View>
@@ -25,14 +26,15 @@ const styles = StyleSheet.create({
     marginHorizontal: 5,
     marginTop: 10,
     padding: 10,
-    width: 300,
-    height: 85,
+    flex: 1, 
+    maxHeight: 85, 
   },
   quantityContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
   },
+
   itemImage: {
     width: 70,
     height: 70,
@@ -44,16 +46,15 @@ const styles = StyleSheet.create({
     marginRight: 5,
   },
   itemText: {
-    fontSize: 20,
+    fontSize: 18,
     color: '#FFA000',
-    margin:5,
+    margin: 5,
     fontWeight: 'bold',
-
   },
   itemPrice: {
     fontSize: 18,
     color: '#FFA000',
-    margin:10,
+    margin: 10,
   },
   button: {
     width: 30,

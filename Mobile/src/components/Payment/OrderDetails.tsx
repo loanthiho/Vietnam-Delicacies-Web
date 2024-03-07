@@ -1,6 +1,5 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
 const OrderDetailComponent = ({
   showPaymentDetail,
@@ -9,40 +8,39 @@ const OrderDetailComponent = ({
   shippingFee,
   totalAmount,
   totalQuantity,
-  formatPrice
 }: any) => {
   return (
-    <View style={styles.container}>
-      {showPaymentDetail && (
-        <View style={styles.detailContainer}>
-          <View style={styles.detailItem}>
-            <Text>Giá:</Text>
-            <Text>{formatPrice(totalPrice)}đ</Text>
+    <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+      <View style={styles.container}>
+        {showPaymentDetail && (
+          <View style={styles.detailContainer}>
+            <View style={styles.detailItem}>
+              <Text>Giá:</Text>
+              <Text>{totalPrice?.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.')}đ</Text>
+            </View>
+            <View style={styles.detailItem}>
+              <Text>Số lượng:</Text>
+              <Text>{totalQuantity}</Text>
+            </View>
+            <View style={styles.detailItem}>
+              <Text>Phí vận chuyển:</Text>
+              <Text>{shippingFee?.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.')}đ</Text>
+            </View>
+            <View style={styles.detailItem}>
+              <Text style={styles.totalText}>Tổng:</Text>
+              <Text style={styles.totalAmount}>{totalAmount?.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.')}đ</Text>
+            </View>
           </View>
-          <View style={styles.detailItem}>
-            <Text>Số lượng:</Text>
-            <Text>{totalQuantity}</Text>
-          </View>
-          <View style={styles.detailItem}>
-            <Text>Phí vận chuyển:</Text>
-            <Text>{formatPrice(shippingFee)}đ</Text>
-          </View>
-          <View style={styles.detailItem}>
-            <Text style={styles.totalText}>Tổng:</Text>
-            <Text style={styles.totalAmount}>{formatPrice(totalAmount)}đ</Text>
-          </View>
-        </View>
-      )}
-    </View>
+        )}
+      </View>
+    </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    borderRadius: 10,
-    marginHorizontal: 5,
-    padding: 10,
-    paddingLeft:0,
+    // flex: 1,
+    paddingHorizontal: 5,
   },
   detailText: {
     fontSize: 18,
