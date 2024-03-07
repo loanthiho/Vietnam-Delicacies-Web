@@ -1,19 +1,20 @@
-import React, {useEffect, useState} from 'react';
-import {View, Text, Image, TouchableOpacity, StyleSheet} from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View, Text, Image, TouchableOpacity, StyleSheet } from 'react-native';
 import Swipeable from 'react-native-gesture-handler/Swipeable';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 const CartItem = ({
   item,
   changeQuantity,
+  selected,
   changeSelectedItem,
   removeItem,
 }: any) => {
 
 
-  const toggleCheckbox = () => changeSelectedItem(item.id, !item.selected);
+  const toggleCheckbox = () => changeSelectedItem(!selected);
   const defaultImagePath = require('../../assets/no_image.jpg');
-  const formatPrice = (price: {toString: () => string}) => {
+  const formatPrice = (price: { toString: () => string }) => {
     return price?.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
   };
 
@@ -28,7 +29,7 @@ const CartItem = ({
       )}>
       <View style={styles.itemContainer}>
         <TouchableOpacity onPress={toggleCheckbox}>
-          {item.selected ? (
+          {selected ? (
             <MaterialCommunityIcons
               name="checkbox-marked"
               style={styles.checkboxButton}
@@ -60,13 +61,13 @@ const CartItem = ({
             <View style={styles.quantityContainer}>
               <TouchableOpacity
                 onPress={async () => await changeQuantity(item.id, -1)}
-                style={[styles.button, {backgroundColor: '#FFA000'}]}>
+                style={[styles.button, { backgroundColor: '#FFA000' }]}>
                 <Text style={styles.buttonText}>-</Text>
               </TouchableOpacity>
               <Text style={styles.quantity}>{item?.quantity}</Text>
               <TouchableOpacity
                 onPress={async () => await changeQuantity(item.id, 1)}
-                style={[styles.button, {backgroundColor: '#FFA000'}]}>
+                style={[styles.button, { backgroundColor: '#FFA000' }]}>
                 <Text style={styles.buttonText}>+</Text>
               </TouchableOpacity>
             </View>

@@ -8,6 +8,7 @@ const domainRoutes = require('./domainRoutes');
 const uploadRoutes = require('./uploadRoutes');
 const fileRoutes = require('./fileRoutes');
 const cartRoutes = require('./cartRoutes');
+const orderRoutes = require('./orderRoutes');
 function runRouters(app) {
     app.use('/products', productRoutes);
     app.use('/categories', categoryRoutes);
@@ -18,6 +19,8 @@ function runRouters(app) {
     app.use('/uploads', uploadRoutes);
     app.use('/files', fileRoutes);
     app.use('/carts', cartRoutes);
+    app.use('/orders', orderRoutes);
+
 }
 
 module.exports = runRouters;

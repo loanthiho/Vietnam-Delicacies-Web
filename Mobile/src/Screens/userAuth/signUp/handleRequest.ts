@@ -1,7 +1,5 @@
-import axios from "axios"
+import axios from 'axios';
 
 const userSigUp = (data: {}) => {
-    axios.post('url', data)
+  axios.post('url', data);
 };
-
-

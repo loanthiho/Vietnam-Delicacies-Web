@@ -8,6 +8,7 @@ import {
   TextInput,
   FlatList,
 } from 'react-native';
+import LoaderKit from 'react-native-loader-kit';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import Banner from '../components/Homepage/Banner';
 import FeaturedProductsList from '../components/Homepage/FeaturedProductsList';
@@ -19,20 +20,16 @@ import axios from 'axios';
 const HomePage = ({navigation}: any) => {
   const [selectedItem, setSelectedItem] = useState('Tất cả');
   const datas = ['Tất cả', 'Miền Bắc', 'Miền Nam', 'Miền Trung'];
-  
+
   const {isLoading, error, data} = useQuery({
     queryKey: ['products'],
     queryFn: async () => {
-      const response = await api.get(
-        'products',{},{}
-      );
-      return response;
+      const response = await api.get('products', { auth: false });
+      return response.data;
     },
   });
-  if (data) {
-    console.log('data responesed:', data);
-  }
-  const renderItem = ({item}: any) => (
+
+  const renderItem = ({ item }: any) => (
     <TouchableOpacity
       style={[
         styles.itemOption,
@@ -49,6 +46,13 @@ const HomePage = ({navigation}: any) => {
   if (error) return <Text>Error: {error.message}</Text>;
   return (
     <View style={styles.container}>
+      {isLoading ? (
+        <LoaderKit
+          style={{width: 40, height: 40}}
+          name={'BallPulse'} // Optional: see list of animations below
+          color={'white'} // Optional: color can be: 'red', 'green',... or '#ddd', '#ffffff',...
+        />
+      ) : null}
       <View style={styles.header}>
         <Text style={styles.textheader}>Đặc sản Việt</Text>
         <TouchableOpacity style={styles.profileImageContainer}>
@@ -120,7 +124,7 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: 'bold',
     fontStyle: 'italic',
-    color: '#ffa000'
+    color: "#ffa000"
   },
   profileImageContainer: {
     borderRadius: 50,
@@ -140,8 +144,8 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   searchIcon: {
-    marginLeft: 10,
-    fontSize: 22,
+    marginLeft:15,
+    fontSize: 20,
     color: 'black',
   },
   searchInput: {
@@ -151,9 +155,10 @@ const styles = StyleSheet.create({
   },
   
   itemOption: {
-    margin: 10,
-    width: 100,
-    padding:8,
+    marginTop: 10,
+    marginBottom: 10,
+    marginRight: 10,
+    padding:10,
     borderRadius: 15,
     textAlign: 'center',
     justifyContent: 'center',

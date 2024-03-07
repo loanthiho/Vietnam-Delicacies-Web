@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   View,
   Text,
@@ -9,15 +9,19 @@ import {
 } from 'react-native';
 import {addToCart} from '../../Hooks/addToCart';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import {getUserAccessToken} from '../../api/storage';
+import {useQueryClient} from '@tanstack/react-query';
 
 const ProductDetailScreen = ({route, navigation}: any) => {
   const [quantity, setQuantity] = useState(1);
+  const queryClient = useQueryClient();
 
-  const addToCartHandler = (product_id: any) => {
+  const addToCartHandler = async (product_id: any) => {
     console.log('id Product add to cart', product_id);
-    addToCart(product_id, navigation);
+    await addToCart(product_id);
+    queryClient.invalidateQueries({queryKey: ['shoppingCart']});
+    navigation.navigate('Giỏ hàng', {id: product_id});
   };
-
   if (!route.params || !route.params.selectedItem) {
     return (
       <ScrollView style={styles.container}>
@@ -28,7 +32,7 @@ const ProductDetailScreen = ({route, navigation}: any) => {
 
   const {selectedItem}: any = route.params;
 
-  console.log('my data', selectedItem);
+  // console.log('my data', selectedItem);
 
   const decreaseQuantity = () => {
     if (quantity > 1) {
@@ -50,7 +54,7 @@ const ProductDetailScreen = ({route, navigation}: any) => {
         <Ionicons name="arrow-back-outline" style={styles.arrowLeft} />
       </TouchableOpacity>
 
-      <ScrollView >
+      <ScrollView>
         <View style={styles.container}>
           <Image
             source={{uri: selectedItem?.Files[0]?.src}}
@@ -101,7 +105,7 @@ const ProductDetailScreen = ({route, navigation}: any) => {
               selectedItem: selectedItem,
             })
           }>
-          <Text style={styles.seenButton}>Xem shop</Text>
+          <Text style={styles.seenButton}>Xem cửa hàng</Text>
         </TouchableOpacity>
 
         <TouchableOpacity
@@ -132,7 +136,7 @@ const styles = StyleSheet.create({
   },
   image: {
     width: 'auto',
-    height: 300,
+    height: 250,
     borderRadius: 10,
     justifyContent: 'center',
     alignContent: 'center',
@@ -166,7 +170,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     justifyContent: 'center',
     alignItems: 'center',
-    padding: 10
+    padding: 10,
   },
   itemPriceText: {
     fontSize: 14,
