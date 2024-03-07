@@ -1,8 +1,8 @@
 import React from 'react';
-import { StyleSheet } from 'react-native';
-import { NavigationContainer } from '@react-navigation/native';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import {StyleSheet} from 'react-native';
+import {NavigationContainer} from '@react-navigation/native';
+import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import ProductDetailScreen from './src/Screens/Product/ProductDetail';
 import HomePage from './src/Screens/HomeScreens';
@@ -18,7 +18,7 @@ import Seller from './src/Seller/Seller';
 import AddProduct from './src/Seller/AddProduct';
 import SignUp from './src/Screens/userAuth/signUp';
 import ChooseRole from './src/Screens/userAuth/signUp/ChooseRule';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import {QueryClient, QueryClientProvider} from '@tanstack/react-query';
 import FlashMessage from 'react-native-flash-message';
 import SignIn from './src/Screens/userAuth/logIn';
 
@@ -27,9 +27,9 @@ const Tab = createBottomTabNavigator();
 
 const TabNavigator = () => {
   return (
-    <Tab.Navigator 
-      screenOptions={({ route }) => ({
-        tabBarIcon: ({ focused, color, size }) => {
+    <Tab.Navigator
+      screenOptions={({route}) => ({
+        tabBarIcon: ({focused, color, size}) => {
           let iconName = '';
           if (route.name === 'Trang chủ') {
             iconName = focused ? 'home' : 'home-outline';
@@ -40,15 +40,39 @@ const TabNavigator = () => {
           } else if (route.name === 'Tôi') {
             iconName = focused ? 'person' : 'person-outline';
           }
-          return <Ionicons name={iconName} size={28} color="#2E7d32" />;
+          return <Ionicons name={iconName} size={28} color="#2E7D32" />;
         },
         tabBarLabel: '',
-      })}
-    >
-      <Tab.Screen name="Trang chủ" component={HomePage} options={{ headerShown: false }} />
-      <Tab.Screen name="Giỏ hàng" component={CartScreen} options={{ headerShown: false }}/>
-      <Tab.Screen name="Tin nhắn" component={ChatScreen} options={{ headerShown: false }}/>
-      <Tab.Screen name="Tôi" component={ProfileScreen} options={{ headerShown: false }}/>
+        tabBarShowLabel: false,
+      })}>
+      <Tab.Screen
+        name="Trang chủ"
+        component={HomePage}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <Tab.Screen
+        name="Giỏ hàng"
+        component={CartScreen}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <Tab.Screen
+        name="Tin nhắn"
+        component={ChatScreen}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <Tab.Screen
+        name="Tôi"
+        component={ProfileScreen}
+        options={{
+          headerShown: false,
+        }}
+      />
     </Tab.Navigator>
   );
 };
@@ -59,9 +83,8 @@ const App = () => {
     <QueryClientProvider client={queryClient}>
       <NavigationContainer>
         <Stack.Navigator
-          screenOptions={{ headerShown: false}}
-          initialRouteName="Main"
-        >
+          screenOptions={{headerShown: false}}
+          initialRouteName="Main">
           <Stack.Screen
             name="ProductDetailScreen"
             component={ProductDetailScreen}

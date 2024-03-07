@@ -14,6 +14,8 @@
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		7699B88040F8A987B510C191 /* libPods-GRADUATION_PROJECT-GRADUATION_PROJECTTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 19F6CBCC0A4E27FBF8BF4A61 /* libPods-GRADUATION_PROJECT-GRADUATION_PROJECTTests.a */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
+		A5E72D631C0B4CA0952C1A87 /* Lobster-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = D3CD3719BEE946A595EB3871 /* Lobster-Regular.ttf */; };
+		ACD48FDC9A3F40D8827B23CF /* Meddon-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FF7EEF1808984FC0B3E5AE5A /* Meddon-Regular.ttf */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -44,6 +46,8 @@
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = GRADUATION_PROJECT/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		89C6BE57DB24E9ADA2F236DE /* Pods-GRADUATION_PROJECT-GRADUATION_PROJECTTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GRADUATION_PROJECT-GRADUATION_PROJECTTests.release.xcconfig"; path = "Target Support Files/Pods-GRADUATION_PROJECT-GRADUATION_PROJECTTests/Pods-GRADUATION_PROJECT-GRADUATION_PROJECTTests.release.xcconfig"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
+		D3CD3719BEE946A595EB3871 /* Lobster-Regular.ttf */ = {isa = PBXFileReference; name = "Lobster-Regular.ttf"; path = "../src/assets/fonts/Lobster-Regular.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		FF7EEF1808984FC0B3E5AE5A /* Meddon-Regular.ttf */ = {isa = PBXFileReference; name = "Meddon-Regular.ttf"; path = "../src/assets/fonts/Meddon-Regular.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -122,6 +126,7 @@
 				83CBBA001A601CBA00E9B192 /* Products */,
 				2D16E6871FA4F8E400B85C8A /* Frameworks */,
 				BBD78D7AC51CEA395F1C20DB /* Pods */,
+				BC193850ED6E44F6853A4D24 /* Resources */,
 			);
 			indentWidth = 2;
 			sourceTree = "<group>";
@@ -147,6 +152,16 @@
 			);
 			path = Pods;
 			sourceTree = "<group>";
+		};
+		BC193850ED6E44F6853A4D24 /* Resources */ = {
+			isa = "PBXGroup";
+			children = (
+				D3CD3719BEE946A595EB3871 /* Lobster-Regular.ttf */,
+				FF7EEF1808984FC0B3E5AE5A /* Meddon-Regular.ttf */,
+			);
+			name = Resources;
+			sourceTree = "<group>";
+			path = "";
 		};
 /* End PBXGroup section */
 
@@ -243,6 +258,8 @@
 			files = (
 				81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
+				A5E72D631C0B4CA0952C1A87 /* Lobster-Regular.ttf in Resources */,
+				ACD48FDC9A3F40D8827B23CF /* Meddon-Regular.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
