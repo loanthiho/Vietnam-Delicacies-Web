@@ -1,8 +1,8 @@
 import axios from 'axios';
 export const token =
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImVkNWE3NGU3LTgwZDUtNDllOS1iMDAxLTNlNWQxY2UxYjQ3NCIsImVtYWlsIjoiZGkxLmhvMjRnbWFpbC5jb20iLCJwYXNzd29yZCI6IiQyYSQxMCRMSGFZSm45YWhQbzh1elZKaXZnT0x1Q2FKMXV0dU1tWWRlUFpiTlQ2cTNxY2pHOHEwVlQ3YSIsIm5hbWUiOiJEaSBIbyIsImlhdCI6MTcwOTUzODgxMX0.xYYgaEY7XmxtGNukHZxB5RlzSBe1rSjd3mhZc7doYMY';
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImY1YmFiNGFjLTI2OGYtNDFhOS05M2M3LThmMmNiYzQwZTlkZCIsImVtYWlsIjoiZGkyLmhvMjRnbWFpbC5jb20iLCJwYXNzd29yZCI6IiQyYSQxMCQ5VVhBWDdPVnZPZzlyNThveVlpaVplRzcwT1hNUS82MjhueTFqZy9xOW9kLmxvNHp0NDduMiIsIm5hbWUiOiJEaSBIbyIsImlhdCI6MTcwOTY4OTc1M30.P2GZtfemFmu0rxTQTqfAy6vayC9eX_LDS7Xduf9APK0';
 const baseAxios = axios.create({
-  baseURL: `https://972f-2401-d800-25d1-71ab-dd89-e81e-b165-cabd.ngrok-free.app/`,
+  baseURL: `http://nodejs-app-env-1.eba-q2t7wpq3.ap-southeast-2.elasticbeanstalk.com/`,
 });
 
 const api = {

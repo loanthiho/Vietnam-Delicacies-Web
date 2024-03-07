@@ -21,7 +21,7 @@ const Tab = createBottomTabNavigator();
 
 const TabNavigator = () => {
   return (
-    <Tab.Navigator
+    <Tab.Navigator 
       screenOptions={({ route }) => ({
         tabBarIcon: ({ focused, color, size }) => {
           let iconName = '';
@@ -51,26 +51,15 @@ const App = () => {
     <QueryClientProvider client={queryClient}>
       <NavigationContainer>
         <Stack.Navigator
-          screenOptions={{
-            headerShown: false,
-          }}
+          screenOptions={{headerShown: false}}
           initialRouteName="Main">
           <Stack.Screen
             name="ProductDetailScreen"
             component={ProductDetailScreen}
           />
-          <Stack.Screen
-            name="ShopOwnerScreen"
-            component={ShopOwnerScreen}
-          />
-          <Stack.Screen
-            name="Payment"
-            component={Payment}
-          />
-          <Stack.Screen
-            name="Main"
-            component={TabNavigator}
-          />
+          <Stack.Screen name="ShopOwnerScreen" component={ShopOwnerScreen} />
+          <Stack.Screen name="Payment" component={Payment} />
+          <Stack.Screen name="Main" component={TabNavigator} />
         </Stack.Navigator>
       </NavigationContainer>
     </QueryClientProvider>

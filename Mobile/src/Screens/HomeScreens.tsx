@@ -23,7 +23,9 @@ const HomePage = ({navigation}: any) => {
   const {isLoading, error, data} = useQuery({
     queryKey: ['products'],
     queryFn: async () => {
-      const response = await api.get('products', {}, {});
+      const response = await api.get(
+        'products',{},{}
+      );
       return response;
     },
   });
@@ -85,7 +87,7 @@ const HomePage = ({navigation}: any) => {
           ListHeaderComponent={
             <>
               <Banner />
-              <Text style={{fontSize: 20, fontWeight: 'bold'}}>
+              <Text style={{fontSize: 18, fontWeight: 'bold'}}>
                 Sản phẩm nổi bật{' '}
               </Text>
             </>
@@ -93,7 +95,7 @@ const HomePage = ({navigation}: any) => {
           ListFooterComponent={
             <>
               <FeaturedProductsList data={data} navigation={navigation} />
-              <Text style={{fontSize: 20, fontWeight: 'bold'}}>
+              <Text style={{fontSize: 18, fontWeight: 'bold'}}>
                 Sản phẩm đề xuất
               </Text>
               <SuggestionsList data={data} navigation={navigation} />
@@ -118,6 +120,7 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: 'bold',
     fontStyle: 'italic',
+    color: '#ffa000'
   },
   profileImageContainer: {
     borderRadius: 50,
@@ -131,25 +134,26 @@ const styles = StyleSheet.create({
   search: {
     flexDirection: 'row',
     alignItems: 'center',
-    padding: 10,
     borderRadius: 20,
     paddingEnd: 30,
     backgroundColor: '#ffffff',
     marginTop: 20,
   },
   searchIcon: {
-    fontSize: 34,
+    marginLeft: 10,
+    fontSize: 22,
     color: 'black',
   },
   searchInput: {
     flex: 1,
-    marginLeft: 20,
-    fontSize: 20,
+    marginLeft: 15,
+    fontSize: 16,
   },
+  
   itemOption: {
     margin: 10,
     width: 100,
-    padding: 10,
+    padding:8,
     borderRadius: 15,
     textAlign: 'center',
     justifyContent: 'center',
