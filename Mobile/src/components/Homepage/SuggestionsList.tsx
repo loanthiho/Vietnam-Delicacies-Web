@@ -10,14 +10,14 @@ const SuggestionsList = ({ data, navigation }: any) => {
             numColumns={2}
             contentContainerStyle={{
                 width: '100%',
-                flexDirection: 'column',
+                flexDirection: 'row',
                 gap: 20,
                 height: 'auto',
             }}
             renderItem={({ item }) => (
-                <TouchableOpacity
-                    style={styles.favouriteProducts}
+                <TouchableOpacity 
                     onPress={() => navigation.navigate('ProductDetailScreen', { selectedItem: item })}>
+                        <View style={styles.groupProduct}> 
                     <View style={styles.featuredProducts}>
                         {item.Files.length > 0 ? (
                             <Image
@@ -33,13 +33,17 @@ const SuggestionsList = ({ data, navigation }: any) => {
                             />
                         )}
                         <View>
-                            <Text style={styles.itemText}>{item.name}</Text>
-                            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                            <Text numberOfLines={1} style={styles.itemText}>{item.name}</Text>
+                            <View style={{ flexDirection: 'row', alignItems: 'center', padding:10, justifyContent:"space-between" }}>
+                            <View style={styles.star}>
                                 <Ionicons name="star" style={styles.starIcon} />
                                 <Text style={styles.textIcon}>4.5</Text>
+                                </View>
                                 <Ionicons name="cart" style={styles.cartIcon} />
+                          
                             </View>
                         </View>
+                    </View>
                     </View>
                 </TouchableOpacity>
             )}
@@ -49,56 +53,51 @@ const SuggestionsList = ({ data, navigation }: any) => {
 };
 
 const styles = StyleSheet.create({
-    favouriteProducts: {
-        backgroundColor: 'white',
-        borderRadius: 10,
-        marginHorizontal: 5,
-        marginTop: 10,
-        marginBottom: 20,
-        width: 170,
-        height: 240,
-        elevation: 10,
-        top: 20,
+
+    groupProduct:{
+        justifyContent:"center",
     },
     featuredProducts: {
         backgroundColor: 'white',
-        borderRadius: 10,
+        borderRadius: 10,     
+        width: 150,
         marginHorizontal: 5,
         marginTop: 20,
         marginBottom: 20,
-        width: 150,
-        height: 220,
-        borderColor: 'white',
     },
     itemPhoto: {
-        width: 130,
-        height: 130,
-        borderRadius: 20,
-        position: 'relative',
-        left: 10,
-        top: 10,
+        alignSelf:'center',
+        marginTop: 10,
+        width:120,
+        height: 120,
+        borderRadius: 10,
+        justifyContent: "space-between"
     },
     itemText: {
         color: 'black',
-        marginTop: 25,
-        fontSize: 16,
-        textAlign: 'center',
-        marginBottom: 10,
+        fontSize: 16, 
+        textAlign:'center', 
+        padding: 14
+    },
+    star:{
+    flexDirection: "row",
+    alignSelf:"center",
+    gap: 5,
+    paddingLeft:10,
+
     },
     starIcon: {
-        fontSize: 25,
-        color: 'yellow',
-        paddingLeft: 10,
+        fontSize: 18,
+        color: '#ffa000',
     },
     textIcon: {
-        paddingLeft: 40,
-        right: 30,
         fontSize: 15,
+        alignSelf:"center"
     },
     cartIcon: {
         fontSize: 25,
+        marginRight:10,
         color: '#2E7D32',
-        paddingLeft: 20,
     },
 });
 
