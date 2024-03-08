@@ -1,4 +1,4 @@
-import React, {useEffect, useMemo, useState} from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import {
   ScrollView,
   Text,
@@ -6,19 +6,19 @@ import {
   View,
   StyleSheet,
 } from 'react-native';
-import {useShoppingCartData} from '../Hooks/addToCart';
+import { useShoppingCartData } from '../Hooks/addToCart';
 import api from '../api/request';
 import CartItem from '../components/Cart/CartItem';
 
-const CartScreen = ({route, navigation}: any) => {
-  const {data, refetch} = useShoppingCartData();
+const CartScreen = ({ route, navigation }: any) => {
+  const { data, refetch } = useShoppingCartData();
   const [selected, setSelected] = useState<boolean[]>([]);
-  const [showErrorMessage, setShowErrorMessage] = useState<boolean>(false);
+  const [errorMessage, setErrorMessage] = useState<string>('');
 
   const totalPrice = useMemo(() => {
     let i = 0;
     return data?.data?.reduce?.(
-      (total: number, item: {Product: {price: number}; quantity: number}) => {
+      (total: number, item: { Product: { price: number }; quantity: number }) => {
         const productPrice =
           selected.length > i && selected[i]
             ? item.Product.price * item.quantity
@@ -38,7 +38,7 @@ const CartScreen = ({route, navigation}: any) => {
 
   const changeQuantity = async (itemId: string, diff: number) => {
     const rIncrease = await api.post(`/carts/update-qty/${itemId}`, {
-      params: {action: diff > 0 ? 'increase' : 'decrease'},
+      params: { action: diff > 0 ? 'increase' : 'decrease' },
     });
     if (rIncrease) {
       refetch();
@@ -67,11 +67,9 @@ const CartScreen = ({route, navigation}: any) => {
 
   return (
     <View style={styles.container}>
-      {showErrorMessage && !selected.some(item => item) ? (
-  <Text style={styles.setErrorMessage}>
-    Vui lòng chọn ít nhất một sản phẩm để thanh toán
-  </Text>
-) : null}
+      {errorMessage ? (
+            <Text style={styles.setErrorMessage}>{errorMessage}</Text>
+          ) : null}
       <ScrollView>
         {cartItems && cartItems.length > 0
           ? cartItems?.map((item: any, index: number) => (
@@ -98,6 +96,7 @@ const CartScreen = ({route, navigation}: any) => {
               {totalPrice?.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.')}đ
             </Text>
           </View>
+          
           <TouchableOpacity
             onPress={() => {
               const selectedItems = cartItems.filter(
@@ -108,7 +107,9 @@ const CartScreen = ({route, navigation}: any) => {
                   selectedItems: selectedItems,
                 });
               } else {
-                setShowErrorMessage(true);
+                setErrorMessage(
+                  'Vui lòng chọn ít nhất một sản phẩm để thanh toán',
+                );
               }
             }}>
             <Text style={styles.checkoutButtonText}>Thanh toán</Text>
@@ -158,10 +159,11 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
     padding: 10,
+    
   },
   setErrorMessage: {
     color: 'red',
-    textAlign: 'center',
+    textAlign: 'center', 
   },
 });
 

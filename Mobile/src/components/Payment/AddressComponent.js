@@ -87,13 +87,15 @@ const styles = StyleSheet.create({
   AddressAdd: {
     flexDirection: 'row',
     justifyContent: 'space-between',
+    alignItems: 'center',
     paddingTop: 10,
     borderWidth: 1,
     borderColor: '#CCCCCC',
     borderRadius: 10,
-    marginBottom: 20,
-    padding: 10,
+    marginBottom: 10,
     width: '100%',
+    padding: 10,
+    margin: 10,
   },
   TitleAddress: {
     fontSize: 18,

@@ -24,12 +24,12 @@ const HomePage = ({navigation}: any) => {
   const {isLoading, error, data} = useQuery({
     queryKey: ['products'],
     queryFn: async () => {
-      const response = await api.get('products', { auth: false });
+      const response = await api.get('products', {auth: false});
       return response.data;
     },
   });
 
-  const renderItem = ({ item }: any) => (
+  const renderItem = ({item}: any) => (
     <TouchableOpacity
       style={[
         styles.itemOption,
@@ -54,7 +54,10 @@ const HomePage = ({navigation}: any) => {
         />
       ) : null}
       <View style={styles.header}>
-        <Text style={styles.textheader}>Đặc sản Việt</Text>
+        <View style={{flexDirection: 'row', alignItems: 'center'}}>
+          <Text style={styles.textheader}>Đặc sản</Text>
+          <Text style={styles.textViet}>Việt</Text>
+        </View>
         <TouchableOpacity style={styles.profileImageContainer}>
           <Image
             source={require('../assets/huong.jpg')}
@@ -62,7 +65,7 @@ const HomePage = ({navigation}: any) => {
           />
         </TouchableOpacity>
       </View>
-      <Text>Đặt món đặc sản bạn yêu thích </Text>
+      <Text style={{color: '#000'}}>Đặt món đặc sản bạn yêu thích </Text>
 
       <View style={styles.search}>
         <Ionicons name="search-outline" style={styles.searchIcon} />
@@ -122,10 +125,17 @@ const styles = StyleSheet.create({
   },
   textheader: {
     fontSize: 24,
-    fontWeight: 'bold',
-    fontStyle: 'italic',
-    color: "#ffa000"
+    color: '#ffa000',
+    fontFamily: 'Lobster-Regular',
   },
+
+  textViet: {
+    color: '#ffa000',
+    fontSize: 26,
+    marginBottom: 15,
+    fontFamily: 'Meddon-Regular',
+  },
+
   profileImageContainer: {
     borderRadius: 50,
     overflow: 'hidden',
@@ -141,22 +151,24 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     paddingEnd: 30,
     backgroundColor: '#ffffff',
-    marginTop: 20,
+    marginTop: 10,
   },
   searchIcon: {
-    marginLeft:15,
+    marginLeft: 15,
     fontSize: 20,
     color: 'black',
   },
   searchInput: {
     flex: 1,
+    marginLeft: 15,
     fontSize: 16,
   },
+
   itemOption: {
     marginTop: 10,
     marginBottom: 10,
     marginRight: 10,
-    padding:10,
+    padding: 10,
     borderRadius: 15,
     textAlign: 'center',
     justifyContent: 'center',
