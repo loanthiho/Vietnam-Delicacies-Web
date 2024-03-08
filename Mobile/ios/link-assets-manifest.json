@@ -1,0 +1,13 @@
+{
+  "migIndex": 1,
+  "data": [
+    {
+      "path": "src/assets/fonts/Lobster-Regular.ttf",
+      "sha1": "120c751cd7a77174037c2409ab883ef7efc5edbb"
+    },
+    {
+      "path": "src/assets/fonts/Meddon-Regular.ttf",
+      "sha1": "4bc600a1820ffa4380f01e731dc6ffc20aae0bc0"
+    }
+  ]
+}
