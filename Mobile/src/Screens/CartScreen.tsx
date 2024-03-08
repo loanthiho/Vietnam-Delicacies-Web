@@ -68,24 +68,31 @@ const CartScreen = ({ route, navigation }: any) => {
   return (
     <View style={styles.container}>
       {errorMessage && !selected.some(item => item) ? (
+<<<<<<< HEAD
   <Text style={styles.setErrorMessage}>
     Vui lòng chọn ít nhất một sản phẩm để thanh toán
   </Text>
 ) : null}
+=======
+        <Text style={styles.setErrorMessage}>
+          Vui lòng chọn ít nhất một sản phẩm để thanh toán
+        </Text>
+      ) : null}
+>>>>>>> 20f7f14a3179392418f88ed8b54278690a7599d2
       <ScrollView>
         {cartItems && cartItems.length > 0
           ? cartItems?.map((item: any, index: number) => (
-              <CartItem
-                key={index.toString()}
-                item={item}
-                changeQuantity={changeQuantity}
-                selected={selected[index]}
-                changeSelectedItem={(selected: boolean) =>
-                  changeSelectedItem(index, selected)
-                }
-                removeItem={removeItem}
-              />
-            ))
+            <CartItem
+              key={index.toString()}
+              item={item}
+              changeQuantity={changeQuantity}
+              selected={selected[index]}
+              changeSelectedItem={(selected: boolean) =>
+                changeSelectedItem(index, selected)
+              }
+              removeItem={removeItem}
+            />
+          ))
           : null}
       </ScrollView>
       <View>
@@ -98,7 +105,7 @@ const CartScreen = ({ route, navigation }: any) => {
               {totalPrice?.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.')}đ
             </Text>
           </View>
-          
+
           <TouchableOpacity
             onPress={() => {
               const selectedItems = cartItems.filter(
@@ -161,11 +168,11 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
     padding: 10,
-    
+
   },
   setErrorMessage: {
     color: 'red',
-    textAlign: 'center', 
+    textAlign: 'center',
   },
 });
 

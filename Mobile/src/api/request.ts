@@ -25,11 +25,14 @@ const performRequest = async (
   auth: boolean = true,
   data: {} = {},
   params: {} = {},
-  headers: {} = {},
+  headers: Record<string, string> = {},
 ) => {
   console.log('perform', method);
   const client = await buildAxios(auth);
   console.log('client', client);
+  if (data instanceof FormData) {
+    headers['Content-Type'] = 'multipart/form-data';
+  }
   const response = await client.request({
     method,
     url: endpoint,
