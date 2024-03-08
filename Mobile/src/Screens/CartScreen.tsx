@@ -67,9 +67,11 @@ const CartScreen = ({ route, navigation }: any) => {
 
   return (
     <View style={styles.container}>
-      {errorMessage ? (
-            <Text style={styles.setErrorMessage}>{errorMessage}</Text>
-          ) : null}
+      {errorMessage && !selected.some(item => item) ? (
+  <Text style={styles.setErrorMessage}>
+    Vui lòng chọn ít nhất một sản phẩm để thanh toán
+  </Text>
+) : null}
       <ScrollView>
         {cartItems && cartItems.length > 0
           ? cartItems?.map((item: any, index: number) => (
