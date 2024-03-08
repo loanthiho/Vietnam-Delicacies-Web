@@ -106,7 +106,7 @@ const CartScreen = ({ route, navigation }: any) => {
   return (
     <GestureHandlerRootView style={styles.container}>
       <ScrollView>
-        {token && cartItems && cartItems.length > 0
+        {cartItems && cartItems.length > 0
           ? cartItems?.map((item, index) => (
             <CartItem
               key={index.toString()}
