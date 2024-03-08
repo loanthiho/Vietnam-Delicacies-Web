@@ -3,6 +3,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import ProductImg from './ProductImg';
 import {Formik} from 'formik';
 import * as Yup from 'yup';
+import api from '../api/request';
 
 import {
   View,
@@ -106,10 +107,9 @@ const AddProduct = () => {
   };
 
   //domain
-  const apiDomain = 'https://8d03-113-176-99-140.ngrok-free.app/domains';
   useEffect(() => {
-    axios
-      .get(apiDomain)
+    api
+      .get('domains')
       .then(response => {
         setDataDomain(response.data.data);
       })
@@ -139,11 +139,9 @@ const AddProduct = () => {
   };
   //domain
 
-  //categories
-  const apiCategory = 'https://8d03-113-176-99-140.ngrok-free.app/categories';
   useEffect(() => {
-    axios
-      .get(apiCategory)
+    api
+      .get('categories')
       .then(response => {
         setDataCategoryAPI(response.data.data);
       })
@@ -171,9 +169,6 @@ const AddProduct = () => {
     });
     console.log('category:', categoryId);
   };
-
-  const token =
-    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjU3N2IwMTU3LTBkMDQtNDJkOC1iZmUxLTc2MzQyNDU1Zjc5ZiIsImVtYWlsIjoiZGkuaG8yNGdtYWlsLmNvbSIsInBhc3N3b3JkIjoiJDJhJDEwJEtmVS5mVW5lQlE0VFB1UkJxWENMWmVNR3lXcEtnNHpMS2NCa2JJUWg1QVo5LlBHN2RvaU5lIiwibmFtZSI6IkRpIEhvIiwiaWF0IjoxNzA5NTIwNTI3fQ.B4t59KH3rLA6anvfJHz2F7W651N5EmZTNYTpUI3ZfP8';
 
   const saveProduct = async () => {
     if (nameProduct === '') {
@@ -205,16 +200,18 @@ const AddProduct = () => {
       formData.append(key, ojb[key]);
     });
 
-    // console.log('data trước khi post', formData);
-    // console.log('img trước khi post', img);
-    let url_api = 'https://8d03-113-176-99-140.ngrok-free.app/products';
     try {
-      const response = await axios.post(url_api, formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-          Authorization: `Bearer ${token}`,
-        },
+      console.log('first data before post', formData);
+      // const response = await api.post('products');
+      // const response = await api.post('products', {data: formData});
+      const response = await api.post('products', {
+        data: formData,
+        // headers: {
+        //   'Content-Type': 'multipart/form-data',
+        // },
       });
+      // const response = await api.post('products', {data: ojb});
+
       setnameProduct('');
       setdescProduct('');
       setquantityProduct('');
@@ -228,8 +225,18 @@ const AddProduct = () => {
       Alert.alert('Thêm thành công');
       navigation.navigate('ProductScreen');
     } catch (error) {
-      console.log(error);
+      console.log('error when post:', error);
       Alert.alert('Thêm chưa thành công vui lòng kiểm tra lại');
+      setIsLoading(true);
+
+      setnameProduct('');
+      setdescProduct('');
+      setquantityProduct('');
+      setweightProduct('');
+      setpriceProduct('');
+      setImg('');
+      setData([]);
+      setDataCategory([]);
     }
   };
 
@@ -459,7 +466,9 @@ const AddProduct = () => {
                   styles.sumbitBtn,
                   {backgroundColor: isValid ? '#ffa000' : '#FAE1B7'},
                 ]}>
-                <Text style={[styles.BtnAdd]}>Thêm sản phẩm</Text>
+                <Text style={[styles.BtnAdd]} onPress={saveProduct}>
+                  Thêm sản phẩm
+                </Text>
               </TouchableOpacity>
             </View>
           </ScrollView>
