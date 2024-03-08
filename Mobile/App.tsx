@@ -1,8 +1,8 @@
 import React from 'react';
-import {StyleSheet} from 'react-native';
-import {NavigationContainer} from '@react-navigation/native';
-import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import { StyleSheet } from 'react-native';
+import { NavigationContainer } from '@react-navigation/native';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import ProductDetailScreen from './src/Screens/Product/ProductDetail';
 import HomePage from './src/Screens/HomeScreens';
@@ -18,7 +18,7 @@ import Seller from './src/Seller/Seller';
 import AddProduct from './src/Seller/AddProduct';
 import SignUp from './src/Screens/userAuth/signUp';
 import ChooseRole from './src/Screens/userAuth/signUp/ChooseRule';
-import {QueryClient, QueryClientProvider} from '@tanstack/react-query';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import FlashMessage from 'react-native-flash-message';
 import SignIn from './src/Screens/userAuth/logIn';
 import SuccessfulPayment from './src/components/Payment/SuccessfulPayment';
@@ -29,8 +29,8 @@ const Tab = createBottomTabNavigator();
 const TabNavigator = () => {
   return (
     <Tab.Navigator
-      screenOptions={({route}) => ({
-        tabBarIcon: ({focused, color, size}) => {
+      screenOptions={({ route }) => ({
+        tabBarIcon: ({ focused, color, size }) => {
           let iconName = '';
           if (route.name === 'Trang chủ') {
             iconName = focused ? 'home' : 'home-outline';
@@ -82,30 +82,31 @@ const App = () => {
   const queryClient = new QueryClient();
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
-    <QueryClientProvider client={queryClient}>
-      <NavigationContainer>
-        <Stack.Navigator
-          screenOptions={{headerShown: false}}
-          initialRouteName="Main">
-          <Stack.Screen
-            name="ProductDetailScreen"
-            component={ProductDetailScreen}
-          />
-          <Stack.Screen name="PaymentScreen" component={Payment} />
-          <Stack.Screen name="ShopOwnerScreen" component={ShopOwnerScreen} />
-          <Stack.Screen name="Main" component={TabNavigator} />
-          <Stack.Screen name="SignUp" component={SignUp} />
-          <Stack.Screen name="ChooseRole" component={ChooseRole} />
-          <Stack.Screen name="SignIn" component={SignIn} />
-          <Stack.Screen name="Contact" component={Contact} />
-          <Stack.Screen name="EditContact" component={EditContact} />
-          <Stack.Screen name="AddressComponent" component={AddressComponent} />
-          <Stack.Screen name="SuccessfulPayment" component={SuccessfulPayment} />
-        </Stack.Navigator>
-      </NavigationContainer>
-      <FlashMessage position="top" />
-    </QueryClientProvider>
+      <QueryClientProvider client={queryClient}>
+        <NavigationContainer>
+          <Stack.Navigator
+            screenOptions={{ headerShown: false }}
+            initialRouteName="Main">
+            <Stack.Screen
+              name="ProductDetailScreen"
+              component={ProductDetailScreen}
+            />
+            <Stack.Screen name="PaymentScreen" component={Payment} />
+            <Stack.Screen name="ShopOwnerScreen" component={ShopOwnerScreen} />
+            <Stack.Screen name="Main" component={TabNavigator} />
+            <Stack.Screen name="SignUp" component={SignUp} />
+            <Stack.Screen name="ChooseRole" component={ChooseRole} />
+            <Stack.Screen name="SignIn" component={SignIn} />
+            <Stack.Screen name="Contact" component={Contact} />
+            <Stack.Screen name="EditContact" component={EditContact} />
+            <Stack.Screen name="AddressComponent" component={AddressComponent} />
+            <Stack.Screen name="SuccessfulPayment" component={SuccessfulPayment} />
+          </Stack.Navigator>
+        </NavigationContainer>
+        <FlashMessage position="top" />
+      </QueryClientProvider>
     </GestureHandlerRootView>
+
   );
 };
 

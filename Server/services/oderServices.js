@@ -120,8 +120,6 @@ const createNewOrder = async (req, res, next) => {
         return resBadRequest(res, "Not enough feild!");
     }
 
-
-
     /**
      * Status:
      * - Chờ vận chuyển;
