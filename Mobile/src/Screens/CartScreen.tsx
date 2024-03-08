@@ -67,36 +67,25 @@ const CartScreen = ({ route, navigation }: any) => {
 
   return (
     <View style={styles.container}>
-      {errorMessage ? (
-            <Text style={styles.setErrorMessage}>{errorMessage}</Text>
-          ) : null}
+      {errorMessage && !selected.some(item => item) ? (
+        <Text style={styles.setErrorMessage}>
+          Vui lòng chọn ít nhất một sản phẩm để thanh toán
+        </Text>
+      ) : null}
       <ScrollView>
         {cartItems && cartItems.length > 0
-<<<<<<< HEAD
-          ? cartItems?.map((item, index) => (
+          ? cartItems?.map((item: any, index: number) => (
             <CartItem
               key={index.toString()}
               item={item}
               changeQuantity={changeQuantity}
               selected={selected[index]}
-              changeSelectedItem={(selected: boolean) => changeSelectedItem(index, selected)}
+              changeSelectedItem={(selected: boolean) =>
+                changeSelectedItem(index, selected)
+              }
               removeItem={removeItem}
             />
           ))
-=======
-          ? cartItems?.map((item: any, index: number) => (
-              <CartItem
-                key={index.toString()}
-                item={item}
-                changeQuantity={changeQuantity}
-                selected={selected[index]}
-                changeSelectedItem={(selected: boolean) =>
-                  changeSelectedItem(index, selected)
-                }
-                removeItem={removeItem}
-              />
-            ))
->>>>>>> 4fc15fe9e7e93f5c5d07ebf34c88d8e82b88bb54
           : null}
       </ScrollView>
       <View>
@@ -109,7 +98,7 @@ const CartScreen = ({ route, navigation }: any) => {
               {totalPrice?.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.')}đ
             </Text>
           </View>
-          
+
           <TouchableOpacity
             onPress={() => {
               const selectedItems = cartItems.filter(
@@ -172,11 +161,11 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
     padding: 10,
-    
+
   },
   setErrorMessage: {
     color: 'red',
-    textAlign: 'center', 
+    textAlign: 'center',
   },
 });
 
