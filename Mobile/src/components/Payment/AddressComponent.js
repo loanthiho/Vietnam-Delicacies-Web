@@ -92,10 +92,9 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#CCCCCC',
     borderRadius: 10,
-    marginBottom: 10,
+    marginBottom: 20,
     width: '100%',
     padding: 10,
-    margin: 10,
   },
   TitleAddress: {
     fontSize: 18,

@@ -1,36 +1,21 @@
-
-import React from 'react';
+import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { LogOut } from '../api/storage';
-import { useQuery } from '@tanstack/react-query';
-import api from '../api/request';
+import colors from '../ultils/_colors';
 
-const ChatScreen = () => {
-  // LogOut();
-  // const { } = useQuery({
-  //   queryKey: ['getCart'],
-  //   queryFn: async () => {
-  //     try {
-  //       const Rcarts = await api.get('carts');
-  //       if (Rcarts) {
-  //         console.log("carts data:", Rcarts.data);
-  //       }
 
-  //       return Rcarts.data;
-  //     } catch (error) {
-  //       console.log("err:", error);
-  //     }
-  //   }
-  // })
+const ChatScreen = ({ navigation }: any) => {
+  const [checkBox, setCheckBox] = useState<boolean>();
   return (
     <View style={styles.container}>
-      <Text style={styles.text}>Welcome to Food HomePagee!</Text>
+      {/* <Text style={styles.text}>Welcome to Food HomePage!</Text> */}
       <TouchableOpacity
-
-      >
-        <Text style={{ fontSize: 20, fontWeight: '700' }}> Fetch data Cart</Text>
+        style={{ padding: 15, backgroundColor: colors.green }}
+        onPress={() => LogOut(navigation)}>
+        <Text style={{ fontSize: 20, fontWeight: '700', color: 'white' }}> logOut</Text>
       </TouchableOpacity>
     </View>
+
   );
 };
 
