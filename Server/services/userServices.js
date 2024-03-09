@@ -64,7 +64,7 @@ const userSignIn = async (req, res, next) => {
         email: req.body.email,
         password: req.body.password
     };
-    await User.findOne({ where: { email: user.email }, include: { model: Province } })
+    await User.findOne({ where: { email: user.email } })
         .then(user => {
             const useRes = {
                 "id": user.id,
@@ -78,7 +78,6 @@ const userSignIn = async (req, res, next) => {
                 "total_order": user.total_order,
                 "createdAt": user.createdAt,
                 "updatedAt": user.updatedAt,
-                "Province": user.Province,
             }
             if (user === null) {
                 res.status(401).json({

@@ -1,8 +1,9 @@
 const { Op } = require('sequelize');
 const { Order, ProductCart, Product, OrderDetail } = require('../models');
-const { resBadRequest, resInternalError, resSuccessData } = require('../utils/response');
+const { resBadRequest, resInternalError, resSuccessData, resNotFound } = require('../utils/response');
 const { isNumber, formatDate } = require('../utils/helper');
 const orderdetail = require('../models/orderdetail');
+const order = require('../models/order');
 
 const createNewOrder = async (req, res, next) => {
     const user_id = req.userData.id;
@@ -130,7 +131,25 @@ const createNewOrder = async (req, res, next) => {
      */
 }
 
+const getAllOrder = async (req, res, next) => {
+    const customer_id = req.userData.id;
+    const order = await Order.findAll({
+        where: { customer_id: customer_id },
+        include: [{ model: OrderDetail, include: [Product] }]
+    });
+    /**
+     * Check the user have order any product;
+     * If user have order some product -> list product detail
+     */
+    if (order) {
+        resSuccessData(res, order, "Get all order Successfully!")
+    }
+    else {
+        resNotFound(res, "Can not find any order!")
+    }
+}
 
 module.exports = {
-    createNewOrder
+    createNewOrder,
+    getAllOrder
 }

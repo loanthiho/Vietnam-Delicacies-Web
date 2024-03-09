@@ -37,7 +37,7 @@ const performRequest = async (
     headers,
     data,
   });
-  console.log('res', response);
+  // console.log('res', response);
   return response;
 };
 
