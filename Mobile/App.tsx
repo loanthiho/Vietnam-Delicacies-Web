@@ -23,6 +23,7 @@ import FlashMessage from 'react-native-flash-message';
 import SignIn from './src/Screens/userAuth/logIn';
 import SuccessfulPayment from './src/components/Payment/SuccessfulPayment';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
+import EditProfileScreen from './src/components/Profile/EditProfile';
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
@@ -101,6 +102,7 @@ const App = () => {
             <Stack.Screen name="EditContact" component={EditContact} />
             <Stack.Screen name="AddressComponent" component={AddressComponent} />
             <Stack.Screen name="SuccessfulPayment" component={SuccessfulPayment} />
+            <Stack.Screen name="EditProfileScreen" component={EditProfileScreen} />
           </Stack.Navigator>
         </NavigationContainer>
         <FlashMessage position="top" />
