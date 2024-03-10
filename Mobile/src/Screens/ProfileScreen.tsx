@@ -1,31 +1,54 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {View, Text, StyleSheet, TouchableOpacity, Image} from 'react-native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import {getUserAccessToken} from '../api/storage';
 const ProfileScreen = ({navigation}: any) => {
   const [checkBox, setCheckBox] = useState<boolean>();
+  const [userInfo, setUserInfo] = useState<any>();
+
+  const getUserData = async () => {
+    const {user} = await getUserAccessToken();
+    console.log('user:', user);
+    if (user) {
+      setUserInfo(user);
+    } else {
+      setUserInfo(null);
+    }
+  };
+  useEffect(() => {
+    getUserData();
+    if (userInfo) {
+      console.log('data user:', userInfo);
+    }
+  }, []);
 
   return (
     <View style={styles.container}>
       <View style={styles.profileContainer}>
         <TouchableOpacity style={styles.profileImageContainer}>
           <Image
-            source={require('../assets/huong.jpg')}
+            source={
+              userInfo?.avatar
+                ? {uri: userInfo.avatar}
+                : require('../assets/huong.jpg')
+            }
             style={styles.profileImage}
           />
         </TouchableOpacity>
         <View style={styles.profileDetails}>
-          <Text style={styles.textName}>Huong</Text>
-          <Text style={styles.textPhone}>0123456789</Text>
+          <Text style={styles.textName}>{userInfo?.name}</Text>
+          <Text style={styles.textEmail}>{userInfo?.email}</Text>
         </View>
-        <TouchableOpacity style={styles.editIconContainer}>
+        <TouchableOpacity
+          style={styles.editIconContainer}
+          onPress={() => navigation.navigate('EditProfileScreen', {userInfo})}>
           <AntDesign name="edit" style={styles.IconEdit} />
         </TouchableOpacity>
       </View>
       <View style={styles.introduction}>
         <AntDesign name="gift" style={styles.iconGiff} />
-        <Text style={styles.introductionText} color="black">
+        <Text style={styles.introductionText}>
           Giới thiệu bạn bè nhận quà ngay
         </Text>
         <TouchableOpacity>
@@ -34,70 +57,60 @@ const ProfileScreen = ({navigation}: any) => {
       </View>
       <View style={styles.orderStatus}>
         <TouchableOpacity style={styles.iconTextContainer}>
-          <MaterialCommunityIcons name="timer-settings-outline" style={styles.iconStatus} />
+          <MaterialCommunityIcons
+            name="timer-settings-outline"
+            style={styles.iconStatus}
+          />
           <Text style={styles.textStatus}>Chờ xác nhận</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.iconTextContainer}>
-          <AntDesign
-            name="inbox"
-            style={styles.iconStatus}
-          />
+          <AntDesign name="inbox" style={styles.iconStatus} />
           <Text style={styles.textStatus}>Chờ lấy hàng</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.iconTextContainer}>
-        <MaterialCommunityIcons name="truck-delivery-outline"style={styles.iconStatus}/>
+          <MaterialCommunityIcons
+            name="truck-delivery-outline"
+            style={styles.iconStatus}
+          />
           <Text style={styles.textStatus}>Chờ giao hàng</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.iconTextContainer}>
-          <AntDesign
-            name="staro"
-            style={styles.iconStatus}
-          />
+          <AntDesign name="staro" style={styles.iconStatus} />
           <Text style={styles.textStatus}>Đánh giá</Text>
         </TouchableOpacity>
       </View>
       <View style={styles.info}>
-        <Text style={styles.introductionText}>
-          Cộng đông khách VnD
-        </Text>
+        <Text style={styles.introductionText}>Cộng đông khách VnD</Text>
         <TouchableOpacity>
           <AntDesign name="right" style={styles.iconStatus} />
         </TouchableOpacity>
       </View>
       <View style={styles.info}>
-        <Text style={styles.introductionText}>
-          Chia sẻ phản hồi 
-        </Text>
+        <Text style={styles.introductionText}>Chia sẻ phản hồi</Text>
         <TouchableOpacity>
           <AntDesign name="right" style={styles.iconStatus} />
         </TouchableOpacity>
       </View>
       <View style={styles.info}>
-        <Text style={styles.introductionText}>
-          Thông tin ứng dụng
-        </Text>
+        <Text style={styles.introductionText}>Thông tin ứng dụng</Text>
         <TouchableOpacity>
           <AntDesign name="right" style={styles.iconStatus} />
         </TouchableOpacity>
       </View>
       <View style={styles.info}>
-        <Text style={styles.introductionText}>
-          Trợ giúp
-        </Text>
+        <Text style={styles.introductionText}>Trợ giúp</Text>
         <TouchableOpacity>
           <AntDesign name="right" style={styles.iconStatus} />
         </TouchableOpacity>
-      </View><View style={styles.info}>
-        <Text style={styles.introductionText}>
-          Đã xem gần đây
-        </Text>
+      </View>
+      <View style={styles.info}>
+        <Text style={styles.introductionText}>Đã xem gần đây</Text>
         <TouchableOpacity>
           <AntDesign name="right" style={styles.iconStatus} />
         </TouchableOpacity>
-      </View><View style={styles.info}>
-        <Text style={styles.introductionText}>
-          Thiết lập tài khoản 
-        </Text>
+      </View>
+      <View style={styles.info}>
+        <Text style={styles.introductionText}>Thiết lập tài khoản</Text>
         <TouchableOpacity>
           <AntDesign name="right" style={styles.iconStatus} />
         </TouchableOpacity>
@@ -143,7 +156,8 @@ const styles = StyleSheet.create({
     marginBottom: 5,
     color: '#2E7D32',
   },
-  textPhone: {
+
+  textEmail: {
     fontSize: 16,
     fontWeight: 'bold',
     marginBottom: 5,
@@ -166,7 +180,7 @@ const styles = StyleSheet.create({
     flex: 1,
     marginLeft: 10,
     fontSize: 16,
-    color: 'black', 
+    color: 'black',
   },
   icon: {
     color: '#2E7D32',
@@ -179,12 +193,12 @@ const styles = StyleSheet.create({
     marginTop: 10,
     borderBottomWidth: 2,
     borderBottomColor: '#2E7D32',
-    padding:5,
+    padding: 5,
   },
   iconStatus: {
     marginRight: 5,
     color: '#2E7D32',
-    fontSize:24,
+    fontSize: 24,
   },
   textStatus: {
     marginRight: 10,
@@ -198,7 +212,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     paddingVertical: 5,
-    margin:3,
+    margin: 3,
   },
 });
 
