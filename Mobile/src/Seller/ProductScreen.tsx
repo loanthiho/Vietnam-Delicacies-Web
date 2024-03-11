@@ -9,21 +9,19 @@ import {
   Modal,
   Pressable,
 } from 'react-native';
-import axios from 'axios';
+import api from '../api/request';
 import {useNavigation} from '@react-navigation/native';
 
 const ProductScreen = () => {
   const [cartItems, setCartItems] = useState<any[]>([]);
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedItemId, setSelectedItemId] = useState(null);
-  const navigation = useNavigation();
+  const navigation = useNavigation<any>();
 
   useEffect(() => {
     const fetchCartItems = async () => {
       try {
-        const response = await axios.get(
-          'http://nodejs-app-env-1.eba-q2t7wpq3.ap-southeast-2.elasticbeanstalk.com/products',
-        );
+        const response = await api.get('products');
         setCartItems(response.data.data);
       } catch (error) {
         console.error('Error fetching cart items:', error);
@@ -33,20 +31,10 @@ const ProductScreen = () => {
     fetchCartItems();
   }, []);
 
-  const token =
-    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjU3N2IwMTU3LTBkMDQtNDJkOC1iZmUxLTc2MzQyNDU1Zjc5ZiIsImVtYWlsIjoiZGkuaG8yNGdtYWlsLmNvbSIsInBhc3N3b3JkIjoiJDJhJDEwJEtmVS5mVW5lQlE0VFB1UkJxWENMWmVNR3lXcEtnNHpMS2NCa2JJUWg1QVo5LlBHN2RvaU5lIiwibmFtZSI6IkRpIEhvIiwiaWF0IjoxNzA5NDU1NTEyfQ.2kuxkqvavVSZNBtYSSjy5dcdP6O-2hXnDRMsCc56FQQ';
-
-  const handleDeleteItem = async itemId => {
+  const handleDeleteItem = async (itemId: null) => {
     try {
       const updatedCartItems = cartItems.filter(item => item.id !== itemId);
-      await axios.delete(
-        `http://nodejs-app-env-1.eba-q2t7wpq3.ap-southeast-2.elasticbeanstalk.com/products/${itemId}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        },
-      );
+      await api.delete(`products/${itemId}`);
       setCartItems(updatedCartItems);
       setModalVisible(false);
     } catch (error) {
@@ -58,7 +46,12 @@ const ProductScreen = () => {
     navigation.navigate('AddProduct');
   };
 
-  const renderItem = ({item}) => (
+  const handleEditItem = (itemId: any) => {
+    navigation.navigate('UpdateProduct', {itemId: itemId});
+    console.log('first ID before send', itemId);
+  };
+
+  const renderItem = ({item}: any) => (
     <View key={item.id} style={styles.itemContainer}>
       <Image source={{uri: item.Files?.[0]?.src}} style={styles.itemImage} />
       <View style={styles.content}>
@@ -66,7 +59,13 @@ const ProductScreen = () => {
         <Text style={styles.itemPrice}>{item.price} đ</Text>
       </View>
       <View style={styles.status}>
-        <Text style={styles.update}>Sửa</Text>
+        <Text
+          style={styles.update}
+          onPress={() => {
+            handleEditItem(item.id);
+          }}>
+          Sửa
+        </Text>
         <Pressable
           onPress={() => {
             setSelectedItemId(item.id);
