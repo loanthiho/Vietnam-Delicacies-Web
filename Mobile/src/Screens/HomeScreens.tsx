@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -15,12 +15,59 @@ import FeaturedProductsList from '../components/Homepage/FeaturedProductsList';
 import SuggestionsList from '../components/Homepage/SuggestionsList';
 import { useQuery } from '@tanstack/react-query';
 import api from '../api/request';
-import axios from 'axios';
+import { debounce } from 'lodash';
+import fonts from '../ultils/_fonts';
 
 const HomePage = ({ navigation }: any) => {
   const [selectedItem, setSelectedItem] = useState('Tất cả');
   const datas = ['Tất cả', 'Miền Bắc', 'Miền Nam', 'Miền Trung'];
+  const [products, setProducts] = useState();
 
+
+  /**
+   * Handle Search product.
+   * 
+   */
+  const handleSearch = async (textParam: string) => {
+    debounceCall(textParam);
+  };
+
+  /**
+   * Debounce function call
+   */
+  const debounceCall = useCallback(
+    debounce(textParam => {
+      handleSearchCallApi(textParam);
+    }, 1000),
+    [],
+  );
+
+  /** 
+   * Handle CallApi after debounce!
+   */
+  const handleSearchCallApi = async (texParam: string) => {
+    const resSearch = useQuery({
+      queryKey: ['searchProduct'],
+      queryFn: async () => {
+        const res = await api.get('products', { params: { searchByProductName: texParam }, auth: false });
+        if (res) {
+          setProducts(res.data)
+        }
+        return res.data
+      },
+    });
+    return resSearch;
+  }
+  /**
+   * End handle search.
+   * 
+   */
+
+
+
+  /**
+   * Fetch for the first Data.
+   */
   const { isLoading, error, data } = useQuery({
     queryKey: ['products'],
     queryFn: async () => {
@@ -28,6 +75,7 @@ const HomePage = ({ navigation }: any) => {
       return response.data;
     },
   });
+
 
   const renderItem = ({ item }: any) => (
     <TouchableOpacity
@@ -69,7 +117,11 @@ const HomePage = ({ navigation }: any) => {
 
       <View style={styles.search}>
         <Ionicons name="search-outline" style={styles.searchIcon} />
-        <TextInput placeholder="Tìm kiếm..." style={styles.searchInput} />
+        <TextInput
+          placeholder="Tìm kiếm..."
+          style={styles.searchInput}
+          onChangeText={(keyWord) => handleSearch(keyWord)}
+        />
       </View>
 
       <View
@@ -89,12 +141,12 @@ const HomePage = ({ navigation }: any) => {
       <View style={{ flex: 1 }}>
         <FlatList
           data={data}
-          keyExtractor={(item, index) => index.toString()} 
+          keyExtractor={(item, index) => index.toString()}
           renderItem={null}
           ListHeaderComponent={
             <>
               <Banner />
-              <Text style={{ fontSize: 18, fontWeight: 'bold' }}>
+              <Text style={{ fontSize: fonts.$18, fontWeight: 'bold' }}>
                 Sản phẩm nổi bật{' '}
               </Text>
             </>
@@ -117,7 +169,7 @@ const HomePage = ({ navigation }: any) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
+    padding: 10,
   },
   header: {
     flexDirection: 'row',

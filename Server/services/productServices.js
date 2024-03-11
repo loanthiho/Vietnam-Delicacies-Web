@@ -59,32 +59,32 @@ const createProduct = async (req, res, next) => {
 
 const getAllProduct = async (req, res, next) => {
     var q = {};
-    const { filterByCategoryId, searchByProductName } = req.query;
+    const { filterByDomainId, searchByProductName } = req.query;
     if (req.query) {
-        if (filterByCategoryId) {
-            await Category.findByPk(filterByCategoryId)
-                .then(res => q.category_id = res.id)
-                .catch(error => resNotFound(res, err = { err: error, msg: "Category not exist!" }))
-        }
         if (searchByProductName) {
             q.name = { [Op.like]: `%${searchByProductName}%` };
         }
     }
-    await Product.findAll({
+    if (filterByDomainId) {
+        q.domain_id = { [Op.eq]: filterByDomainId }
+    }
+    const products = await Product.findAll({
         where: { ...q },
         include: [
-            { model: Province },
             { model: User, attributes: { exclude: [['password']] } },
             { model: Category },
             { model: File },
-            { model: ProductCart },
         ],
         order: [
             ["createdAt", "DESC"]
         ]
-    })
-        .then(result => resSuccessData(res, result))
-        .catch(error => resInternalError(res, error));
+    });
+    if (products) {
+        return resSuccessData(res, products, "search successful")
+    }
+    else if (!products) {
+        return resInternalError(res, "Can not get the product")
+    }
 }
 
 const getDetailProduct = async (req, res, next) => {

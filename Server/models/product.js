@@ -10,33 +10,6 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      // Một Category có nhiều Product.
-      // Một Product chỉ thuộc một Category.
-      Product.belongsTo(models.Category, {
-        foreignKey: {
-          name: 'category_id',
-          type: DataTypes.UUID
-        }
-      });
-
-      // Một product thì chỉ thuộc về một người bán.
-      // Nhưng một người bán thì sẽ có thể có nhiều Product.
-      // Một User có thể xuất hiện nhiều lần trong bảng Product.
-      Product.belongsTo(models.User, {
-        foreignKey: {
-          name: 'seller_id',
-          type: DataTypes.UUID,
-        }
-      });
-
-      // Một product thì sẽ chỉ thuộc về một province duy nhất
-      // Suy ra một một tỉnh sẽ có nhiều Product => Một province sẽ tham chiếu vào nhiều product khác nhau.
-      Product.belongsTo(models.Province, {
-        foreignKey: {
-          name: 'province_id',
-          type: DataTypes.UUID
-        }
-      });
 
       // Một Product có thể có nhiều record trong bảng file.
       // Tức là  một product có thể có nhiều hình ảnh hoặc là một.
@@ -76,6 +49,40 @@ module.exports = (sequelize, DataTypes) => {
           type: DataTypes.UUID
         }
       })
+
+      Product.belongsTo(models.Domain, {
+        foreignKey: {
+          name: 'domain_id',
+          type: DataTypes.UUID
+        }
+      })
+      // Một Category có nhiều Product.
+      // Một Product chỉ thuộc một Category.
+      Product.belongsTo(models.Category, {
+        foreignKey: {
+          name: 'category_id',
+          type: DataTypes.UUID
+        }
+      });
+
+      // Một product thì chỉ thuộc về một người bán.
+      // Nhưng một người bán thì sẽ có thể có nhiều Product.
+      // Một User có thể xuất hiện nhiều lần trong bảng Product.
+      Product.belongsTo(models.User, {
+        foreignKey: {
+          name: 'seller_id',
+          type: DataTypes.UUID,
+        }
+      });
+
+      // Một product thì sẽ chỉ thuộc về một province duy nhất
+      // Suy ra một một tỉnh sẽ có nhiều Product => Một province sẽ tham chiếu vào nhiều product khác nhau.
+      Product.belongsTo(models.Province, {
+        foreignKey: {
+          name: 'province_id',
+          type: DataTypes.UUID
+        }
+      });
 
       // Một sản phẩm có thể có ở shopping cart của nhiều người dùng.
       // Một shopping cart có thể có nhiều sản phẩm.
