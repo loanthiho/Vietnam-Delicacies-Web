@@ -89,7 +89,7 @@ const HomePage = ({navigation}: any) => {
       <View style={{flex: 1}}>
         <FlatList
           data={data}
-          keyExtractor={item => item.key}
+          keyExtractor={(item, index) => index.toString()} 
           renderItem={null}
           ListHeaderComponent={
             <>
@@ -107,7 +107,8 @@ const HomePage = ({navigation}: any) => {
               </Text>
               <SuggestionsList data={data} navigation={navigation} />
             </>
-          }></FlatList>
+          }
+        />
       </View>
     </View>
   );
