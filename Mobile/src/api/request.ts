@@ -15,8 +15,8 @@ const buildAxios = async (auth: boolean = true) => {
     headers = {Authorization: `Bearer ${tokenData.token}`};
   }
   return axios.create({
-    // baseURL: `http://nodejs-app-env-1.eba-q2t7wpq3.ap-southeast-2.elasticbeanstalk.com/`,
-    baseURL: `https://655a-2402-9d80-409-ddc5-180d-a3ed-4b3e-e91a.ngrok-free.app/`,
+    baseURL: `http://nodejs-app-env-1.eba-q2t7wpq3.ap-southeast-2.elasticbeanstalk.com/`,
+    // baseURL: `https://655a-2402-9d80-409-ddc5-180d-a3ed-4b3e-e91a.ngrok-free.app/`,
     headers,
   });
 };
@@ -26,11 +26,14 @@ const performRequest = async (
   auth: boolean = true,
   data: {} = {},
   params: {} = {},
-  headers: {} = {},
+  headers: Record<string, string> = {},
 ) => {
   console.log('perform', method);
   const client = await buildAxios(auth);
   console.log('client', client);
+  if (data instanceof FormData) {
+    headers['Content-Type'] = 'multipart/form-data';
+  }
   const response = await client.request({
     method,
     url: endpoint,
@@ -38,7 +41,6 @@ const performRequest = async (
     headers,
     data,
   });
-  // console.log('res', response);
   return response;
 };
 

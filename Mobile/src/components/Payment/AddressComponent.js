@@ -4,7 +4,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import { getUserAccessToken } from '../../api/storage';
 
-const AddressComponent = ({ navigation, userInfo, setUserInfo }) => {
+const AddressComponent = ({ navigation }) => {
   const [oldUserData, setOldUserData] = useState({});
   const getUserData = async () => {
     const userATK = await getUserAccessToken();
@@ -89,10 +89,10 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     borderColor: '#CCCCCC',
-    borderWidth: 1,
-    padding: 20,
-    marginTop: 20,
-    borderRadius: 10
+    borderRadius: 10,
+    marginBottom: 20,
+    width: '100%',
+    padding: 10,
   },
   TitleAddress: {
     fontSize: 18,

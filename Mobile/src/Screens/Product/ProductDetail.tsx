@@ -72,7 +72,7 @@ const ProductDetailScreen = ({route, navigation}: any) => {
           <View style={styles.GroupPrice}>
             <View style={styles.itemPriceContainer}>
               <Text style={styles.itemPriceText}>
-                Giá: <Text>{formatPrice(selectedItem.price)}đ</Text>
+              <Text>{formatPrice(selectedItem.price)}đ</Text>
               </Text>
             </View>
 

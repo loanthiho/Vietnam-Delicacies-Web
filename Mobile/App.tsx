@@ -29,6 +29,7 @@ LogBox.ignoreLogs([
   'Each child in a list should have a unique "key" prop.',
   'ViewPropTypes will be removed from React Native, along with all other PropTypes'
 ]);
+import EditProfileScreen from './src/components/Profile/EditProfile';
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
@@ -107,11 +108,13 @@ const App = () => {
             <Stack.Screen name="Contact" component={Contact} />
             <Stack.Screen name="AddressComponent" component={AddressComponent} />
             <Stack.Screen name="SuccessfulPayment" component={SuccessfulPayment} />
+            <Stack.Screen name="EditProfileScreen" component={EditProfileScreen} />
           </Stack.Navigator>
         </NavigationContainer>
         <FlashMessage position="top" />
       </QueryClientProvider>
     </GestureHandlerRootView>
+
 
   );
 };
