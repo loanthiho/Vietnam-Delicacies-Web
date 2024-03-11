@@ -48,7 +48,6 @@ const SignIn: React.FC = ({ navigation, route }: any) => {
                 const previousScreen = route.params?.previousScreen;
 
                 const { token, user } = mutation.data.data;
-                console.log('setting token', token);
                 await setUserAccessToken({ token, user });
 
                 if (previousScreen) {
@@ -98,7 +97,6 @@ const SignIn: React.FC = ({ navigation, route }: any) => {
                     mutation.mutate(userCredentials);
                     if (mutation.isSuccess) {
                         const { token, user } = mutation.data.data;
-                        console.log('setting token', token);
                         await setUserAccessToken({ token, user });
                     }
                 } catch (error) {

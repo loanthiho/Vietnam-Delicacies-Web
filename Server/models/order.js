@@ -45,6 +45,10 @@ module.exports = (sequelize, DataTypes) => {
     shipping_address: {
       type: DataTypes.STRING,
       allowNull: false
+    },
+    total_quantity: {
+      type: DataTypes.INTEGER,
+      allowNull: false
     }
   }, {
     sequelize,

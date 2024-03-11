@@ -64,7 +64,7 @@ const userSignIn = async (req, res, next) => {
         email: req.body.email,
         password: req.body.password
     };
-    await User.findOne({ where: { email: user.email }, include: { model: Province } })
+    await User.findOne({ where: { email: user.email } })
         .then(user => {
             const useRes = {
                 "id": user.id,
@@ -78,7 +78,6 @@ const userSignIn = async (req, res, next) => {
                 "total_order": user.total_order,
                 "createdAt": user.createdAt,
                 "updatedAt": user.updatedAt,
-                "Province": user.Province,
             }
             if (user === null) {
                 res.status(401).json({
@@ -138,15 +137,16 @@ const getUserById = async (req, res, next) => {
 const updateUser = async (req, res, next) => {
     try {
         const { id } = req.params;
-        const { name, phone_number, email, detail_address } = req.body
+        const { name, phone_number, detail_address } = req.body
         if (id) {
             const rUser = await User.findByPk(id);
             if (rUser) {
                 if (name && detail_address && phone_number) {
                     try {
                         const rUserU = await User.update({ ...req.body }, { where: { id: id } });
-                        if (rUser) {
-                            resSuccessData(res, rUserU, "Update user successfully!")
+                        if (rUserU) {
+                            const rUpdate = await User.findByPk(id);
+                            resSuccessData(res, rUpdate, "Update user successfully!")
                         } else {
                             resInternalError(res, "User update Failed")
                         }

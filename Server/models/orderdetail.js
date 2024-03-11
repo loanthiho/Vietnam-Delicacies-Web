@@ -14,7 +14,7 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: {
           name: 'order_id',
           type: DataTypes.UUID
-        }  
+        }
       });
 
       // Bảng cart dựa vào bảng product để tạo ra một record.
