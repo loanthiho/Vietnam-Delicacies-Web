@@ -1,29 +1,31 @@
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Image } from 'react-native';
-import FontAwesome5 from 'react-native-vector-icons/FontAwesome5'; 
+import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 
-const PaymentMethods = () => {
-  const [selectedMethod, setSelectedMethod] = useState('ZaloPay'); 
-
+const PaymentMethods = ({ order, setOrder }) => {
+  const ChangeMethod = (value) => setOrder({
+    ...order,
+    payment_method: value
+  })
   return (
     <View style={styles.container}>
       <TouchableOpacity
-        style={[styles.paymentMethodButton, selectedMethod === 'CashOnDelivery' && styles.selectedPaymentMethod]}
-        onPress={() => setSelectedMethod('CashOnDelivery')}>
+        style={[styles.paymentMethodButton, order.payment_method === 'CashOnDelivery' && styles.selectedPaymentMethod]}
+        onPress={() => ChangeMethod('CashOnDelivery')}>
         <View style={styles.paymentMethodContent}>
           <FontAwesome5 name="money-bill" size={24} color="#2E7D32" />
-          <Text style={[styles.paymentMethodText, selectedMethod === 'CashOnDelivery' && styles.selectedPaymentText]}>Thanh toán khi nhận hàng</Text>
+          <Text style={[styles.paymentMethodText, order.payment_method === 'CashOnDelivery' && styles.selectedPaymentText]}>Thanh toán khi nhận hàng</Text>
         </View>
       </TouchableOpacity>
       <TouchableOpacity
-        style={[styles.paymentMethodButton, selectedMethod === 'ZaloPay' && styles.selectedPaymentMethod]}
-        onPress={() => setSelectedMethod('ZaloPay')}>
+        style={[styles.paymentMethodButton, order.payment_method === 'ZaloPay' && styles.selectedPaymentMethod]}
+        onPress={() => ChangeMethod('ZaloPay')}>
         <View style={styles.paymentMethodContent}>
           <Image
             source={require('../../assets/Logo_ZaloPay.png')}
             style={styles.zalopay}
           />
-          <Text style={[styles.paymentMethodText, selectedMethod === 'ZaloPay' && styles.selectedPaymentText]}>ZaloPay</Text>
+          <Text style={[styles.paymentMethodText, order.payment_method === 'ZaloPay' && styles.selectedPaymentText]}>ZaloPay</Text>
         </View>
       </TouchableOpacity>
     </View>
@@ -33,7 +35,7 @@ const PaymentMethods = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-  
+
   },
   paymentMethodButton: {
     flex: 1,
@@ -51,7 +53,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFA000',
   },
   selectedPaymentText: {
-    color: 'white', 
+    color: 'white',
   },
   paymentMethodContent: {
     flexDirection: 'row',
@@ -61,7 +63,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#333333',
     fontSize: 17,
-    marginLeft: 10, 
+    marginLeft: 10,
   },
   zalopay: {
     width: 27,

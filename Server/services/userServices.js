@@ -137,15 +137,16 @@ const getUserById = async (req, res, next) => {
 const updateUser = async (req, res, next) => {
     try {
         const { id } = req.params;
-        const { name, phone_number, email, detail_address } = req.body
+        const { name, phone_number, detail_address } = req.body
         if (id) {
             const rUser = await User.findByPk(id);
             if (rUser) {
                 if (name && detail_address && phone_number) {
                     try {
                         const rUserU = await User.update({ ...req.body }, { where: { id: id } });
-                        if (rUser) {
-                            resSuccessData(res, rUserU, "Update user successfully!")
+                        if (rUserU) {
+                            const rUpdate = await User.findByPk(id);
+                            resSuccessData(res, rUpdate, "Update user successfully!")
                         } else {
                             resInternalError(res, "User update Failed")
                         }
