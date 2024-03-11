@@ -4,7 +4,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import { getUserAccessToken } from '../../api/storage';
 
-const AddressComponent = ({ navigation }) => {
+const AddressComponent = ({ navigation, userInfo, setUserInfo }) => {
   const [oldUserData, setOldUserData] = useState({});
   const getUserData = async () => {
     const userATK = await getUserAccessToken();
