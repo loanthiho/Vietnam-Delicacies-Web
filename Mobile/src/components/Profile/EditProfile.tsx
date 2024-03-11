@@ -1,29 +1,57 @@
-import React, { useState } from 'react';
-import { View, Text, TextInput, StyleSheet, TouchableOpacity, Image } from 'react-native';
+import React, {useState} from 'react';
+import {
+  View,
+  Text,
+  TextInput,
+  StyleSheet,
+  TouchableOpacity,
+  Image,
+} from 'react-native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-const EditProfileScreen = ({ navigation, route }: any) => {
+import {LogOut, setUserAccessToken} from '../../api/storage';
+const EditProfileScreen = ({navigation, route}: any) => {
+  const {userInfo, oldUserInfo, setUserInfo} = route.params;
   const [name, setName] = useState(route.params?.userInfo.name || '');
   const [email, setEmail] = useState(route.params?.userInfo.email || '');
-  const [address, setAddress] = useState(route.params?.userInfo.address || '');
-  const [phoneNumber, setPhoneNumber] = useState(route.params?.userInfo.phoneNumber || '');
+  const [detail_address, setAddress] = useState(
+    route.params?.userInfo.detail_address || '',
+  );
+  const [phone_number, setPhoneNumber] = useState(
+    route.params?.userInfo.phone_number || '',
+  );
   const [avatar, setAvatar] = useState(route.params?.userInfo.avatar || '');
-  const [isEditing, setIsEditing] = useState(false); 
+  const [isEditing, setIsEditing] = useState(false);
 
-  const handleSave = () => {
-    console.log('Thông tin đã được lưu:', { name, email, address, phoneNumber, avatar });
-    setIsEditing(false); 
+  const handleSave = async () => {
+    setUserInfo({
+      ...userInfo,
+      name,
+      email,
+      detail_address,
+      phone_number,
+      avatar,
+    });
+    await setUserAccessToken({token: oldUserInfo?.token, user: userInfo});
+    setIsEditing(false);
+    console.log('Thông tin đã được lưu:', {
+      name,
+      email,
+      detail_address,
+      phone_number,
+      avatar,
+    });
   };
 
   return (
     <View style={styles.container}>
-         <TouchableOpacity onPress={() => navigation.goBack()}>
+      <TouchableOpacity onPress={() => navigation.goBack()}>
         <Ionicons name="arrow-back-outline" style={styles.arrowLeft} />
       </TouchableOpacity>
       <TouchableOpacity style={styles.profileImageContainer}>
         <Image
-          source={avatar ? { uri: avatar } : require('../../assets/huong.jpg')}
+          source={avatar ? {uri: avatar} : require('../../assets/huong.jpg')}
           style={styles.profileImage}
         />
       </TouchableOpacity>
@@ -35,9 +63,9 @@ const EditProfileScreen = ({ navigation, route }: any) => {
             style={styles.input}
             value={name}
             onChangeText={text => {
-              if (isEditing) setName(text); 
+              if (isEditing) setName(text);
             }}
-            editable={isEditing} 
+            editable={isEditing}
           />
         </View>
         <View style={styles.inputContainer}>
@@ -57,7 +85,7 @@ const EditProfileScreen = ({ navigation, route }: any) => {
           <TextInput
             placeholder="Địa chỉ"
             style={styles.input}
-            value={address} 
+            value={detail_address}
             onChangeText={text => {
               if (isEditing) setAddress(text);
             }}
@@ -69,17 +97,24 @@ const EditProfileScreen = ({ navigation, route }: any) => {
           <TextInput
             placeholder="Số điện thoại"
             style={styles.input}
-            value={phoneNumber}
-            onChangeText={text => {
-              if (isEditing) setPhoneNumber(text);
+            value={phone_number}
+            onChangeText={number => {
+              if (isEditing) return setPhoneNumber(number);
             }}
             editable={isEditing}
           />
         </View>
-        <TouchableOpacity style={styles.saveButtonTextContainer} onPress={isEditing ? handleSave : () => setIsEditing(true)}>
-          <Text style={styles.saveButtonText}>{isEditing ? 'Lưu' : 'Chỉnh sửa'}</Text>
-          <Text style={styles.logoutButton} >Đăng xuất</Text>
-        </TouchableOpacity>
+        <View style={styles.saveButtonTextContainer}>
+          <TouchableOpacity
+            onPress={isEditing ? handleSave : () => setIsEditing(true)}>
+            <Text style={styles.saveButtonText}>
+              {isEditing ? 'Lưu' : 'Chỉnh sửa'}
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => LogOut(navigation)}>
+            <Text style={styles.logoutButton}>Đăng xuất</Text>
+          </TouchableOpacity>
+        </View>
       </View>
     </View>
   );
@@ -94,8 +129,8 @@ const styles = StyleSheet.create({
   },
   arrowLeft: {
     fontSize: 22,
-    bottom:80,
-    right:150,
+    bottom: 80,
+    right: 150,
   },
   profileImageContainer: {
     marginBottom: 20,
@@ -136,17 +171,17 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     paddingHorizontal: 20,
     borderRadius: 5,
-    backgroundColor:'#2E7D32'
+    backgroundColor: '#2E7D32',
   },
   logoutButton: {
-    marginLeft: 10, 
-    backgroundColor:'#2E7D32',
+    marginLeft: 10,
+    backgroundColor: '#2E7D32',
     paddingVertical: 12,
     paddingHorizontal: 20,
     borderRadius: 5,
     fontSize: 16,
     color: '#fff',
-  }
+  },
 });
 
 export default EditProfileScreen;

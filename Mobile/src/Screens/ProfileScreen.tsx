@@ -6,12 +6,13 @@ import {getUserAccessToken} from '../api/storage';
 const ProfileScreen = ({navigation}: any) => {
   const [checkBox, setCheckBox] = useState<boolean>();
   const [userInfo, setUserInfo] = useState<any>();
+  const [oldUserInfo, setOldUserInfo] = useState<any>();
 
   const getUserData = async () => {
-    const {user} = await getUserAccessToken();
-    console.log('user:', user);
-    if (user) {
-      setUserInfo(user);
+    const userInfoOld = await getUserAccessToken();
+    console.log('user:', userInfoOld.user);
+    if (userInfoOld.user) {
+      setUserInfo(userInfoOld.user);
     } else {
       setUserInfo(null);
     }
@@ -42,7 +43,12 @@ const ProfileScreen = ({navigation}: any) => {
         </View>
         <TouchableOpacity
           style={styles.editIconContainer}
-          onPress={() => navigation.navigate('EditProfileScreen', {userInfo})}>
+          onPress={() =>
+            navigation.navigate({
+              name: 'EditProfileScreen',
+              params: {userInfo, oldUserInfo, setUserInfo: setUserInfo},
+            })
+          }>
           <AntDesign name="edit" style={styles.IconEdit} />
         </TouchableOpacity>
       </View>
