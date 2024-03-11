@@ -4,6 +4,6 @@ const orderCtl = require('../controllers/orderCtl');
 const { checkAuth } = require('../middleware/check-auth');
 
 
-router.post('/', checkAuth, orderCtl.create)
-
+router.post('/', checkAuth, orderCtl.create);
+router.get('/', checkAuth, orderCtl.getAll);
 module.exports = router;

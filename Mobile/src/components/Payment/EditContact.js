@@ -3,7 +3,8 @@ import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-nativ
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
-const EditContact = ({ navigation }) => {
+const EditContact = ({ navigation, route }) => {
+  const { selectedItems } = route.params || {};
   const [fullName, setFullName] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
   const [address, setAddress] = useState('');
@@ -39,7 +40,7 @@ const EditContact = ({ navigation }) => {
       await AsyncStorage.setItem('address', address);
       setSave(true)
       console.log('Thông tin liên hệ đã được lưu vào AsyncStorage.');
-      navigation.navigate('PaymentScreen');
+      navigation.navigate('PaymentScreen', { selectedItems: selectedItems });
     } catch (error) {
       console.error('Lỗi khi lưu thông tin liên hệ vào AsyncStorage:', error);
       setSave(false)

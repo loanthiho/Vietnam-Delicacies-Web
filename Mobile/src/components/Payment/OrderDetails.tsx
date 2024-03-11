@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
+import { getUserAccessToken } from '../../api/storage';
 
 const OrderDetailComponent = ({
   showPaymentDetail,
@@ -61,6 +62,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   totalAmount: {
+    fontSize: 20,
     fontWeight: 'bold',
     color: '#FFA000',
   },

@@ -4,12 +4,12 @@ import { View, Text, Image, TouchableOpacity, StyleSheet } from 'react-native';
 const PaymentItemComponent = ({ item }: any) => {
   return (
     <View style={styles.itemContainer}>
-      <Image source={{ uri: item.Product.Files[0].src}} style={styles.itemImage} />
+      <Image source={{ uri: item.Product.Files[0].src }} style={styles.itemImage} />
       <View style={styles.content}>
         <Text style={styles.itemText}>{item.Product.name}</Text>
         <Text style={styles.itemPrice}>{item.Product.price?.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.')}đ</Text>
       </View>
-      
+
       <View style={styles.quantityContainer}>
         <Text>x{item.quantity}</Text>
       </View>
@@ -26,8 +26,8 @@ const styles = StyleSheet.create({
     marginHorizontal: 5,
     marginTop: 10,
     padding: 10,
-    flex: 1, 
-    maxHeight: 85, 
+    flex: 1,
+    maxHeight: 85,
   },
   quantityContainer: {
     flexDirection: 'row',
@@ -53,8 +53,8 @@ const styles = StyleSheet.create({
   },
   itemPrice: {
     fontSize: 18,
-    color: '#FFA000',
     margin: 10,
+    color: '#000000'
   },
   button: {
     width: 30,

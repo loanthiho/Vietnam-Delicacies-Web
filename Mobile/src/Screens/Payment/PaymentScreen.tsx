@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -12,46 +12,75 @@ import OrderDetailComponent from '../../components/Payment/OrderDetails';
 import PaymentItemComponent from '../../components/Payment/PaymentItem';
 import PaymentMethods from '../../components/Payment/PaymentMethod';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import fonts from '../../ultils/_fonts';
+import useCheckout from '../../Hooks/useCheckout';
+import { useQueryClient } from '@tanstack/react-query';
+import LoaderKit from 'react-native-loader-kit';
 
-const PaymentScreen = ({route, navigation}: any) => {
-  const {selectedItems} = route.params;
+const PaymentScreen = ({ route, navigation }: any) => {
+  const { selectedItems } = route.params;
+  const queryClient = useQueryClient();
 
-  const [showPaymentDetail, setShowPaymentDetail] = useState(true);
-
-  const decreaseQuantity = (itemId: string) => {
-    selectedItems((prevItems: any[]) =>
-      prevItems.map((item: {key: string; quantity: number}) =>
-        item.key === itemId && item.quantity > 1
-          ? {...item, quantity: item.quantity - 1}
-          : item,
-      ),
-    );
-  };
-  const increaseQuantity = (itemId: string) => {
-    selectedItems((prevItems: any[]) =>
-      prevItems.map((item: {key: string; quantity: number}) =>
-        item.key === itemId ? {...item, quantity: item.quantity + 1} : item,
-      ),
-    );
-  };
-
-  const totalPrice = selectedItems.reduce((acc: number, currentItem: any) => {
-    return acc + currentItem.Product.price * currentItem.quantity;
-  }, 0);
-
-  const totalQuantity = selectedItems.reduce(
-    (acc: any, currentItem: {quantity: any}) => {
-      return acc + currentItem.quantity;
-    },
-    0,
-  );
+  const [showPaymentDetail, setShowPaymentDetail] = useState<boolean>(true);
+  const [proPrepareCheckout, setProPrepareCheckout] = useState([]);
+  const [userInfo, setUserInfo] = useState({});
+  const { mutation } = useCheckout(navigation);
+  var productCartIds: any[] = [];
   const shippingFee = 30000;
-  const totalAmount = totalPrice + shippingFee;
 
+  const [order, setOrder] = useState({
+    payment_method: 'CashOnDelivery',
+    shipping_address: '',
+    status: 'AWAITING_CONFIRMATION',
+    total_amount: 0,
+    total_quantity: 0,
+    product_cart_ids: []
+  });
+
+  useEffect(() => {
+    if (selectedItems.length > 0) {
+      setProPrepareCheckout(selectedItems);
+    }
+    /**
+     * Caculate total price!
+     */
+    const totalPrice = proPrepareCheckout?.reduce((acc: number, currentItem: any) => {
+      productCartIds.push(currentItem?.id);
+      return acc + currentItem.Product.price * currentItem.quantity;
+    }, 0);
+    /**
+     * Caculate total quantity
+     */
+    const totalQuantity = proPrepareCheckout?.reduce(
+      (acc: any, currentItem: { quantity: any }) => {
+        return acc + currentItem.quantity;
+      },
+      0,
+    );
+
+    /**
+     * Caculate total Amount!
+     */
+    const totalAmount = totalPrice + shippingFee;
+
+    setOrder({
+      ...order,
+      shipping_address: userInfo?.detail_address,
+      total_quantity: totalQuantity,
+      total_amount: totalAmount,
+      product_cart_ids: productCartIds
+    })
+  }, [userInfo]);
+
+  console.log("\n__\n________\norder__", order)
   const togglePaymentDetail = () => {
     setShowPaymentDetail(!showPaymentDetail);
-    
   };
+
+  const handleCheckout = async () => {
+    mutation.mutate(order);
+  }
+
   return (
     <View style={styles.container}>
       <View style={styles.headerContainer}>
@@ -62,52 +91,60 @@ const PaymentScreen = ({route, navigation}: any) => {
       </View>
       <ScrollView>
         <View style={styles.addressContainer}>
-          <AddressComponent navigation={navigation} />
+          <AddressComponent navigation={navigation} userInfo={userInfo} setUserInfo={setUserInfo} />
         </View>
         <Text style={styles.title}>Chi tiết đơn hàng</Text>
         <FlatList
           data={selectedItems}
-          renderItem={({item}) => (
+          renderItem={({ item }) => (
             <PaymentItemComponent
               item={item}
-              decreaseQuantity={() => decreaseQuantity(item.key)}
-              increaseQuantity={() => increaseQuantity(item.key)}
             />
           )}
           keyExtractor={item => item.key}
           contentContainerStyle={styles.flatListContainer}
         />
-
         <OrderDetailComponent
           showPaymentDetail={showPaymentDetail}
           togglePaymentDetail={togglePaymentDetail}
-          totalPrice={totalPrice}
+          totalPrice={order.total_amount - shippingFee}
           shippingFee={shippingFee}
-          totalAmount={totalAmount}
-          totalQuantity={totalQuantity}
+          totalAmount={order.total_amount}
+          totalQuantity={order.total_quantity}
           style={styles.orderDetail}
         />
         <Text style={styles.title}>Chọn phương thức thanh toán</Text>
-        <PaymentMethods />
+        <PaymentMethods order={order} setOrder={setOrder} />
       </ScrollView>
       <View style={styles.agreementContainer}>
         <Ionicons name="document-text-sharp" size={24} color="#FFA000" />
         <Text style={styles.agreementText}>
-          Nhấn <Text style={styles.btnText}>Mua ngày</Text> đồng nghĩa với việc
-          bạn đồng ý tuân thủ Điều khoản VnD
+          Nhấn <Text style={styles.btnText}>Mua ngay</Text>  đồng nghĩa với việc
+          bạn đồng ý {'\n'}tuân thủ Điều khoản VnD
         </Text>
       </View>
       <View style={styles.btn}>
         <View style={styles.totalPriceContainer}>
           <Text style={styles.BtnTotal}>Tổng giá:</Text>
           <Text style={styles.numAlltotal}>
-            {totalPrice?.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.')}đ
+            {(order.total_amount)?.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.')}đ
           </Text>
         </View>
-        <TouchableOpacity style={styles.BtnShow}  onPress={() =>
-              navigation.navigate('SuccessfulPayment')}>
-        <Text style={styles.textPayment}>Mua ngay</Text>
-      </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.BtnShow}
+          onPress={handleCheckout}
+        >
+          <Text style={styles.textPayment}>Mua ngay</Text>
+          {
+            mutation.isPending ?
+              <LoaderKit
+                style={{ width: 20, height: 20, alignSelf: 'center' }}
+                name={'BallPulse'} // Optional: see list of animations below
+                color={'white'} // Optional: color can be: 'red', 'green',... or '#ddd', '#ffffff',...
+              />
+              : null
+          }
+        </TouchableOpacity>
       </View>
     </View>
   );
@@ -116,24 +153,23 @@ const PaymentScreen = ({route, navigation}: any) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingHorizontal: 10,
+    padding: 10,
   },
   headerContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingTop: 10,
   },
   arrowLeft: {
     fontSize: 30,
   },
   Texttitle: {
     paddingLeft: 10,
-    fontSize: 20,
-    fontWeight: 'bold',
+    fontSize: fonts.$18,
     color: '#FFA000',
   },
-  addressContainer:{
-  marginBottom:-30,
+  addressContainer: {
+    // marginBottom: -30,
+
   },
   title: {
     fontSize: 15,
@@ -154,24 +190,23 @@ const styles = StyleSheet.create({
   numAlltotal: {
     fontWeight: 'bold',
     color: '#FFA000',
-    fontSize: 18,
+    fontSize: fonts.$18,
   },
   agreementContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 10,
-    top: 10,
+    columnGap: 10,
+    padding: 10
   },
   agreementText: {
-    fontSize: 15,
     color: '#333',
-    marginLeft: 1,
   },
   totalPriceContainer: {
     flexDirection: 'column',
     alignItems: 'flex-start',
   },
   BtnShow: {
+    flexDirection: 'row',
     fontSize: 16,
     fontWeight: 'bold',
     padding: 10,

@@ -4,7 +4,7 @@ const userCtl = require('../controllers/userCtl');
 
 Router.post('/sign-up', userCtl.signUp)
 Router.post('/sign-in', userCtl.signIn)
-Router.post('/sign-in', userCtl.signIn)
+// Router.post('/sign-in', userCtl.signIn)
 // Router.post('/',userCtl.create);
 Router.get('/', userCtl.getAll);
 Router.get('/:id', userCtl.getOneById);
