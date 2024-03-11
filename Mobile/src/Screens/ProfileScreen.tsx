@@ -62,7 +62,13 @@ const ProfileScreen = ({navigation}: any) => {
         </TouchableOpacity>
       </View>
       <View style={styles.orderStatus}>
-        <TouchableOpacity style={styles.iconTextContainer}>
+        <TouchableOpacity
+          style={styles.iconTextContainer}
+          onPress={() =>
+            navigation.navigate({
+              name: 'OrderScreen',
+            })
+          }>
           <MaterialCommunityIcons
             name="timer-settings-outline"
             style={styles.iconStatus}
