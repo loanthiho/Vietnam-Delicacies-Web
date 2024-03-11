@@ -34,7 +34,7 @@ const ChatScreen = () => {
         style={styles.itemImage}
       />
       <View style={styles.content}>
-        <Text style={styles.itemText}>{item.name} Hô Văn Đi</Text>
+        <Text style={styles.itemText}>{item.name}</Text>
         <Text style={styles.itemPrice}>{item.price}</Text>
       </View>
     </View>
