@@ -1,23 +1,18 @@
 import React, {useState} from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  Alert,
-  Image,
-} from 'react-native';
+import {View, Text, StyleSheet, Alert, Image} from 'react-native';
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import {
   requestCameraPermission,
   requestImageLibraryPermission,
-} from './permissions'; 
+} from './permissions';
 
 import ImageResizer from 'react-native-image-resizer';
 
-const ProductImg: React.FC<{setImage: (img: string) => void}> = ({
-  setImage,
-}) => {
+const UpdateImg: React.FC<{
+  setImage: (img: string) => void;
+  currentImg: string;
+}> = ({setImage, currentImg}) => {
   const [img, setImg] = useState<string>('');
 
   const handleChooseOption = () => {
@@ -71,10 +66,10 @@ const ProductImg: React.FC<{setImage: (img: string) => void}> = ({
       try {
         const resizedImageUri = await ImageResizer.createResizedImage(
           result.assets[0].uri,
-          300, 
           300,
-          'JPEG', 
-          80, 
+          300,
+          'JPEG',
+          80,
         );
         setImg(resizedImageUri.uri);
         setImage(resizedImageUri.uri);
@@ -94,9 +89,9 @@ const ProductImg: React.FC<{setImage: (img: string) => void}> = ({
         }}>
         Nhấn chọn ảnh
       </Text>
-      {img != '' ? (
+      {currentImg != '' ? (
         <TouchableOpacity>
-          <Image source={{uri: img}} style={{width: 100, height: 100}} />
+          <Image source={{uri: currentImg}} style={{width: 100, height: 100}} />
         </TouchableOpacity>
       ) : (
         ''
@@ -244,4 +239,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ProductImg;
+export default UpdateImg;
