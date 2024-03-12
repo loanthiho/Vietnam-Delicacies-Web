@@ -115,12 +115,18 @@ const ProfileScreen = ({navigation}: any) => {
           <AntDesign name="right" style={styles.iconStatus} />
         </TouchableOpacity>
       </View>
-      <View style={styles.info}>
-        <Text style={styles.introductionText}>Thiết lập tài khoản</Text>
-        <TouchableOpacity>
-          <AntDesign name="right" style={styles.iconStatus} />
-        </TouchableOpacity>
-      </View>
+
+      <TouchableOpacity
+        onPress={() => {
+          navigation.navigate('AccSetup');
+        }}>
+        <View style={styles.info}>
+          <Text style={styles.introductionText}>Thiết lập tài khoản</Text>
+          <TouchableOpacity>
+            <AntDesign name="right" style={styles.iconStatus} />
+          </TouchableOpacity>
+        </View>
+      </TouchableOpacity>
     </View>
   );
 };

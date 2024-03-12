@@ -4,17 +4,17 @@ import ChatHeader from './Messenges/ChatHeader';
 import MessageList from './Messenges/MessageList';
 import ChatInput from './Messenges/ChatInput';
 
-const MessengesScreen = ({navigation, route}) => {
-  const {username, bio, picture, isBlocked, isMuted} = route.params;
+const MessengesScreen = ({route}: any) => {
+  const {itemId, itemName, itemImage} = route.params;
   return (
     <View style={{flex: 1}}>
       <ChatHeader
         onPress={() => {}}
-        username={username}
-        picture={picture}
+        itemName={itemName}
+        itemImage={itemImage}
         onlineStatus={'Online'}
       />
-      {/* <MessageList /> */}
+      <MessageList />
       <ChatInput />
     </View>
   );
