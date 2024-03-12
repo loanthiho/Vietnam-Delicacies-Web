@@ -7,6 +7,7 @@ import {
   Image,
   TextInput,
   FlatList,
+  ScrollView,
 } from 'react-native';
 import LoaderKit from 'react-native-loader-kit';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -20,87 +21,173 @@ import fonts from '../ultils/_fonts';
 
 const HomePage = ({ navigation }: any) => {
   const [selectedItem, setSelectedItem] = useState('Tất cả');
-  const datas = ['Tất cả', 'Miền Bắc', 'Miền Nam', 'Miền Trung'];
-  const [products, setProducts] = useState();
+  const [products, setProducts] = useState([]);
+  const [domains, setDomain] = useState<any[]>([]);
+  const [find, setFind] = useState({
+    filterByDomainId: '',
+    searchByProductName: ''
+  });
+
+  const [loading, setLoading] = useState({
+    searchLoading: false,
+    firstFetchLoading: false,
+    find: false
+  });
+
+
+  const launchSearch = async () => await handleSearch(find)
+  useEffect(() => {
+    launchSearch()
+  }, [find.filterByDomainId, find.searchByProductName]);
+
+
+  const actionFind = async (field: string, value: string) => {
+    setLoading({ ...loading, searchLoading: true, find: true });
+    if (field === 'filterByDomainId') {
+      if (value === 'all') {
+        setFind({
+          ...find,
+          filterByDomainId: ''
+        })
+      }
+      else {
+        setFind({
+          ...find,
+          filterByDomainId: value
+        })
+      }
+    }
+    if (field === 'searchByProductName') {
+      setFind({
+        ...find,
+        searchByProductName: value
+      })
+    }
+
+
+    if (find.searchByProductName === '' && find.filterByDomainId === '') {
+      setLoading({ ...loading, searchLoading: true, find: false })
+    }
+  }
 
 
   /**
-   * Handle Search product.
-   * 
+   * Handle debounce search product
    */
-  const handleSearch = async (textParam: string) => {
-    debounceCall(textParam);
-  };
-
-  /**
-   * Debounce function call
-   */
-  const debounceCall = useCallback(
-    debounce(textParam => {
-      handleSearchCallApi(textParam);
-    }, 1000),
-    [],
+  const handleSearch = useCallback(
+    debounce(async (key: any) => {
+      try {
+        const response = await api.get('products', {
+          auth: false,
+          params: {
+            searchByProductName: key.searchByProductName === '' ? null : key.searchByProductName,
+            filterByDomainId: key.filterByDomainId === '' ? null : key.filterByDomainId,
+          }
+        });
+        if (response) {
+          setLoading({
+            ...loading,
+            searchLoading: false
+          })
+          setProducts(response?.data?.data)
+        }
+      } catch (error: any) {
+        console.error("Error___", error.response?.data)
+      }
+    }, 500),
+    []
   );
 
-  /** 
-   * Handle CallApi after debounce!
-   */
-  const handleSearchCallApi = async (texParam: string) => {
-    const resSearch = useQuery({
-      queryKey: ['searchProduct'],
-      queryFn: async () => {
-        const res = await api.get('products', { params: { searchByProductName: texParam }, auth: false });
-        if (res) {
-          setProducts(res.data)
-        }
-        return res.data
-      },
-    });
-    return resSearch;
-  }
-  /**
-   * End handle search.
-   * 
-   */
 
 
 
   /**
-   * Fetch for the first Data.
+   * Fetch the first data.
    */
-  const { isLoading, error, data } = useQuery({
+  const productsFetch = useQuery({
     queryKey: ['products'],
     queryFn: async () => {
-      const response = await api.get('products', { auth: false });
-      return response.data;
+      try {
+        const response = await api.get('products', { auth: false });
+        if (response) {
+          setProducts(response.data?.data.length === 0 ? [] : response.data?.data);
+          setLoading({
+            ...loading,
+            find: false
+          })
+        }
+        return response.data;
+      } catch (error) {
+        setProducts([])
+      }
+    },
+  });
+
+  /**
+   * @domain The first fetch to get all domain.
+   */
+  const domain = useQuery({
+    queryKey: ['domains'],
+    queryFn: async () => {
+      try {
+        var domainArray = [{
+          "id": "all",
+          "name": "Tất cả",
+          "createdAt": "2024-03-10T21:53:20.000Z",
+          "updatedAt": "2024-03-10T21:53:20.000Z"
+        }]
+        const response = await api.get('domains', { auth: false });
+        if (response) {
+          /// this is response data .data[{ "createdAt": "2024-03-10T21:53:20.000Z", "id": "0d82b2a5-16a5-4ec7-9c39-265455ddf462", "name": "Đồng Bằng SCL", "updatedAt": "2024-03-10T21:53:20.000Z" }]
+          // domainArray.concat(response.data?.data);
+          console.log("array domain:", domainArray)
+          console.log("Array combine:", [...domainArray, ...response.data?.data])
+          setDomain([...domainArray, ...response.data?.data]);
+        }
+        return response.data;
+      } catch (error) {
+        console.error("Error:", error)
+      }
     },
   });
 
 
-  const renderItem = ({ item }: any) => (
+
+
+
+
+
+  const renderDomain = ({ item }: any) => (
+    <>
+      <TouchableOpacity
+        key={item?.id}
+        style={[
+          styles.itemOption,
+          { backgroundColor: selectedItem === item?.id ? '#2E7D32' : 'white' },
+        ]}
+        onPress={() => {
+          setSelectedItem(item.id);
+          actionFind('filterByDomainId', item.id)
+        }}
+      >
+        <Text style={{ color: selectedItem === item?.id ? 'white' : 'black' }}>
+          {item?.name}
+        </Text>
+
+      </TouchableOpacity>
+    </>
+  );
+
+  const DomainLoading = () => (
     <TouchableOpacity
-      style={[
-        styles.itemOption,
-        { backgroundColor: selectedItem === item ? '#2E7D32' : 'white' },
-      ]}
-      onPress={() => setSelectedItem(item)}>
-      <Text style={{ color: selectedItem === item ? 'white' : 'black' }}>
-        {item}
+      style={styles.itemOption}>
+      <Text style={{}}>
       </Text>
     </TouchableOpacity>
   );
 
-  if (isLoading) return <Text>Loading...</Text>;
-  if (error) return <Text>Error: {error.message}</Text>;
   return (
     <View style={styles.container}>
-      {isLoading ? (
-        <LoaderKit
-          style={{ width: 40, height: 40 }}
-          name={'BallPulse'} // Optional: see list of animations below
-          color={'white'} // Optional: color can be: 'red', 'green',... or '#ddd', '#ffffff',...
-        />
-      ) : null}
       <View style={styles.header}>
         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
           <Text style={styles.textheader}>Đặc sản</Text>
@@ -119,8 +206,9 @@ const HomePage = ({ navigation }: any) => {
         <Ionicons name="search-outline" style={styles.searchIcon} />
         <TextInput
           placeholder="Tìm kiếm..."
+          placeholderTextColor={'#000000'}
           style={styles.searchInput}
-          onChangeText={(keyWord) => handleSearch(keyWord)}
+          onChangeText={(keyWord) => actionFind('searchByProductName', keyWord)}
         />
       </View>
 
@@ -129,42 +217,98 @@ const HomePage = ({ navigation }: any) => {
           flexDirection: 'row',
           justifyContent: 'center',
           alignItems: 'center',
+          height: 70
         }}>
-        <FlatList
-          data={datas}
-          renderItem={renderItem}
-          keyExtractor={item => item}
-          horizontal
-        />
-      </View>
 
-      <View style={{ flex: 1 }}>
-        <FlatList
-          data={data}
-          keyExtractor={(item, index) => index.toString()}
-          renderItem={null}
-          ListHeaderComponent={
+
+        {
+          /**
+           *  @domains this is to fetch the domains.
+           *  @renderItem The component to render the domains
+           * 
+           *  @domain_isLoading to check the domain is fetching!
+           */
+        }
+
+        {domain.isLoading
+          ?
+          (
+            <LoaderKit
+              style={{ width: 50, height: 50, flexDirection: 'row', justifyContent: 'center', alignSelf: 'center' }}
+              name={'BallPulse'} // Optional: see list of animations below
+              color={'green'} // Optional: color can be: 'red', 'green',... or '#ddd', '#ffffff',...
+            />
+          )
+          : (
             <>
-              <Banner />
-              <Text style={{ fontSize: fonts.$18, fontWeight: 'bold' }}>
-                Sản phẩm nổi bật{' '}
-              </Text>
+              <FlatList
+                data={domains}
+                renderItem={renderDomain}
+                keyExtractor={item => item.id}
+                horizontal
+              />
             </>
-          }
-          ListFooterComponent={
-            <>
-              <FeaturedProductsList data={data} navigation={navigation} />
-              <Text style={{ fontSize: 18, fontWeight: 'bold' }}>
-                Sản phẩm đề xuất
-              </Text>
-              <SuggestionsList data={data} navigation={navigation} />
-            </>
-          }
-        />
+          )}
+
       </View>
-    </View>
+      <ScrollView style={{ flex: 1 }}>
+        <Banner />
+        {
+          productsFetch.isLoading || loading.searchLoading ? (
+            <LoaderKit
+              style={{ width: 50, height: 50, flexDirection: 'row', justifyContent: 'center', alignSelf: 'center' }}
+              name={'BallPulse'} // Optional: see list of animations below
+              color={'green'} // Optional: color can be: 'red', 'green',... or '#ddd', '#ffffff',...
+            />
+          ) :
+            productsFetch.isError
+              ?
+              (
+                <Text style={{ color: 'red', opacity: 0.5, fontSize: fonts.$18, fontWeight: '700' }}> {productsFetch.error.message}</Text>
+              )
+              :
+              !products
+                ?
+                (
+                  <Text style={{ fontSize: fonts.$18, opacity: 0.5, fontWeight: '800', color: 'black', }}> Không có sản phẩm nào hết!</Text>
+                )
+                :
+                <FlatList
+                  data={products}
+                  keyExtractor={(item, index) => index.toString()}
+                  renderItem={null}
+                  ListHeaderComponent={
+                    <>
+                      {
+                        loading.find === true
+                          ?
+                          (<Text style={{
+                            fontSize: fonts.$18,
+                            fontWeight: 'bold', color: 'black'
+                          }}>
+                            Sản phẩm nổi bật{' '}
+                          </Text>)
+                          : null
+                      }
+                    </>
+                  }
+                  ListFooterComponent={
+                    <>
+                      <FeaturedProductsList products={products} navigation={navigation} />
+                      <Text style={{ fontSize: 18, fontWeight: 'bold', color: 'black' }}>
+                        Sản phẩm đề xuất
+                      </Text>
+                      <SuggestionsList products={products} navigation={navigation} />
+                    </>
+                  }
+                />
+        }
+      </ScrollView>
+    </View >
   );
+
 };
+
 
 const styles = StyleSheet.create({
   container: {
@@ -215,6 +359,7 @@ const styles = StyleSheet.create({
     flex: 1,
     marginLeft: 15,
     fontSize: 16,
+    color: 'black'
   },
 
   itemOption: {
