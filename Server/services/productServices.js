@@ -73,12 +73,10 @@ const updateProduct = async (req, res, next) => {
 
     const isHasProduct = await Product.findOne({ where: { user_id: user_id, id: id } });
     if (isHasProduct) {
-
-
         /**
          * @updated The response after update product.
          */
-        const updated = await Product.update(req.body, { where: { id: id } });
+        const updated = await Product.update(product_data_update, { where: { id: id } });
         if (updated) {
             /**
              * @product_updated
@@ -118,9 +116,15 @@ const updateProduct = async (req, res, next) => {
                         }
                         file_into_dbs.push(cloudFiles);
                     }
-
+                    const updateFile = await File.bulkCreate(file_into_dbs);
+                    if (updateFile) {
+                        return resSuccessData(res, updateFile, "Update file successfull")
+                    }
+                    else {
+                        return resInternalError(res, "Error when update file!")
+                    }
                 }
-                return resSuccessData(res, product_updated, "Create product successfully")
+                return resSuccessData(res, product_updated, "Update product successfully")
             }
             else {
                 return resNotFound(res, "product not found!")
