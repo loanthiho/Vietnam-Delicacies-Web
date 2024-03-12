@@ -71,7 +71,7 @@ const updateProduct = async (req, res, next) => {
     const product_data_update = req.body;
     const files = req.files;
 
-    const isHasProduct = await Product.findOne({ where: { user_id: user_id, id: id } });
+    const isHasProduct = await Product.findOne({ where: { seller_id: user_id, id: id } });
     if (isHasProduct) {
         /**
          * @updated The response after update product.
