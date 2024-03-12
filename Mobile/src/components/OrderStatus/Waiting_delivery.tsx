@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 
-const Wait_for_confirmation = () => {
+const Waiting_confirmation = () => {
   return (
     <View style={styles.container}>
       <Text style={styles.text}>Wait for confirmation screen</Text>
@@ -19,4 +19,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Wait_for_confirmation;
+export default Waiting_confirmation;

@@ -1,10 +1,10 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 
-const Wait_for_confirmation = () => {
+const Review = () => {
   return (
     <View style={styles.container}>
-      <Text style={styles.text}>Wait for confirmation screen</Text>
+      <Text style={styles.text}>Review screen</Text>
     </View>
   );
 };
@@ -19,4 +19,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Wait_for_confirmation;
+export default Review;

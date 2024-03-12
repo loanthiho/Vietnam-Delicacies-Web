@@ -1,9 +1,10 @@
-import React, {useEffect, useState} from 'react';
-import {View, Text, StyleSheet, TouchableOpacity, Image} from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import {getUserAccessToken} from '../api/storage';
-const ProfileScreen = ({navigation}: any) => {
+import { getUserAccessToken } from '../api/storage';
+
+const ProfileScreen = ({ navigation }: any) => {
   const [checkBox, setCheckBox] = useState<boolean>();
   const [userInfo, setUserInfo] = useState<any>();
   const [oldUserInfo, setOldUserInfo] = useState<any>();
@@ -17,6 +18,7 @@ const ProfileScreen = ({navigation}: any) => {
       setUserInfo(null);
     }
   };
+
   useEffect(() => {
     getUserData();
     if (userInfo) {
@@ -31,7 +33,7 @@ const ProfileScreen = ({navigation}: any) => {
           <Image
             source={
               userInfo?.avatar
-                ? {uri: userInfo.avatar}
+                ? { uri: userInfo.avatar }
                 : require('../assets/huong.jpg')
             }
             style={styles.profileImage}
@@ -46,7 +48,7 @@ const ProfileScreen = ({navigation}: any) => {
           onPress={() =>
             navigation.navigate({
               name: 'EditProfileScreen',
-              params: {userInfo, oldUserInfo, setUserInfo: setUserInfo},
+              params: { userInfo, oldUserInfo, setUserInfo: setUserInfo },
             })
           }>
           <AntDesign name="edit" style={styles.IconEdit} />

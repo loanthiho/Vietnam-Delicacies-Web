@@ -2,6 +2,7 @@ import React from 'react';
 import {View, StyleSheet, TouchableOpacity, Text} from 'react-native';
 import OrderStatus from '../../components/OrderStatus/OrderStatus';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import StatusNavigator from '../../components/OrderStatus/StatusNavigator';
 
 const OrderScreen = ({navigation}: any) => {
   return (
@@ -9,7 +10,7 @@ const OrderScreen = ({navigation}: any) => {
         <TouchableOpacity onPress={() => navigation.goBack()}>
         <Ionicons name="arrow-back-outline" style={styles.arrowLeft} />
       </TouchableOpacity>
-      <OrderStatus />
+      <StatusNavigator />
     </View>
   );
 };
