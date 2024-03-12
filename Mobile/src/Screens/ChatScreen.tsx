@@ -31,7 +31,7 @@ const ChatScreen = () => {
     {
       id: 3,
       name: 'A Thi Shop',
-      messenger: 'Chị check tin nhắn em với ạ',
+      messenger: 'Chị check tin nhắn em với',
       image: require('../assets/huong.jpg'),
     },
 
