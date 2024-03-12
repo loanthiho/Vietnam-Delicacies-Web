@@ -34,6 +34,8 @@ import EditProfileScreen from './src/components/Profile/EditProfile';
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
+import MessegesScreen from './src/Screens/MessengesScreen';
+
 const TabNavigator = () => {
   return (
     <Tab.Navigator
@@ -90,38 +92,44 @@ const TabNavigator = () => {
 const App = () => {
   const queryClient = new QueryClient();
   return (
-    <GestureHandlerRootView style={{ flex: 1 }}>
-    <QueryClientProvider client={queryClient}>
-      <NavigationContainer>
-        <Stack.Navigator
-          screenOptions={{headerShown: false}}
-          initialRouteName="Main">
-          <Stack.Screen
-            name="ProductDetailScreen"
-            component={ProductDetailScreen}
-          />
-          <Stack.Screen name="PaymentScreen" component={Payment} />
-          <Stack.Screen name="ShopOwnerScreen" component={ShopOwnerScreen} />
-          <Stack.Screen name="Main" component={TabNavigator} />
-          <Stack.Screen name="SignUp" component={SignUp} />
-          <Stack.Screen name="ChooseRole" component={ChooseRole} />
-          <Stack.Screen name="SignIn" component={SignIn} />
-          <Stack.Screen name="Contact" component={Contact} />
-          <Stack.Screen name="EditContact" component={EditContact} />
-          <Stack.Screen name="AddressComponent" component={AddressComponent} />
-          <Stack.Screen name="SuccessfulPayment" component={SuccessfulPayment} />
-        </Stack.Navigator>
-      </NavigationContainer>
-      <FlashMessage position="top" />
-    </QueryClientProvider>
+    <GestureHandlerRootView style={{flex: 1}}>
+      <QueryClientProvider client={queryClient}>
+        <NavigationContainer>
+          <Stack.Navigator
+            screenOptions={{headerShown: false}}
+            initialRouteName="Main">
+            <Stack.Screen
+              name="ProductDetailScreen"
+              component={ProductDetailScreen}
+            />
+            <Stack.Screen name="PaymentScreen" component={Payment} />
+            <Stack.Screen name="ShopOwnerScreen" component={ShopOwnerScreen} />
+            <Stack.Screen name="Main" component={TabNavigator} />
+            <Stack.Screen name="SignUp" component={SignUp} />
+            <Stack.Screen name="ChooseRole" component={ChooseRole} />
+            <Stack.Screen name="SignIn" component={SignIn} />
+            <Stack.Screen name="Contact" component={Contact} />
+            <Stack.Screen name="EditContact" component={EditContact} />
+            <Stack.Screen
+              name="AddressComponent"
+              component={AddressComponent}
+            />
+            <Stack.Screen
+              name="SuccessfulPayment"
+              component={SuccessfulPayment}
+            />
+            <Stack.Screen name="MessegesScreen" component={MessegesScreen} />
+          </Stack.Navigator>
+        </NavigationContainer>
+        <FlashMessage position="top" />
+      </QueryClientProvider>
     </GestureHandlerRootView>
 
-      //  <GestureHandlerRootView style={{flex: 1}}>
-      //   <QueryClientProvider client={queryClient}>
-      //     <Seller />
-      //   </QueryClientProvider>
-      // </GestureHandlerRootView>
-  
+    //  <GestureHandlerRootView style={{flex: 1}}>
+    //   <QueryClientProvider client={queryClient}>
+    //     <Seller />
+    //   </QueryClientProvider>
+    // </GestureHandlerRootView>
   );
 };
 
