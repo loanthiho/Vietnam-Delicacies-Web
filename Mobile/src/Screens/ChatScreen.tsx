@@ -1,36 +1,36 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import {View, Text, Image, FlatList, StyleSheet} from 'react-native';
+import { View, Text, Image, FlatList, StyleSheet } from 'react-native';
 import api from '../api/request';
-import {useNavigation} from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 
 const ChatScreen = () => {
   const navigation = useNavigation<any>();
-  const [cartItems, setCartItems] = useState(data);
+  // const [cartItems, setCartItems] = useState(data);
 
-  const data = [
-    {
-      id: 1,
-      name: 'Product 1',
-      price: '$10',
-      image: require('../../assets/banner/mix.jpg'),
-    },
-    {
-      id: 2,
-      name: 'Product 2',
-      price: '$20',
-      image: require('../assets/Image.png'),
-    },
-  ];
+  // const data = [
+  //   {
+  //     id: 1,
+  //     name: 'Product 1',
+  //     price: '$10',
+  //     image: require('../../assets/banner/mix.jpg'),
+  //   },
+  //   {
+  //     id: 2,
+  //     name: 'Product 2',
+  //     price: '$20',
+  //     image: require('../assets/Image.png'),
+  //   },
+  // ];
 
   const OnClickBack = () => {
     navigation.navigate('AddProduct');
   };
 
-  const renderItem = ({item}) => (
+  const renderItem = ({ item }) => (
     <View style={styles.itemContainer}>
       <Image
-        source={typeof item.image === 'string' ? {uri: item.image} : item.image}
+        source={typeof item.image === 'string' ? { uri: item.image } : item.image}
         style={styles.itemImage}
       />
       <View style={styles.content}>
@@ -53,7 +53,7 @@ const ChatScreen = () => {
         <Text style={styles.Subtitle}>Tin Nhắn</Text>
       </View>
       <FlatList
-        data={cartItems}
+        data={[]}
         renderItem={renderItem}
         keyExtractor={item => item.id.toString()}
       />
