@@ -109,4 +109,25 @@ const usersData = [
     },
 ]
 
-module.exports = { provincesData, usersData };
+const domainData = [
+    {
+        name: "Tây Bắc"
+    },
+    {
+        name: "Tây Nguyên"
+    },
+    {
+        name: "Miền Tây"
+    },
+    {
+        name: "Miền Trung"
+    },
+    {
+        name: "Phía Nam"
+    },
+    {
+        name: "Đồng Bằng SCL"
+    }
+]
+
+module.exports = { provincesData, usersData, domainData };

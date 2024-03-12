@@ -11,9 +11,9 @@ import ProfileScreen from './src/Screens/ProfileScreen';
 import CartScreen from './src/Screens/CartScreen';
 import Payment from './src/Screens/Payment/PaymentScreen';
 import ShopOwnerScreen from './src/Screens/Shop/ShopOwner';
+import EditContact from './src/components/Payment/EditContact';
 import Contact from './src/components/Payment/AddContact';
 import AddressComponent from './src/components/Payment/AddressComponent';
-import EditContact from './src/components/Payment/EditContact';
 import Seller from './src/Seller/Seller';
 import AddProduct from './src/Seller/AddProduct';
 import SignUp from './src/Screens/userAuth/signUp';
@@ -22,11 +22,20 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import FlashMessage from 'react-native-flash-message';
 import SignIn from './src/Screens/userAuth/logIn';
 import SuccessfulPayment from './src/components/Payment/SuccessfulPayment';
-import {GestureHandlerRootView} from 'react-native-gesture-handler';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { LogBox } from 'react-native';
+LogBox.ignoreLogs([
+  'Non-serializable values were found in the navigation state',
+  'VirtualizedLists should never be nested inside plain ScrollViews with the same orientation because it can break windowing and other functionality',
+  'Each child in a list should have a unique "key" prop.',
+  'ViewPropTypes will be removed from React Native, along with all other PropTypes'
+]);
 import EditProfileScreen from './src/components/Profile/EditProfile';
 import OrderScreen from './src/Screens/Order/OrderScreen';
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
+
+import MessegesScreen from './src/Screens/MessengesScreen';
 
 const TabNavigator = () => {
   return (
@@ -48,6 +57,7 @@ const TabNavigator = () => {
         tabBarLabel: '',
         tabBarShowLabel: false,
       })}>
+
       <Tab.Screen
         name="Trang chủ"
         component={HomePage}
@@ -83,11 +93,11 @@ const TabNavigator = () => {
 const App = () => {
   const queryClient = new QueryClient();
   return (
-    <GestureHandlerRootView style={{ flex: 1 }}>
+    <GestureHandlerRootView style={{flex: 1}}>
       <QueryClientProvider client={queryClient}>
         <NavigationContainer>
           <Stack.Navigator
-            screenOptions={{ headerShown: false }}
+            screenOptions={{headerShown: false}}
             initialRouteName="Main">
             <Stack.Screen
               name="ProductDetailScreen"
@@ -101,17 +111,26 @@ const App = () => {
             <Stack.Screen name="SignIn" component={SignIn} />
             <Stack.Screen name="Contact" component={Contact} />
             <Stack.Screen name="EditContact" component={EditContact} />
-            <Stack.Screen name="AddressComponent" component={AddressComponent} />
-            <Stack.Screen name="SuccessfulPayment" component={SuccessfulPayment} />
-            <Stack.Screen name="EditProfileScreen" component={EditProfileScreen} />
-            <Stack.Screen name="OrderScreen" component={OrderScreen} />
+            <Stack.Screen
+              name="AddressComponent"
+              component={AddressComponent}
+            />
+            <Stack.Screen
+              name="SuccessfulPayment"
+              component={SuccessfulPayment}
+            />
+            <Stack.Screen name="MessegesScreen" component={MessegesScreen} />
           </Stack.Navigator>
         </NavigationContainer>
         <FlashMessage position="top" />
       </QueryClientProvider>
     </GestureHandlerRootView>
 
-
+    //  <GestureHandlerRootView style={{flex: 1}}>
+    //   <QueryClientProvider client={queryClient}>
+    //     <Seller />
+    //   </QueryClientProvider>
+    // </GestureHandlerRootView>
   );
 };
 

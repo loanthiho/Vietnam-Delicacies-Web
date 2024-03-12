@@ -1,6 +1,6 @@
 import React, {useState, useEffect, useRef} from 'react';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import ProductImg from './ProductImg';
+import UpdateImg from './UpdateImg';
 import {Formik} from 'formik';
 import * as Yup from 'yup';
 import api from '../api/request';
@@ -17,13 +17,10 @@ import {
   TouchableWithoutFeedback,
 } from 'react-native';
 import {Dropdown} from 'react-native-element-dropdown';
-import axios from 'axios';
 import {useNavigation} from '@react-navigation/native';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 
-// import {useMutation} from 'react-query';
-
-const AddProduct = () => {
+const UppdateProduct = ({route}: any) => {
   const [nameProduct, setnameProduct] = useState('');
   const [descProduct, setdescProduct] = useState('');
   const [quantityProduct, setquantityProduct] = useState('');
@@ -63,22 +60,37 @@ const AddProduct = () => {
     category: Yup.string().required('Chưa chọn loại hàng'),
   });
 
+  //router
+  const {itemId} = route.params || {itemId: null};
+
+  useEffect(() => {
+    const fetchProduct = async (itemId: string) => {
+      if (itemId !== null) {
+        try {
+          const response = await api.get(`products/${itemId}`);
+          const productData = response.data.data;
+          console.log('UPDATE PRODUCT DATA', productData);
+          setnameProduct(productData.name);
+          setdescProduct(productData.description);
+          setquantityProduct(productData.inventory.toString());
+          setweightProduct(productData.weight.toString());
+          setpriceProduct(productData.price.toString());
+          setSelectedItem(productData.Category.id);
+          setImg(productData.Files[0]?.src);
+          console.log('image', productData.Files[0].src);
+        } catch (error) {
+          console.log('lỗi khi gọi api', error);
+        }
+      }
+    };
+    fetchProduct(itemId);
+  }, [itemId]);
+
+  console.log('UPDATE fileIMG', img);
   //Loading
   const [isLoading, setIsLoading] = useState(true);
 
-  const formatPrice = (text: string) => {
-    const formattedText = text.replace(/\D/g, '');
-    const formattedNumber = Number(formattedText).toLocaleString();
-    return formattedNumber;
-  };
-
-  const formatQuantity = (text: string) => {
-    const formattedText = text.replace(/\D/g, '');
-    const formattedNumber = Number(formattedText).toLocaleString();
-    return formattedNumber;
-  };
-
-  const formatWeight = (text: string) => {
+  const format = (text: string) => {
     const formattedText = text.replace(/\D/g, '');
     const formattedNumber = Number(formattedText).toLocaleString();
     return formattedNumber;
@@ -131,14 +143,10 @@ const AddProduct = () => {
   const handleDomainChange = (item: React.SetStateAction<null>) => {
     setSelectedItem(item);
     setDomainId(item.value);
-    console.log('Data dimain before sending:', {
-      domainId: item.value,
-      domainName: item.label,
-    });
-    console.log('Domain:', domainId);
   };
   //domain
 
+  //category
   useEffect(() => {
     api
       .get('categories')
@@ -167,10 +175,9 @@ const AddProduct = () => {
       domainId: item.value,
       domainName: item.label,
     });
-    console.log('category:', categoryId);
   };
 
-  const saveProduct = async () => {
+  const UpdateProduct = async () => {
     if (nameProduct === '') {
       Alert.alert('Vui lòng nhập thông tin');
       return;
@@ -199,30 +206,6 @@ const AddProduct = () => {
     Object.keys(ojb).forEach(key => {
       formData.append(key, ojb[key]);
     });
-
-    try {
-      console.log('first data before post', formData);
-      const response = await api.post('products', {
-        data: formData,
-      });
-
-      setnameProduct('');
-      setdescProduct('');
-      setquantityProduct('');
-      setweightProduct('');
-      setpriceProduct('');
-      setImg('');
-      setData([]);
-      setDataCategory([]);
-
-      setIsLoading(true);
-      Alert.alert('Thêm thành công');
-      navigation.navigate('ProductScreen');
-    } catch (error) {
-      console.log('error when post:', error);
-      Alert.alert('Thêm chưa thành công vui lòng kiểm tra lại');
-      setIsLoading(true);
-    }
   };
 
   if (!isLoading) {
@@ -257,8 +240,14 @@ const AddProduct = () => {
       }) => (
         <View>
           <View style={styles.title}>
-            <Ionicons name="arrow-back-outline" style={styles.arrowLeft} />
-            <Text style={styles.Subtitle}>Thêm sản phẩm</Text>
+            <Ionicons
+              name="arrow-back-outline"
+              style={styles.arrowLeft}
+              onPress={() => {
+                navigation.navigate('ProductScreen');
+              }}
+            />
+            <Text style={styles.Subtitle}>cập nhật sản phẩm</Text>
           </View>
 
           <ScrollView contentContainerStyle={styles.scrollViewContainer}>
@@ -273,7 +262,7 @@ const AddProduct = () => {
                     styles.Inputname,
                     isFocused ? styles.textInputFocus : null,
                   ]}
-                  value={values.nameProduct}
+                  value={(values.nameProduct, nameProduct)}
                   onFocus={handleFocus}
                   onBlur={() => {
                     handleBlur();
@@ -290,13 +279,14 @@ const AddProduct = () => {
                 )}
               </View>
 
-              <ProductImg setImage={setImg} />
+              <UpdateImg setImage={setImg} currentImg={img} />
 
               <View>
                 <Text style={[styles.textIcon, styles.titleName]}>Mô tả</Text>
                 <TextInput
                   multiline
                   numberOfLines={2}
+                  value={descProduct}
                   style={[
                     styles.textInput,
                     styles.Inputname,
@@ -330,6 +320,7 @@ const AddProduct = () => {
                     style={styles.IconCheck}></Ionicons>
                 )}
               />
+
               <Dropdown
                 value={values.category || selectedItem}
                 onBlur={() => {
@@ -375,7 +366,7 @@ const AddProduct = () => {
                     onBlur={() => setFieldTouched('priceProduct')}
                     style={[styles.textInput, {textAlign: 'right'}]}
                     placeholder="Giá"
-                    value={formatPrice(priceProduct) || values.priceProduct}
+                    value={format(priceProduct) || values.priceProduct}
                     onChangeText={text => {
                       setpriceProduct(text);
                       handleChange('priceProduct')(text);
@@ -402,9 +393,7 @@ const AddProduct = () => {
                     onBlur={() => setFieldTouched('quantityProduct')}
                     style={[styles.textInput, {textAlign: 'right'}]}
                     placeholder="Số lượng"
-                    value={
-                      formatWeight(quantityProduct) || values.quantityProduct
-                    }
+                    value={format(quantityProduct) || values.quantityProduct}
                     keyboardType="numeric"
                     onChangeText={text => {
                       setquantityProduct(text);
@@ -429,9 +418,7 @@ const AddProduct = () => {
                     ref={weightInputRef}
                     onFocus={() => handlePress(weightInputRef)}
                     onBlur={() => setFieldTouched('weightProduct')}
-                    value={
-                      formatQuantity(weightProduct) || values.weightProduct
-                    }
+                    value={format(weightProduct) || values.weightProduct}
                     keyboardType="numeric"
                     style={[styles.textInput, {textAlign: 'right'}]}
                     placeholder="Cân nặng"
@@ -447,14 +434,14 @@ const AddProduct = () => {
               </View>
 
               <TouchableOpacity
-                onPress={saveProduct}
+                onPress={UpdateProduct}
                 disabled={!isValid}
                 style={[
                   styles.sumbitBtn,
                   {backgroundColor: isValid ? '#ffa000' : '#FAE1B7'},
                 ]}>
-                <Text style={[styles.BtnAdd]} onPress={saveProduct}>
-                  Thêm sản phẩm
+                <Text style={[styles.BtnAdd]} onPress={UpdateProduct}>
+                  Cập nhật sản phẩm
                 </Text>
               </TouchableOpacity>
             </View>
@@ -555,7 +542,7 @@ const styles = StyleSheet.create({
 
   Inputname: {
     borderColor: '#666',
-    borderWidth: 1, // Độ dày của đường viền
+    borderWidth: 1,
     paddingHorizontal: 10,
     borderRadius: 10,
     marginBottom: 10,
@@ -612,4 +599,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default AddProduct;
+export default UppdateProduct;
