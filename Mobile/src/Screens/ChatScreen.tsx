@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import {
   View,
@@ -8,8 +8,8 @@ import {
   StyleSheet,
   TouchableOpacity,
 } from 'react-native';
-import {useNavigation} from '@react-navigation/native';
-import {SwipeListView} from 'react-native-swipe-list-view';
+import { useNavigation } from '@react-navigation/native';
+import { SwipeListView } from 'react-native-swipe-list-view';
 
 const ChatScreen = () => {
   const navigation = useNavigation<any>();
@@ -58,35 +58,35 @@ const ChatScreen = () => {
   const OnClickBack = () => {
     navigation.navigate('Trang chủ');
   };
-  
+
   const handlePress = (itemId) => {
     navigation.navigate('MessegesScreen', { itemId });
     console.log('first ID before send', itemId);
   };
   const [cartItems, setCartItems] = useState(data);
 
-  const renderItem = ({item}: any) => (
-      <TouchableOpacity
-        style={styles.itemContainer}
-        onPress={() => handlePress(item.id)}>
-        <Image
-          source={
-            typeof item.image === 'string' ? {uri: item.image} : item.image
-          }
-          style={styles.itemImage}
-        />
-        <View style={styles.content}>
-          <Text numberOfLines={1} style={styles.itemText}>
-            {item.name}
-          </Text>
-          <Text numberOfLines={1} style={styles.messenger}>
-            {item.messenger}
-          </Text>
-        </View>
-      </TouchableOpacity>
+  const renderItem = ({ item }: any) => (
+    <TouchableOpacity
+      style={styles.itemContainer}
+      onPress={() => handlePress(item.id)}>
+      <Image
+        source={
+          typeof item.image === 'string' ? { uri: item.image } : item.image
+        }
+        style={styles.itemImage}
+      />
+      <View style={styles.content}>
+        <Text numberOfLines={1} style={styles.itemText}>
+          {item.name}
+        </Text>
+        <Text numberOfLines={1} style={styles.messenger}>
+          {item.messenger}
+        </Text>
+      </View>
+    </TouchableOpacity>
   );
 
-  const renderHiddenItem = ({item}: any) => (
+  const renderHiddenItem = ({ item }: any) => (
     <View>
       <TouchableOpacity
         style={[styles.backRightBtn]}
