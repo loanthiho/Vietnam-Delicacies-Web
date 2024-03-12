@@ -18,58 +18,46 @@ import { useQuery } from '@tanstack/react-query';
 import api from '../api/request';
 import { debounce } from 'lodash';
 import fonts from '../ultils/_fonts';
+import colors from '../ultils/_colors';
 
 const HomePage = ({ navigation }: any) => {
   const [selectedItem, setSelectedItem] = useState('Tất cả');
   const [products, setProducts] = useState([]);
   const [domains, setDomain] = useState<any[]>([]);
+  const [isSearch, setIsSearch] = useState<boolean>(false);
   const [find, setFind] = useState({
     filterByDomainId: '',
     searchByProductName: ''
   });
 
+
   const [loading, setLoading] = useState({
     searchLoading: false,
     firstFetchLoading: false,
-    find: false
   });
 
-
-  const launchSearch = async () => await handleSearch(find)
   useEffect(() => {
+    if (find.searchByProductName === '' && find.filterByDomainId === 'all') {
+      setIsSearch(false);
+    }
+    const launchSearch = async () => await handleSearch(find);
     launchSearch()
-  }, [find.filterByDomainId, find.searchByProductName]);
+  }, [find.filterByDomainId, find.searchByProductName, find]);
 
 
   const actionFind = async (field: string, value: string) => {
-    setLoading({ ...loading, searchLoading: true, find: true });
+    setIsSearch(true)
     if (field === 'filterByDomainId') {
-      if (value === 'all') {
-        setFind({
-          ...find,
-          filterByDomainId: ''
-        })
-      }
-      else {
-        setFind({
-          ...find,
-          filterByDomainId: value
-        })
-      }
-    }
-    if (field === 'searchByProductName') {
-      setFind({
+      return setFind({
         ...find,
-        searchByProductName: value
+        filterByDomainId: value
       })
     }
-
-
-    if (find.searchByProductName === '' && find.filterByDomainId === '') {
-      setLoading({ ...loading, searchLoading: true, find: false })
-    }
+    return setFind({
+      ...find,
+      searchByProductName: value
+    })
   }
-
 
   /**
    * Handle debounce search product
@@ -77,6 +65,10 @@ const HomePage = ({ navigation }: any) => {
   const handleSearch = useCallback(
     debounce(async (key: any) => {
       try {
+        setLoading({
+          ...loading,
+          searchLoading: true
+        })
         const response = await api.get('products', {
           auth: false,
           params: {
@@ -102,19 +94,16 @@ const HomePage = ({ navigation }: any) => {
 
 
   /**
-   * Fetch the first data.
+   * Fetch the first data products.
    */
   const productsFetch = useQuery({
     queryKey: ['products'],
     queryFn: async () => {
       try {
+        setIsSearch(false)
         const response = await api.get('products', { auth: false });
         if (response) {
           setProducts(response.data?.data.length === 0 ? [] : response.data?.data);
-          setLoading({
-            ...loading,
-            find: false
-          })
         }
         return response.data;
       } catch (error) {
@@ -130,6 +119,7 @@ const HomePage = ({ navigation }: any) => {
     queryKey: ['domains'],
     queryFn: async () => {
       try {
+        setIsSearch(false)
         var domainArray = [{
           "id": "all",
           "name": "Tất cả",
@@ -138,10 +128,6 @@ const HomePage = ({ navigation }: any) => {
         }]
         const response = await api.get('domains', { auth: false });
         if (response) {
-          /// this is response data .data[{ "createdAt": "2024-03-10T21:53:20.000Z", "id": "0d82b2a5-16a5-4ec7-9c39-265455ddf462", "name": "Đồng Bằng SCL", "updatedAt": "2024-03-10T21:53:20.000Z" }]
-          // domainArray.concat(response.data?.data);
-          console.log("array domain:", domainArray)
-          console.log("Array combine:", [...domainArray, ...response.data?.data])
           setDomain([...domainArray, ...response.data?.data]);
         }
         return response.data;
@@ -178,14 +164,6 @@ const HomePage = ({ navigation }: any) => {
     </>
   );
 
-  const DomainLoading = () => (
-    <TouchableOpacity
-      style={styles.itemOption}>
-      <Text style={{}}>
-      </Text>
-    </TouchableOpacity>
-  );
-
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -211,7 +189,11 @@ const HomePage = ({ navigation }: any) => {
           onChangeText={(keyWord) => actionFind('searchByProductName', keyWord)}
         />
       </View>
-
+      {
+      /**
+       * @domain
+       * - This is fetch data for domain
+       */}
       <View
         style={{
           flexDirection: 'row',
@@ -219,8 +201,6 @@ const HomePage = ({ navigation }: any) => {
           alignItems: 'center',
           height: 70
         }}>
-
-
         {
           /**
            *  @domains this is to fetch the domains.
@@ -233,11 +213,13 @@ const HomePage = ({ navigation }: any) => {
         {domain.isLoading
           ?
           (
-            <LoaderKit
-              style={{ width: 50, height: 50, flexDirection: 'row', justifyContent: 'center', alignSelf: 'center' }}
-              name={'BallPulse'} // Optional: see list of animations below
-              color={'green'} // Optional: color can be: 'red', 'green',... or '#ddd', '#ffffff',...
-            />
+            <>
+              <LoaderKit
+                style={{ width: 50, height: 50, flexDirection: 'row', justifyContent: 'center', alignSelf: 'center' }}
+                name={'BallPulse'} // Optional: see list of animations below
+                color={'green'} // Optional: color can be: 'red', 'green',... or '#ddd', '#ffffff',...
+              />
+            </>
           )
           : (
             <>
@@ -251,15 +233,18 @@ const HomePage = ({ navigation }: any) => {
           )}
 
       </View>
+
       <ScrollView style={{ flex: 1 }}>
         <Banner />
         {
           productsFetch.isLoading || loading.searchLoading ? (
-            <LoaderKit
-              style={{ width: 50, height: 50, flexDirection: 'row', justifyContent: 'center', alignSelf: 'center' }}
-              name={'BallPulse'} // Optional: see list of animations below
-              color={'green'} // Optional: color can be: 'red', 'green',... or '#ddd', '#ffffff',...
-            />
+            <>
+              <LoaderKit
+                style={{ width: 50, height: 50, flexDirection: 'row', justifyContent: 'center', alignSelf: 'center' }}
+                name={'BallPulse'} // Optional: see list of animations below
+                color={'green'} // Optional: color can be: 'red', 'green',... or '#ddd', '#ffffff',...
+              />
+            </>
           ) :
             productsFetch.isError
               ?
@@ -267,7 +252,7 @@ const HomePage = ({ navigation }: any) => {
                 <Text style={{ color: 'red', opacity: 0.5, fontSize: fonts.$18, fontWeight: '700' }}> {productsFetch.error.message}</Text>
               )
               :
-              !products
+              products && products?.length === 0
                 ?
                 (
                   <Text style={{ fontSize: fonts.$18, opacity: 0.5, fontWeight: '800', color: 'black', }}> Không có sản phẩm nào hết!</Text>
@@ -280,22 +265,35 @@ const HomePage = ({ navigation }: any) => {
                   ListHeaderComponent={
                     <>
                       {
-                        loading.find === true
+                        !isSearch
                           ?
-                          (<Text style={{
-                            fontSize: fonts.$18,
-                            fontWeight: 'bold', color: 'black'
-                          }}>
+                          (<Text
+                            onPress={() => console.log("isSearch = ", isSearch)}
+                            style={{
+                              fontSize: fonts.$18,
+                              fontWeight: 'bold', color: 'black'
+                            }}>
                             Sản phẩm nổi bật{' '}
-                          </Text>)
+                          </Text>
+                          )
                           : null
                       }
                     </>
                   }
                   ListFooterComponent={
                     <>
-                      <FeaturedProductsList products={products} navigation={navigation} />
-                      <Text style={{ fontSize: 18, fontWeight: 'bold', color: 'black' }}>
+                      {
+                        !isSearch
+                          ?
+                          (
+                            <FeaturedProductsList products={products} navigation={navigation} />
+                          )
+                          :
+                          null
+                      }
+                      <Text
+                        onPress={() => console.log("isSearch:", isSearch)}
+                        style={{ fontSize: 18, fontWeight: 'bold', color: 'black' }}>
                         Sản phẩm đề xuất
                       </Text>
                       <SuggestionsList products={products} navigation={navigation} />

@@ -145,7 +145,9 @@ const getAllProduct = async (req, res, next) => {
         }
     }
     if (filterByDomainId) {
-        q.domain_id = { [Op.eq]: filterByDomainId }
+        if (filterByDomainId != 'all') {
+            q.domain_id = filterByDomainId
+        }
     }
     const products = await Product.findAll({
         where: { ...q },
