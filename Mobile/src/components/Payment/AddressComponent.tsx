@@ -4,7 +4,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import { getUserAccessToken } from '../../api/storage';
 
-const AddressComponent = ({ navigation, userInfo, setUserInfo }) => {
+const AddressComponent = ({ navigation, userInfo, setUserInfo }: any) => {
   const [oldUserData, setOldUserData] = useState({});
   const getUserData = async () => {
     const userATK = await getUserAccessToken();
@@ -17,7 +17,7 @@ const AddressComponent = ({ navigation, userInfo, setUserInfo }) => {
     getUserData();
   }, [navigation]);
   return (
-    <View style={styles.container}>
+    <View>
       {
         userInfo?.phone_number &&
           userInfo?.detail_address
@@ -91,7 +91,6 @@ const styles = StyleSheet.create({
     borderColor: '#CCCCCC',
     borderRadius: 10,
     marginBottom: 20,
-    width: '100%',
     padding: 10,
   },
   TitleAddress: {

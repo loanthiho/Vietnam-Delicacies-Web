@@ -1,8 +1,21 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+<<<<<<< HEAD
 import {View, Text, Image, StyleSheet, TouchableOpacity} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import {SwipeListView} from 'react-native-swipe-list-view';
+=======
+import {
+  View,
+  Text,
+  Image,
+  FlatList,
+  StyleSheet,
+  TouchableOpacity,
+} from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import { SwipeListView } from 'react-native-swipe-list-view';
+>>>>>>> ef0c43db93a2fd4e297d31f0c8b1eacdf54e99f1
 
 const ChatScreen = () => {
   const navigation = useNavigation<any>();
@@ -82,7 +95,7 @@ const ChatScreen = () => {
     </TouchableOpacity>
   );
 
-  const renderHiddenItem = ({item}: any) => (
+  const renderHiddenItem = ({ item }: any) => (
     <View>
       <TouchableOpacity
         style={[styles.backRightBtn]}
