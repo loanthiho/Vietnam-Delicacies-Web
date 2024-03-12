@@ -1,46 +1,100 @@
 import React, {useState, useEffect} from 'react';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import {View, Text, Image, FlatList, StyleSheet} from 'react-native';
-import api from '../api/request';
+import {
+  View,
+  Text,
+  Image,
+  FlatList,
+  StyleSheet,
+  TouchableOpacity,
+} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
+import {SwipeListView} from 'react-native-swipe-list-view';
 
 const ChatScreen = () => {
   const navigation = useNavigation<any>();
-  const [cartItems, setCartItems] = useState(data);
 
   const data = [
     {
       id: 1,
-      name: 'Product 1',
-      price: '$10',
-      image: require('../../assets/banner/mix.jpg'),
+      name: 'Văn Đi shop',
+      messenger: 'Giá hiện tại là bao nhiều vậy shop',
+      image: require('../assets/huong.jpg'),
     },
     {
       id: 2,
-      name: 'Product 2',
-      price: '$20',
-      image: require('../assets/Image.png'),
+      name: 'Chấm chéo Tây Bắc',
+      messenger: 'Chị check tin nhắn em với ạ',
+      image: require('../assets/huong.jpg'),
+    },
+
+    {
+      id: 3,
+      name: 'A Thi Shop',
+      messenger: 'Chị check tin nhắn em với ạ',
+      image: require('../assets/huong.jpg'),
+    },
+
+    {
+      id: 4,
+      name: 'Đặc sản Quảng Bình',
+      messenger: 'Chị check tin nhắn em với ạ',
+      image: require('../assets/huong.jpg'),
+    },
+
+    {
+      id: 5,
+      name: 'Ana Shop',
+      messenger: 'Chị check tin nhắn em với ạ',
+      image: require('../assets/huong.jpg'),
     },
   ];
 
-  const OnClickBack = () => {
-    navigation.navigate('AddProduct');
+  const deleteItem = (itemId: number) => {
+    const updatedItems = cartItems.filter(item => item.id !== itemId);
+    setCartItems(updatedItems);
   };
 
-  const renderItem = ({item}) => (
-    <View style={styles.itemContainer}>
-      <Image
-        source={typeof item.image === 'string' ? {uri: item.image} : item.image}
-        style={styles.itemImage}
-      />
-      <View style={styles.content}>
-        <Text style={styles.itemText}>{item.name}</Text>
-        <Text style={styles.itemPrice}>{item.price}</Text>
-      </View>
-    </View>
+  const OnClickBack = () => {
+    navigation.navigate('Trang chủ');
+  };
+  
+  const handlePress = (itemId) => {
+    navigation.navigate('MessegesScreen', { itemId });
+    console.log('first ID before send', itemId);
+  };
+  const [cartItems, setCartItems] = useState(data);
+
+  const renderItem = ({item}: any) => (
+      <TouchableOpacity
+        style={styles.itemContainer}
+        onPress={() => handlePress(item.id)}>
+        <Image
+          source={
+            typeof item.image === 'string' ? {uri: item.image} : item.image
+          }
+          style={styles.itemImage}
+        />
+        <View style={styles.content}>
+          <Text numberOfLines={1} style={styles.itemText}>
+            {item.name}
+          </Text>
+          <Text numberOfLines={1} style={styles.messenger}>
+            {item.messenger}
+          </Text>
+        </View>
+      </TouchableOpacity>
   );
 
-  console.log(item);
+  const renderHiddenItem = ({item}: any) => (
+    <View>
+      <TouchableOpacity
+        style={[styles.backRightBtn]}
+        onPress={() => deleteItem(item.id)}>
+        <Text style={styles.backTextWhite}>Xóa</Text>
+      </TouchableOpacity>
+    </View>
+  );
 
   return (
     <View style={styles.container}>
@@ -52,15 +106,15 @@ const ChatScreen = () => {
         />
         <Text style={styles.Subtitle}>Tin Nhắn</Text>
       </View>
-      <FlatList
+      <SwipeListView
         data={cartItems}
         renderItem={renderItem}
-        keyExtractor={item => item.id.toString()}
+        renderHiddenItem={renderHiddenItem}
+        rightOpenValue={-60}
       />
     </View>
   );
 };
-
 
 const styles = StyleSheet.create({
   container: {
@@ -75,12 +129,13 @@ const styles = StyleSheet.create({
     marginHorizontal: 5,
     marginTop: 20,
     padding: 10,
+    paddingRight: 20,
     borderColor: 'white',
     elevation: 10,
   },
   itemImage: {
-    width: 100,
-    height: 100,
+    width: 80,
+    height: 80,
     marginRight: 10,
     borderRadius: 10,
   },
@@ -90,22 +145,16 @@ const styles = StyleSheet.create({
     gap: 10,
   },
   itemText: {
-    maxWidth: 140,
-    marginRight: 10,
+    marginRight: 50,
     fontSize: 16,
     borderRadius: 10,
     color: '#FFA000',
   },
-  itemPrice: {
+  messenger: {
     marginRight: 40,
-    paddingTop: 5,
-    paddingBottom: 5,
-    paddingLeft: 10,
-    paddingRight: 10,
     fontSize: 14,
     borderRadius: 5,
-    color: '#FFFFFF',
-    backgroundColor: '#FFA000',
+    color: '#000',
   },
 
   arrowLeft: {
@@ -124,30 +173,23 @@ const styles = StyleSheet.create({
     color: '#2E7D32',
   },
 
-  btn: {
-    paddingTop: 20,
-    paddingRight: 24,
-    paddingLeft: 24,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
 
-  BtnAdd: {
-    width: 110,
-    textAlign: 'center',
-    fontSize: 16,
-    padding: 8,
-    color: 'white',
-    backgroundColor: '#2E7D32',
+  backTextWhite: {
+    color: '#fff',
+    marginTop: 20,
+    paddingLeft: 18,
+    paddingRight: 18,
+    paddingTop: 40,
+    paddingBottom: 40,
+    backgroundColor: 'red',
+    alignContent: 'center',
+    alignSelf: 'flex-end',
     borderRadius: 10,
   },
 
-  BtnShow: {
-    padding: 8,
-    fontSize: 16,
-    color: 'white',
-    backgroundColor: '#2E7D32',
-    borderRadius: 10,
+  backRightBtn: {
+    textAlign: 'right',
+    justifyContent: 'center',
   },
 });
 
