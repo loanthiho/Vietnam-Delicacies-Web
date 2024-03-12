@@ -76,19 +76,34 @@ const ProfileScreen = ({ navigation }: any) => {
             style={styles.iconStatus}
           />
           <Text style={styles.textStatus}>Chờ xác nhận</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.iconTextContainer}>
+        </TouchableOpacity >
+        <TouchableOpacity style={styles.iconTextContainer}
+        onPress={() =>
+          navigation.navigate({
+            name: 'OrderScreen',
+          })
+        }>
           <AntDesign name="inbox" style={styles.iconStatus} />
           <Text style={styles.textStatus}>Chờ lấy hàng</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.iconTextContainer}>
+        <TouchableOpacity style={styles.iconTextContainer}
+        onPress={() =>
+          navigation.navigate({
+            name: 'OrderScreen',
+          })
+        }>
           <MaterialCommunityIcons
             name="truck-delivery-outline"
             style={styles.iconStatus}
           />
           <Text style={styles.textStatus}>Chờ giao hàng</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.iconTextContainer}>
+        <TouchableOpacity style={styles.iconTextContainer}
+        onPress={() =>
+          navigation.navigate({
+            name: 'OrderScreen',
+          })
+        }>
           <AntDesign name="staro" style={styles.iconStatus} />
           <Text style={styles.textStatus}>Đánh giá</Text>
         </TouchableOpacity>

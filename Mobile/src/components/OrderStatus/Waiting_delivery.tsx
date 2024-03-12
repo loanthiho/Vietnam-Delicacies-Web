@@ -4,7 +4,7 @@ import { View, Text, StyleSheet } from 'react-native';
 const Waiting_confirmation = () => {
   return (
     <View style={styles.container}>
-      <Text style={styles.text}>Wait for confirmation screen</Text>
+      <Text style={styles.text}>Chờ giao hàng</Text>
     </View>
   );
 };
