@@ -42,7 +42,7 @@ const  Review = () => {
 
       </View>
       <View style={styles.status}>
-        <Text style={styles.update}>Đánh gi</Text>
+        <Text style={styles.update}>Đánh giá</Text>
         <Text style={styles.statusText}>Mua lại</Text>
         
       </View>
