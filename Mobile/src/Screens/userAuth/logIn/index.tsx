@@ -49,14 +49,8 @@ const SignIn: React.FC = ({ navigation, route }: any) => {
 
                 const { token, user } = mutation.data.data;
                 await setUserAccessToken({ token, user });
-
-                if (previousScreen) {
-                    // Nếu có, quay lại màn hình trước đó
-                    return navigation.navigate(previousScreen);
-                } else {
-                    // Nếu không, điều hướng tới màn hình chính
-                    return navigation.navigate('Main');
-                }
+                // Nếu không, điều hướng tới màn hình chính
+                return navigation.navigate('Main');
             };
             func();
         }
