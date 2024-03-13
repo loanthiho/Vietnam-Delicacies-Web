@@ -1,27 +1,37 @@
 import {StyleSheet, Text, View, TouchableOpacity, Image} from 'react-native';
 import React from 'react';
 import Icon from 'react-native-vector-icons/Ionicons';
+import {useNavigation} from '@react-navigation/native';
 
-const ChatHeader = ({username, bio, picture, onlineStatus, onPress}) => {
+const ChatHeader = ({itemName, itemImage, onlineStatus}) => {
+  const navigation = useNavigation<any>();
   return (
     <View style={styles.container}>
       <TouchableOpacity style={styles.backButton}>
-        <Icon name="chevron-back-outline" size={30} color={'#fff'}></Icon>
+        <Icon
+          name="chevron-back-outline"
+          size={26}
+          color={'#fff'}
+          onPress={() => {
+            navigation.navigate('Tin nhắn');
+          }}></Icon>
       </TouchableOpacity>
       <View style={styles.profileOptions}>
         <TouchableOpacity style={styles.profile}>
-          <Image style={styles.image} source={{uri: picture}} />
+          {/* <Image style={styles.image} source={{uri: itemImage}} /> */}
+          <Image style={styles.image} source={itemImage} />
           <View style={styles.usernameAndOnlineStatus}>
-            <Text style={styles.username}>{username}</Text>
+            <Text style={styles.username}>{itemName}</Text>
             <Text style={styles.onlineStatus}>{onlineStatus}</Text>
           </View>
         </TouchableOpacity>
         <View style={styles.options}>
-          <TouchableOpacity style={{paddingHorizontal: 5, flexDirection: "row", gap: 10}}>
-            <Icon name="call-outline" size={30} color={'#fff'}></Icon>
+          <TouchableOpacity
+            style={{paddingHorizontal: 5, flexDirection: 'row', gap: 10}}>
+            <Icon name="call-outline" size={26} color={'#fff'}></Icon>
             <Icon
               name="ellipsis-vertical-outline"
-              size={30}
+              size={26}
               color={'#fff'}></Icon>
           </TouchableOpacity>
         </View>
@@ -36,8 +46,8 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
     backgroundColor: '#ffa000',
-    paddingTop: 20,
-    paddingBottom: 10,
+    paddingTop: 10,
+    paddingBottom: 6,
   },
   backButton: {
     paddingHorizontal: 10,
@@ -48,7 +58,6 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     flex: 1,
     alignItems: 'center',
-    paddingHorizontal: 10,
   },
 
   profile: {
@@ -58,9 +67,9 @@ const styles = StyleSheet.create({
   },
 
   image: {
-    width: 65,
-    height: 65,
-    borderRadius: 32.5,
+    width: 60,
+    height: 60,
+    borderRadius: 30,
   },
   usernameAndOnlineStatus: {
     flexDirection: 'column',
@@ -71,12 +80,17 @@ const styles = StyleSheet.create({
   username: {
     color: '#fff',
     fontWeight: 'bold',
-    fontSize: 18,
+    fontSize: 16,
   },
 
   onlineStatus: {
     color: '#fff',
-    fontWeight: 'bold',
-    fontSize: 16,
+    fontSize: 12,
   },
+  // options: {
+  //   flex: 1,
+  //   flexDirection: 'row',
+  //   justifyContent: 'flex-end',
+  //   alignItems: 'center',
+  // },
 });

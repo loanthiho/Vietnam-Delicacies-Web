@@ -1,15 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import {
-  View,
-  Text,
-  Image,
-  FlatList,
-  StyleSheet,
-  TouchableOpacity,
-} from 'react-native';
-import { useNavigation } from '@react-navigation/native';
-import { SwipeListView } from 'react-native-swipe-list-view';
+import {View, Text, Image, StyleSheet, TouchableOpacity} from 'react-native';
+import {useNavigation} from '@react-navigation/native';
+import {SwipeListView} from 'react-native-swipe-list-view';
 
 const ChatScreen = () => {
   const navigation = useNavigation<any>();
@@ -59,20 +52,23 @@ const ChatScreen = () => {
     navigation.navigate('Trang chủ');
   };
 
-  const handlePress = (itemId) => {
-    navigation.navigate('MessegesScreen', { itemId });
-    console.log('first ID before send', itemId);
+  const handlePress = (item: any) => {
+    navigation.navigate('MessegesScreen', {
+      itemId: item.id,
+      itemName: item.name,
+      itemImage: item.image,
+    });
+    console.log('first data before send', item);
+    console.log(typeof item.image);
   };
   const [cartItems, setCartItems] = useState(data);
 
-  const renderItem = ({ item }: any) => (
+  const renderItem = ({item}: any) => (
     <TouchableOpacity
       style={styles.itemContainer}
-      onPress={() => handlePress(item.id)}>
+      onPress={() => handlePress(item)}>
       <Image
-        source={
-          typeof item.image === 'string' ? { uri: item.image } : item.image
-        }
+        source={typeof item.image === 'string' ? {uri: item.image} : item.image}
         style={styles.itemImage}
       />
       <View style={styles.content}>
@@ -172,7 +168,6 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#2E7D32',
   },
-
 
   backTextWhite: {
     color: '#fff',

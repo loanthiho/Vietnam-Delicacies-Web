@@ -1,10 +1,10 @@
 import React, {useState, useRef} from 'react';
 import {ScrollView} from 'react-native';
 
-import Message from "./Message"
+import Message from './Message'
 
 const MessagesList = ({onSwipeToReply}) => {
-  const [messages, setMesseges] = useState([
+  const [messages, setMessages] = useState([
     {
       user: 0,
       time: '12:00',
@@ -63,7 +63,7 @@ const MessagesList = ({onSwipeToReply}) => {
 
   return (
     <ScrollView
-      style={{backgroundColor: '#fff', flex: 1}}
+      style={{backgroundColor: "#fff", flex: 1}}
       ref={ref => (scrollView.current = ref)}
       onContentChange={() => {
         scrollView.current.scrollToEnd({animated: true});

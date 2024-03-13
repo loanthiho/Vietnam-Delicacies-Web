@@ -5,18 +5,13 @@ import {
   Directions,
   State,
 } from 'react-native-gesture-handler';
-import Animated, {
-  withSpring,
-  useAnimatedStyle,
-  useAnimatedGestureHandler,
-  useSharedValue,
-} from 'react-native-reanimated';
+
 
 const Message = ({time, isLeft, message, onSwipe}) => {
   const startingPosition = 0;
-  const x = useSharedValue(startingPosition);
 
-  const isOnLeft = type => {
+
+  const isOnLeft = (type: string) => {
     if (isLeft && type === 'messageContainer') {
       return {
         alignSelf: 'flex-start',
@@ -38,32 +33,17 @@ const Message = ({time, isLeft, message, onSwipe}) => {
     }
   };
 
-  const eventHandler = useAnimatedGestureHandler({
-    onStart: (event, ctx) => {},
-    onActive: (event, ctx) => {
-      x.value = isLeft ? 50 : -50;
-    },
-    onEnd: (event, ctx) => {
-      x.value = withSpring(startingPosition);
-    },
-  });
 
-  const uas = useAnimatedStyle(() => {
-    return {
-      transform: [{translateX: x.value}],
-    };
-  });
 
   return (
     <FlingGestureHandler
       direction={isLeft ? Directions.RIGHT : Directions.LEFT}
-      onGestureEvent={eventHandler}
       onHandlerStateChange={({nativeEvent}) => {
         if (nativeEvent.state === State.ACTIVE) {
           onSwipe(message, isLeft);
         }
       }}>
-      <Animated.View style={[styles.container, uas]}>
+      <View style={[styles.container]}>
         <View style={[styles.messageContainer, isOnLeft('messageContainer')]}>
           <View style={styles.messageView}>
             <Text style={[styles.message, isOnLeft('message')]}>{message}</Text>
@@ -72,7 +52,7 @@ const Message = ({time, isLeft, message, onSwipe}) => {
             <Text style={[styles.time, isOnLeft('time')]}>{time}</Text>
           </View>
         </View>
-      </Animated.View>
+      </View>
     </FlingGestureHandler>
   );
 };
@@ -91,6 +71,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 10,
     paddingTop: 5,
     paddingBottom: 10,
+    backgroundColor: '#2E7D32',
   },
   messageView: {
     backgroundColor: 'transparent',
@@ -102,7 +83,7 @@ const styles = StyleSheet.create({
     paddingLeft: 10,
   },
   message: {
-    color: 'white',
+    color: '#fff',
     alignSelf: 'flex-start',
     fontSize: 15,
   },

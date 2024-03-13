@@ -91,9 +91,9 @@ android {
         }
         release {
                 storeFile file('my-upload-key.keystore')
-                storePassword 'dacsanvietnam'
+                storePassword '123456'
                 keyAlias 'my-key-alias'
-                keyPassword 'dacsanvietnam'
+                keyPassword '123456'
         }
 
     }

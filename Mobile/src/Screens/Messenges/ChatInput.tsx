@@ -8,7 +8,6 @@ import {
 } from 'react-native';
 import React, {useState} from 'react';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import Icon from 'react-native-vector-icons/Ionicons';
 const ChatInput = () => {
   const [message, setMessage] = useState('');
   return (
@@ -20,27 +19,29 @@ const ChatInput = () => {
           </TouchableOpacity>
           <TextInput
             multiline
-            placeholder="type..."
+            placeholder="Nhập tin..."
             style={styles.input}
-            onChangeText={text => setMesseges(text)}
+            onChangeText={text => setMessage(text)}
           />
-          <TouchableOpacity style={styles.rightIconButtonStyle}>
+          {/* <TouchableOpacity style={styles.rightIconButtonStyle}>
             <Ionicons name="attach-outline" size={23} />
           </TouchableOpacity>
           <TouchableOpacity style={styles.rightIconButtonStyle}>
             <Ionicons name="camera-outline" size={23} />
-          </TouchableOpacity>
+          </TouchableOpacity> */}
         </View>
 
         <TouchableOpacity style={styles.sendButton}>
-          <Ionicons name={message ? 'send-outline' : 'mic-outline'} size={23} color={"#fff"} />
+          <Ionicons
+            name={message ? 'send-outline' : 'mic-outline'}
+            size={23}
+            color={'#fff'}
+          />
         </TouchableOpacity>
       </View>
     </View>
   );
 };
-
-export default ChatInput;
 
 const styles = StyleSheet.create({
   container: {
@@ -53,7 +54,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 10,
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'center',
+    alignItems: 'flex-start',
     paddingVertical: 10,
   },
 
@@ -62,30 +63,31 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#f0f0f0',
     flex: 3,
-    marginRight: 10,
-    paddingVertical: Platform.OS === 'android' ? 10 : 0,
+    marginRight: 8,
+    paddingVertical: Platform.OS === 'android' ? 6 : 0,
     borderRadius: 30,
     justifyContent: 'space-between',
   },
 
   input: {
     backgroundColor: 'transparent',
-    paddingLeft: 20,
+    paddingLeft: 18,
     color: '#000',
     flex: 3,
     height: 40,
+    fontSize: 15,
     alignSelf: 'center',
   },
 
-  rightIconButtonStyle: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#f0f0f0',
-    paddingRight: 15,
-    paddingLeft: 10,
-    borderLeftWidth: 1,
-    borderLeftColor: '#fff',
-  },
+  // rightIconButtonStyle: {
+  //   justifyContent: 'center',
+  //   alignItems: 'center',
+  //   backgroundColor: '#f0f0f0',
+  //   paddingRight: 15,
+  //   paddingLeft: 10,
+  //   borderLeftWidth: 1,
+  //   borderLeftColor: '#fff',
+  // },
 
   emoticonButton: {
     justifyContent: 'center',
@@ -100,6 +102,8 @@ const styles = StyleSheet.create({
     width: 50,
     justifyContent: 'center',
     alignItems: 'center',
-    color: "#fff"
+    color: '#fff',
   },
 });
+
+export default ChatInput;
