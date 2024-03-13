@@ -46,6 +46,16 @@ const EditProfileScreen = ({ navigation, route }: any) => {
       return;
     }
 
+    // Kiểm tra nếu số điện thoại không phải là số
+    if (isNaN(phone_number)) {
+      Alert.alert('Lỗi', 'Số điện thoại phải là số');
+      return;
+    }
+    if (isNaN(phone_number) || phone_number.length !== 10) {
+      Alert.alert('Lỗi', 'Số điện thoại phải là số và có độ dài 10 chữ số');
+      return;
+    }
+
     setUserInfo({
       ...userInfo,
       name,
@@ -120,9 +130,11 @@ const EditProfileScreen = ({ navigation, route }: any) => {
             style={styles.input}
             value={phone_number}
             onChangeText={(number) => {
-              if (isEditing) return setPhoneNumber(number);
+              if (isEditing) setPhoneNumber(number);
             }}
+            keyboardType="numeric" 
             editable={isEditing}
+            maxLength={10}
           />
         </View>
         <View style={styles.saveButtonTextContainer}>
