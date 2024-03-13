@@ -31,6 +31,7 @@ LogBox.ignoreLogs([
   'ViewPropTypes will be removed from React Native, along with all other PropTypes'
 ]);
 import EditProfileScreen from './src/components/Profile/EditProfile';
+import OrderScreen from './src/Screens/Order/OrderScreen';
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
@@ -119,6 +120,7 @@ const App = () => {
               component={SuccessfulPayment}
             />
             <Stack.Screen name="MessegesScreen" component={MessegesScreen} />
+            <Stack.Screen name="OrderScreen" component={OrderScreen} />
           </Stack.Navigator>
         </NavigationContainer>
         <FlashMessage position="top" />
