@@ -120,6 +120,7 @@ const App = () => {
               component={SuccessfulPayment}
             />
             <Stack.Screen name="MessegesScreen" component={MessegesScreen} />
+            <Stack.Screen name="OrderScreen" component={OrderScreen} />
           </Stack.Navigator>
         </NavigationContainer>
         <FlashMessage position="top" />

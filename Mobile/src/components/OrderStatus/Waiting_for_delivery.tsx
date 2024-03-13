@@ -14,15 +14,15 @@ const Wait_for_delivery = () => {
   const [cartItems, setCartItems] = useState([
     {
       id: 1,
-      name: 'Áo thun trắng',
+      name: 'Nem chua Thanh Hoá',
       price: 150000,
-      Files: [{ src: 'https://via.placeholder.com/150' }],
+      Files: [{ src: 'https://i.pinimg.com/564x/6a/9a/12/6a9a122a60a435725152db7a6632da58.jpg' }],
     },
     {
       id: 2,
-      name: 'Quần jean đen',
+      name: 'Gạo đen Tây Bắc',
       price: 300000,
-      Files: [{ src: 'https://via.placeholder.com/150' }],
+      Files: [{ src: 'https://i.pinimg.com/736x/8d/98/1e/8d981eadabf77f64baad46aac7279241.jpg' }],
     },
   ]);
 
@@ -31,11 +31,12 @@ const Wait_for_delivery = () => {
       <Image source={{ uri: item.Files?.[0]?.src }} style={styles.itemImage} />
       <View style={styles.content}>
         <Text style={styles.itemText}>{item.name}</Text>
-        <Text style={styles.itemPrice}>{item.price} đ</Text>
+        <Text style={styles.itemPrice}>{item.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.')}đ</Text>
+
       </View>
       <View style={styles.status}>
-        <Text style={styles.update}>Đang chờ</Text>
-        <Text style={styles.delete}>Mua lại</Text>
+        <Text style={styles.update}>Đang chờ lấy hàng</Text>
+        
       </View>
     </View>
   );
@@ -50,7 +51,6 @@ const Wait_for_delivery = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
   },
   itemContainer: {
     flexDirection: 'row',
@@ -65,31 +65,27 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   itemText: {
-    fontSize: 18,
+    fontSize: 13,
     fontWeight: 'bold',
   },
   itemPrice: {
-    fontSize: 16,
-    marginTop: 5,
+    fontSize: 13,
+    marginTop: 15,
   },
   itemImage: {
-    width: 100,
-    height: 100,
+    width:70,
+    height: 70,
     borderRadius: 10,
-    marginLeft: 10,
+    marginRight:10,
   },
   status: {
     flexDirection: 'column',
     alignItems: 'flex-end',
   },
   update: {
-    fontSize: 16,
+    fontSize: 13,
     color: '#2E7D32',
-    marginBottom: 10,
-  },
-  delete: {
-    fontSize: 16,
-    color: 'red',
+    marginTop: 30,
   },
 });
 
