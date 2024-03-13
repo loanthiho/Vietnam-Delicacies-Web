@@ -34,6 +34,7 @@ LogBox.ignoreLogs([
   'ViewPropTypes will be removed from React Native, along with all other PropTypes',
 ]);
 import EditProfileScreen from './src/components/Profile/EditProfile';
+import OrderScreen from './src/Screens/Order/OrderScreen';
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
