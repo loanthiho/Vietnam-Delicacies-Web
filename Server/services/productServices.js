@@ -138,7 +138,7 @@ const updateProduct = async (req, res, next) => {
 
 const getAllProduct = async (req, res, next) => {
     var q = {};
-    const { filterByDomainId, searchByProductName } = req.query;
+    const { filterByDomainId, searchByProductName, seller_id } = req.query;
     if (req.query) {
         if (searchByProductName) {
             q.name = { [Op.like]: `%${searchByProductName}%` };
@@ -148,6 +148,9 @@ const getAllProduct = async (req, res, next) => {
         if (filterByDomainId != 'all') {
             q.domain_id = filterByDomainId
         }
+    }
+    if (seller_id) {
+        q.seller_id = seller_id;
     }
     const products = await Product.findAll({
         where: { ...q },
