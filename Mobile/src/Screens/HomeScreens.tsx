@@ -18,7 +18,7 @@ import { useQuery } from '@tanstack/react-query';
 import api from '../api/request';
 import { debounce } from 'lodash';
 import fonts from '../ultils/_fonts';
-import colors from '../ultils/_colors';
+import { getUserAccessToken } from '../api/storage';
 
 const HomePage = ({ navigation }: any) => {
   const [selectedItem, setSelectedItem] = useState('Tất cả');
@@ -29,6 +29,28 @@ const HomePage = ({ navigation }: any) => {
     filterByDomainId: '',
     searchByProductName: ''
   });
+
+
+  const [checkBox, setCheckBox] = useState<boolean>();
+  const [userInfo, setUserInfo] = useState<any>();
+  const [oldUserInfo, setOldUserInfo] = useState<any>();
+
+  const getUserData = async () => {
+    const userInfoOld = await getUserAccessToken();
+    console.log('user:', userInfoOld.user);
+    if (userInfoOld.user) {
+      setUserInfo(userInfoOld.user);
+    } else {
+      setUserInfo(null);
+    }
+  };
+
+  useEffect(() => {
+    getUserData();
+    if (userInfo) {
+      console.log('data user:', userInfo);
+    }
+  }, []);
 
 
   const [loading, setLoading] = useState({
@@ -171,7 +193,13 @@ const HomePage = ({ navigation }: any) => {
           <Text style={styles.textheader}>Đặc sản</Text>
           <Text style={styles.textViet}>Việt</Text>
         </View>
-        <TouchableOpacity style={styles.profileImageContainer}>
+        <TouchableOpacity style={styles.profileImageContainer}
+        onPress={() =>
+          navigation.navigate({
+            name: 'EditProfileScreen',
+            params: { userInfo, oldUserInfo, setUserInfo: setUserInfo },
+          })
+        }>
           <Image
             source={require('../assets/huong.jpg')}
             style={styles.profileImage}

@@ -19,6 +19,7 @@ import {
 import {Dropdown} from 'react-native-element-dropdown';
 import {useNavigation} from '@react-navigation/native';
 import {TouchableOpacity} from 'react-native-gesture-handler';
+import axios from 'axios';
 
 const UppdateProduct = ({route}: any) => {
   const [nameProduct, setnameProduct] = useState('');
@@ -67,7 +68,7 @@ const UppdateProduct = ({route}: any) => {
     const fetchProduct = async (itemId: string) => {
       if (itemId !== null) {
         try {
-          const response = await api.get(
+          const response = await axios.get(
             `http://nodejs-app-env-1.eba-q2t7wpq3.ap-southeast-2.elasticbeanstalk.com/products/${itemId}`,
           );
           const productData = response.data.data;
@@ -209,7 +210,7 @@ const UppdateProduct = ({route}: any) => {
       formData.append(key, ojb[key]);
     });
 
-    console.log("data updated......", formData);
+    console.log('data updated......', formData);
 
     try {
       console.log('first data before post', formData);

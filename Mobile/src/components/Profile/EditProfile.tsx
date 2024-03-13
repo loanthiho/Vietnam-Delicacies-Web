@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import {
   View,
   Text,
@@ -6,13 +6,15 @@ import {
   StyleSheet,
   TouchableOpacity,
   Image,
+  Alert,
 } from 'react-native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import {LogOut, setUserAccessToken} from '../../api/storage';
-const EditProfileScreen = ({navigation, route}: any) => {
-  const {userInfo, oldUserInfo, setUserInfo} = route.params;
+import { LogOut, setUserAccessToken } from '../../api/storage';
+
+const EditProfileScreen = ({ navigation, route }: any) => {
+  const { userInfo, oldUserInfo, setUserInfo } = route.params;
   const [name, setName] = useState(route.params?.userInfo.name || '');
   const [email, setEmail] = useState(route.params?.userInfo.email || '');
   const [detail_address, setAddress] = useState(
@@ -25,6 +27,25 @@ const EditProfileScreen = ({navigation, route}: any) => {
   const [isEditing, setIsEditing] = useState(false);
 
   const handleSave = async () => {
+    // Kiểm tra nếu tên chứa ký tự @
+    if (name.includes('@')) {
+      Alert.alert('Lỗi', 'Tên không được chứa ký tự @');
+      return;
+    }
+
+    // Kiểm tra nếu email chứa ký tự đặc biệt
+    const regexSpecialCharacters = /[!#$%^&*()+\=\[\]{};':"\\|,<>\/?]/;
+    if (regexSpecialCharacters.test(email)) {
+      Alert.alert('Lỗi', 'Email không được chứa ký tự đặc biệt');
+      return;
+    }
+
+    // Kiểm tra xem email có ít nhất một ký tự @ hay không
+    if (!email.includes('@')) {
+      Alert.alert('Lỗi', 'Email phải chứa ít nhất một ký tự @');
+      return;
+    }
+
     setUserInfo({
       ...userInfo,
       name,
@@ -33,7 +54,7 @@ const EditProfileScreen = ({navigation, route}: any) => {
       phone_number,
       avatar,
     });
-    await setUserAccessToken({token: oldUserInfo?.token, user: userInfo});
+    await setUserAccessToken({ token: oldUserInfo?.token, user: userInfo });
     setIsEditing(false);
     console.log('Thông tin đã được lưu:', {
       name,
@@ -51,7 +72,7 @@ const EditProfileScreen = ({navigation, route}: any) => {
       </TouchableOpacity>
       <TouchableOpacity style={styles.profileImageContainer}>
         <Image
-          source={avatar ? {uri: avatar} : require('../../assets/huong.jpg')}
+          source={avatar ? { uri: avatar } : require('../../assets/huong.jpg')}
           style={styles.profileImage}
         />
       </TouchableOpacity>
@@ -62,7 +83,7 @@ const EditProfileScreen = ({navigation, route}: any) => {
             placeholder="Tên"
             style={styles.input}
             value={name}
-            onChangeText={text => {
+            onChangeText={(text) => {
               if (isEditing) setName(text);
             }}
             editable={isEditing}
@@ -74,7 +95,7 @@ const EditProfileScreen = ({navigation, route}: any) => {
             placeholder="Email"
             style={styles.input}
             value={email}
-            onChangeText={text => {
+            onChangeText={(text) => {
               if (isEditing) setEmail(text);
             }}
             editable={isEditing}
@@ -86,7 +107,7 @@ const EditProfileScreen = ({navigation, route}: any) => {
             placeholder="Địa chỉ"
             style={styles.input}
             value={detail_address}
-            onChangeText={text => {
+            onChangeText={(text) => {
               if (isEditing) setAddress(text);
             }}
             editable={isEditing}
@@ -98,7 +119,7 @@ const EditProfileScreen = ({navigation, route}: any) => {
             placeholder="Số điện thoại"
             style={styles.input}
             value={phone_number}
-            onChangeText={number => {
+            onChangeText={(number) => {
               if (isEditing) return setPhoneNumber(number);
             }}
             editable={isEditing}

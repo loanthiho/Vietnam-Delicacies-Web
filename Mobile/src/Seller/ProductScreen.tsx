@@ -51,7 +51,9 @@ const ProductScreen = () => {
   const handleDeleteItem = async (itemId: null) => {
     try {
       const updatedCartItems = cartItems.filter(item => item.id !== itemId);
-      await api.delete(`products/${itemId}`);
+      await axios.delete(
+        `http://nodejs-app-env-1.eba-q2t7wpq3.ap-southeast-2.elasticbeanstalk.com/products/${itemId}`,
+      );
       setCartItems(updatedCartItems);
       setModalVisible(false);
     } catch (error) {
