@@ -54,6 +54,5 @@ const StatusNavigator = () => {
     </Tab.Navigator>
   );
 };
-const a = {
-}
+
 export default StatusNavigator;

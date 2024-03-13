@@ -84,7 +84,7 @@ const ProfileScreen = ({ navigation }: any) => {
           })
         }>
           <AntDesign name="inbox" style={styles.iconStatus} />
-          <Text style={styles.textStatus}>Chờ lấy hàng</Text>
+          <Text style={styles.textStatus}>Chờ đóng gói</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.iconTextContainer}
         onPress={() =>
