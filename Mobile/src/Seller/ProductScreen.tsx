@@ -11,6 +11,7 @@ import {
 } from 'react-native';
 import api from '../api/request';
 import {useQuery} from '@tanstack/react-query';
+import axios from 'axios';
 import {useNavigation, useFocusEffect} from '@react-navigation/native';
 
 const ProductScreen = () => {
@@ -20,9 +21,11 @@ const ProductScreen = () => {
   const navigation = useNavigation<any>();
 
   const {data, isLoading, isError, refetch} = useQuery({
-    queryKey: ['cartItems'],
+    queryKey: ['data'],
     queryFn: async () => {
-      const response = await api.get('products');
+      const response = await axios.get(
+        'http://nodejs-app-env-1.eba-q2t7wpq3.ap-southeast-2.elasticbeanstalk.com/products',
+      );
       setCartItems(response.data.data);
       return response.data.data;
     },

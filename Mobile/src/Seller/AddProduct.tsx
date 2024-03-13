@@ -187,7 +187,6 @@ const AddProduct = () => {
       domain_id: domainId,
     };
 
-    console.log('formData ojb', ojb);
     const formData = new FormData();
     if (img) {
       formData.append('files', {
@@ -219,7 +218,6 @@ const AddProduct = () => {
       setDataCategory([]);
 
       setIsLoading(true);
-      // refreshProductList();
       Alert.alert('Thêm thành công');
       navigation.navigate('ProductScreen');
     } catch (error) {

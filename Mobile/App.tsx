@@ -123,6 +123,10 @@ const App = () => {
             />
             <Stack.Screen name="MessegesScreen" component={MessegesScreen} />
             <Stack.Screen name="AccSetup" component={AccSetup} />
+            <Stack.Screen
+              name="EditProfileScreen"
+              component={EditProfileScreen}
+            />
 
             {/* seller */}
             <Stack.Screen name="ProductScreen" component={ProductScreen} />
