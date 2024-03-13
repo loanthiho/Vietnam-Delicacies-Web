@@ -26,6 +26,7 @@ import AccSetup from './src/AccConversion/AccSetup';
 import AddProduct from './src/Seller/AddProduct';
 import ProductScreen from './src/Seller/ProductScreen';
 import UpdateProduct from './src/Seller/UpdateProduct';
+import Seller from './src/Seller/Seller';
 LogBox.ignoreLogs([
   'Non-serializable values were found in the navigation state',
   'VirtualizedLists should never be nested inside plain ScrollViews with the same orientation because it can break windowing and other functionality',

@@ -187,6 +187,7 @@ const AddProduct = () => {
       domain_id: domainId,
     };
 
+    console.log('formData ojb', ojb);
     const formData = new FormData();
     if (img) {
       formData.append('files', {
@@ -199,6 +200,8 @@ const AddProduct = () => {
     Object.keys(ojb).forEach(key => {
       formData.append(key, ojb[key]);
     });
+
+    console.log('formData', formData);
 
     try {
       console.log('first data before post', formData);
@@ -216,6 +219,7 @@ const AddProduct = () => {
       setDataCategory([]);
 
       setIsLoading(true);
+      // refreshProductList();
       Alert.alert('Thêm thành công');
       navigation.navigate('ProductScreen');
     } catch (error) {
@@ -469,6 +473,7 @@ const styles = StyleSheet.create({
   scrollViewContainer: {
     flexGrow: 1,
     paddingVertical: 60,
+    // paddingBottom: 40,
   },
 
   BtnAdd: {
@@ -482,6 +487,7 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 15,
     justifyContent: 'center',
+    marginBottom: 20,
   },
 
   dropdown: {
