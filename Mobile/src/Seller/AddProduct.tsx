@@ -200,6 +200,8 @@ const AddProduct = () => {
       formData.append(key, ojb[key]);
     });
 
+    console.log('formData', formData);
+
     try {
       console.log('first data before post', formData);
       const response = await api.post('products', {
@@ -469,6 +471,7 @@ const styles = StyleSheet.create({
   scrollViewContainer: {
     flexGrow: 1,
     paddingVertical: 60,
+    // paddingBottom: 40,
   },
 
   BtnAdd: {
@@ -482,6 +485,7 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 15,
     justifyContent: 'center',
+    marginBottom: 20,
   },
 
   dropdown: {

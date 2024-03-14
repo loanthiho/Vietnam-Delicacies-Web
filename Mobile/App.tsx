@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { StyleSheet } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
@@ -14,22 +14,25 @@ import ShopOwnerScreen from './src/Screens/Shop/ShopOwner';
 import EditContact from './src/components/Payment/EditContact';
 import Contact from './src/components/Payment/AddContact';
 import AddressComponent from './src/components/Payment/AddressComponent';
-import Seller from './src/Seller/Seller';
-import AddProduct from './src/Seller/AddProduct';
 import SignUp from './src/Screens/userAuth/signUp';
 import ChooseRole from './src/Screens/userAuth/signUp/ChooseRule';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { QueryClient, QueryClientProvider, useQuery } from '@tanstack/react-query';
 import FlashMessage from 'react-native-flash-message';
 import SignIn from './src/Screens/userAuth/logIn';
 import SuccessfulPayment from './src/components/Payment/SuccessfulPayment';
-
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { LogBox } from 'react-native';
+import AccSetup from './src/AccConversion/AccSetup';
+import AddProduct from './src/Seller/AddProduct';
+import ProductScreen from './src/Seller/ProductScreen';
+import UpdateProduct from './src/Seller/UpdateProduct';
+import Seller from './src/Seller/Seller';
+
 LogBox.ignoreLogs([
   'Non-serializable values were found in the navigation state',
   'VirtualizedLists should never be nested inside plain ScrollViews with the same orientation because it can break windowing and other functionality',
   'Each child in a list should have a unique "key" prop.',
-  'ViewPropTypes will be removed from React Native, along with all other PropTypes'
+  'ViewPropTypes will be removed from React Native, along with all other PropTypes',
 ]);
 import EditProfileScreen from './src/components/Profile/EditProfile';
 import OrderScreen from './src/Screens/Order/OrderScreen';
@@ -37,6 +40,7 @@ const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
 import MessegesScreen from './src/Screens/MessengesScreen';
+import { getUserAccessToken } from './src/api/storage';
 
 const TabNavigator = () => {
   return (
@@ -58,7 +62,6 @@ const TabNavigator = () => {
         tabBarLabel: '',
         tabBarShowLabel: false,
       })}>
-
       <Tab.Screen
         name="Trang chủ"
         component={HomePage}
@@ -91,15 +94,16 @@ const TabNavigator = () => {
   );
 };
 
-const App = () => {
+const App: React.FC = () => {
   const queryClient = new QueryClient();
+
   return (
-    <GestureHandlerRootView style={{flex: 1}}>
+    <GestureHandlerRootView style={{ flex: 1 }}>
       <QueryClientProvider client={queryClient}>
         <NavigationContainer>
           <Stack.Navigator
-            screenOptions={{headerShown: false}}
-            initialRouteName="Main">
+            screenOptions={{ headerShown: false }}
+            initialRouteName={'SignIn'}>
             <Stack.Screen
               name="ProductDetailScreen"
               component={ProductDetailScreen}
@@ -112,7 +116,7 @@ const App = () => {
             <Stack.Screen name="SignIn" component={SignIn} />
             <Stack.Screen name="Contact" component={Contact} />
             <Stack.Screen name="EditContact" component={EditContact} />
-            <Stack.Screen name="EditProfileScreen" component={EditProfileScreen } />
+            <Stack.Screen name="EditProfileScreen" component={EditProfileScreen} />
             <Stack.Screen
               name="AddressComponent"
               component={AddressComponent}
@@ -122,7 +126,13 @@ const App = () => {
               component={SuccessfulPayment}
             />
             <Stack.Screen name="MessegesScreen" component={MessegesScreen} />
-            <Stack.Screen name="OrderScreen" component={OrderScreen} />
+            <Stack.Screen name="AccSetup" component={AccSetup} />
+
+            {/* seller */}
+            <Stack.Screen name="ProductScreen" component={ProductScreen} />
+            <Stack.Screen name="AddProduct" component={AddProduct} />
+            <Stack.Screen name="UpdateProduct" component={UpdateProduct} />
+            {/* seller */}
           </Stack.Navigator>
         </NavigationContainer>
         <FlashMessage position="top" />

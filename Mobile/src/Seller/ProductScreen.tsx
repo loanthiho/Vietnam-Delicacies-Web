@@ -10,7 +10,9 @@ import {
   Pressable,
 } from 'react-native';
 import api from '../api/request';
-import {useNavigation} from '@react-navigation/native';
+import {useQuery} from '@tanstack/react-query';
+import axios from 'axios';
+import {useNavigation, useFocusEffect} from '@react-navigation/native';
 
 const ProductScreen = () => {
   const [cartItems, setCartItems] = useState<any[]>([]);
@@ -18,23 +20,40 @@ const ProductScreen = () => {
   const [selectedItemId, setSelectedItemId] = useState(null);
   const navigation = useNavigation<any>();
 
-  useEffect(() => {
-    const fetchCartItems = async () => {
-      try {
-        const response = await api.get('products');
-        setCartItems(response.data.data);
-      } catch (error) {
-        console.error('Error fetching cart items:', error);
-      }
-    };
+  const {data, isLoading, isError, refetch} = useQuery({
+    queryKey: ['data'],
+    queryFn: async () => {
+      const response = await axios.get(
+        'http://nodejs-app-env-1.eba-q2t7wpq3.ap-southeast-2.elasticbeanstalk.com/products',
+      );
+      setCartItems(response.data.data);
+      return response.data.data;
+    },
+  });
 
-    fetchCartItems();
-  }, []);
+  const refreshProductList = async () => {
+    await refetch();
+  };
+
+  useEffect(() => {
+    refreshProductList();
+  }, [navigation]);
+
+  useFocusEffect(
+    React.useCallback(() => {
+      refreshProductList();
+    }, []),
+  );
+
+  if (isLoading) return <Text>Loading...</Text>;
+  if (isError) return <Text>Error fetching cart items</Text>;
 
   const handleDeleteItem = async (itemId: null) => {
     try {
       const updatedCartItems = cartItems.filter(item => item.id !== itemId);
-      await api.delete(`products/${itemId}`);
+      await axios.delete(
+        `http://nodejs-app-env-1.eba-q2t7wpq3.ap-southeast-2.elasticbeanstalk.com/products/${itemId}`,
+      );
       setCartItems(updatedCartItems);
       setModalVisible(false);
     } catch (error) {
@@ -56,7 +75,9 @@ const ProductScreen = () => {
       <Image source={{uri: item.Files?.[0]?.src}} style={styles.itemImage} />
       <View style={styles.content}>
         <Text style={styles.itemText}>{item.name}</Text>
-        <Text style={styles.itemPrice}>{item.price} đ</Text>
+        <Text style={styles.itemPrice}>
+          {item.price?.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.')} đ
+        </Text>
       </View>
       <View style={styles.status}>
         <Text

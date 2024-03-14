@@ -19,6 +19,7 @@ import {
 import {Dropdown} from 'react-native-element-dropdown';
 import {useNavigation} from '@react-navigation/native';
 import {TouchableOpacity} from 'react-native-gesture-handler';
+import axios from 'axios';
 
 const UppdateProduct = ({route}: any) => {
   const [nameProduct, setnameProduct] = useState('');
@@ -67,7 +68,9 @@ const UppdateProduct = ({route}: any) => {
     const fetchProduct = async (itemId: string) => {
       if (itemId !== null) {
         try {
-          const response = await api.get(`products/${itemId}`);
+          const response = await axios.get(
+            `http://nodejs-app-env-1.eba-q2t7wpq3.ap-southeast-2.elasticbeanstalk.com/products/${itemId}`,
+          );
           const productData = response.data.data;
           console.log('UPDATE PRODUCT DATA', productData);
           setnameProduct(productData.name);
@@ -177,7 +180,7 @@ const UppdateProduct = ({route}: any) => {
     });
   };
 
-  const UpdateProduct = async () => {
+  const UpdateProduct = async (itemId: string) => {
     if (nameProduct === '') {
       Alert.alert('Vui lòng nhập thông tin');
       return;
@@ -206,6 +209,35 @@ const UppdateProduct = ({route}: any) => {
     Object.keys(ojb).forEach(key => {
       formData.append(key, ojb[key]);
     });
+
+    console.log('data updated......', formData);
+
+    try {
+      console.log('first data before post', formData);
+      const response = await api.patch(
+        `http://nodejs-app-env-1.eba-q2t7wpq3.ap-southeast-2.elasticbeanstalk.com/products/${itemId}`,
+        {
+          data: formData,
+        },
+      );
+
+      setnameProduct('');
+      setdescProduct('');
+      setquantityProduct('');
+      setweightProduct('');
+      setpriceProduct('');
+      setImg('');
+      setData([]);
+      setDataCategory([]);
+
+      setIsLoading(true);
+      Alert.alert('Update successful');
+      navigation.navigate('ProductScreen');
+    } catch (error) {
+      console.log('error when update:', error);
+      Alert.alert('Update was not successful');
+      setIsLoading(true);
+    }
   };
 
   if (!isLoading) {
@@ -440,9 +472,7 @@ const UppdateProduct = ({route}: any) => {
                   styles.sumbitBtn,
                   {backgroundColor: isValid ? '#ffa000' : '#FAE1B7'},
                 ]}>
-                <Text style={[styles.BtnAdd]} onPress={UpdateProduct}>
-                  Cập nhật sản phẩm
-                </Text>
+                <Text style={[styles.BtnAdd]}>Cập nhật sản phẩm</Text>
               </TouchableOpacity>
             </View>
           </ScrollView>

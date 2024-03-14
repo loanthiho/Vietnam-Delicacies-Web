@@ -4,6 +4,7 @@ import {
   Text,
   StyleSheet,
   Alert,
+  PermissionsAndroid,
   Image,
 } from 'react-native';
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
@@ -11,7 +12,7 @@ import {TouchableOpacity} from 'react-native-gesture-handler';
 import {
   requestCameraPermission,
   requestImageLibraryPermission,
-} from './permissions'; 
+} from './permissions';
 
 import ImageResizer from 'react-native-image-resizer';
 
@@ -71,10 +72,10 @@ const ProductImg: React.FC<{setImage: (img: string) => void}> = ({
       try {
         const resizedImageUri = await ImageResizer.createResizedImage(
           result.assets[0].uri,
-          300, 
           300,
-          'JPEG', 
-          80, 
+          300,
+          'JPEG',
+          80,
         );
         setImg(resizedImageUri.uri);
         setImage(resizedImageUri.uri);
