@@ -1,29 +1,27 @@
-import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {View, Text, StyleSheet, TouchableOpacity, Image} from 'react-native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import { getUserAccessToken } from '../api/storage';
+import {getUserAccessToken} from '../api/storage';
 
-const ProfileScreen = ({ navigation }: any) => {
-  const [checkBox, setCheckBox] = useState<boolean>();
+const ProfileScreen = ({navigation}: any) => {
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
   const [userInfo, setUserInfo] = useState<any>();
-  const [oldUserInfo, setOldUserInfo] = useState<any>();
 
   const getUserData = async () => {
     const userInfoOld = await getUserAccessToken();
     console.log('user:', userInfoOld.user);
     if (userInfoOld.user) {
       setUserInfo(userInfoOld.user);
+      setIsLoggedIn(true);
     } else {
       setUserInfo(null);
+      setIsLoggedIn(false);
     }
   };
 
   useEffect(() => {
     getUserData();
-    if (userInfo) {
-      console.log('data user:', userInfo);
-    }
   }, []);
 
   return (
@@ -33,7 +31,7 @@ const ProfileScreen = ({ navigation }: any) => {
           <Image
             source={
               userInfo?.avatar
-                ? { uri: userInfo.avatar }
+                ? {uri: userInfo.avatar}
                 : require('../assets/huong.jpg')
             }
             style={styles.profileImage}
@@ -43,16 +41,31 @@ const ProfileScreen = ({ navigation }: any) => {
           <Text style={styles.textName}>{userInfo?.name}</Text>
           <Text style={styles.textEmail}>{userInfo?.email}</Text>
         </View>
-        <TouchableOpacity
-          style={styles.editIconContainer}
-          onPress={() =>
-            navigation.navigate({
-              name: 'EditProfileScreen',
-              params: { userInfo, oldUserInfo, setUserInfo: setUserInfo },
-            })
-          }>
-          <AntDesign name="edit" style={styles.IconEdit} />
-        </TouchableOpacity>
+        {isLoggedIn ? (
+          <TouchableOpacity
+            style={styles.editIconContainer}
+            onPress={() =>
+              navigation.navigate({
+                name: 'EditProfileScreen',
+                params: {userInfo},
+              })
+            }>
+            <AntDesign name="edit" style={styles.IconEdit} />
+          </TouchableOpacity>
+        ) : (
+          <TouchableOpacity
+            style={styles.editIconContainer}
+            onPress={() =>
+              navigation.navigate({
+                name: 'SignIn', 
+              })
+            }>
+            <View style={styles.loginButton}>
+              <AntDesign name="login" style={styles.IconLogin} />
+              <Text style={styles.textLogin}>Đăng nhập</Text>
+            </View>
+          </TouchableOpacity>
+        )}
       </View>
       <View style={styles.introduction}>
         <AntDesign name="gift" style={styles.iconGiff} />
@@ -76,34 +89,37 @@ const ProfileScreen = ({ navigation }: any) => {
             style={styles.iconStatus}
           />
           <Text style={styles.textStatus}>Chờ xác nhận</Text>
-        </TouchableOpacity >
-        <TouchableOpacity style={styles.iconTextContainer}
-        onPress={() =>
-          navigation.navigate({
-            name: 'OrderScreen',
-          })
-        }>
-          <AntDesign name="inbox" style={styles.iconStatus} />
-          <Text style={styles.textStatus}>Chờ đóng gói</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.iconTextContainer}
-        onPress={() =>
-          navigation.navigate({
-            name: 'OrderScreen',
-          })
-        }>
+        <TouchableOpacity
+          style={styles.iconTextContainer}
+          onPress={() =>
+            navigation.navigate({
+              name: 'OrderScreen',
+            })
+          }>
+          <AntDesign name="inbox" style={styles.iconStatus} />
+          <Text style={styles.textStatus}>Chờ lấy hàng</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.iconTextContainer}
+          onPress={() =>
+            navigation.navigate({
+              name: 'OrderScreen',
+            })
+          }>
           <MaterialCommunityIcons
             name="truck-delivery-outline"
             style={styles.iconStatus}
           />
           <Text style={styles.textStatus}>Chờ giao hàng</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.iconTextContainer}
-        onPress={() =>
-          navigation.navigate({
-            name: 'OrderScreen',
-          })
-        }>
+        <TouchableOpacity
+          style={styles.iconTextContainer}
+          onPress={() =>
+            navigation.navigate({
+              name: 'OrderScreen',
+            })
+          }>
           <AntDesign name="staro" style={styles.iconStatus} />
           <Text style={styles.textStatus}>Đánh giá</Text>
         </TouchableOpacity>
@@ -179,13 +195,13 @@ const styles = StyleSheet.create({
     fontSize: 20,
     color: '#2E7D32',
   },
+
   textName: {
     fontSize: 16,
     fontWeight: 'bold',
     marginBottom: 5,
     color: '#2E7D32',
   },
-
   textEmail: {
     fontSize: 16,
     fontWeight: 'bold',
@@ -215,7 +231,6 @@ const styles = StyleSheet.create({
     color: '#2E7D32',
     fontSize: 24,
   },
-
   orderStatus: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -233,6 +248,21 @@ const styles = StyleSheet.create({
     marginRight: 10,
     fontSize: 13,
   },
+  loginButton: {
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  textLogin: {
+    marginHorizontal: 5,
+    fontSize: 13,
+    textAlign: 'center',
+  },
+  IconLogin: {
+    fontSize: 20,
+    color: '#2E7D32',
+  },
+
   iconTextContainer: {
     flexDirection: 'column',
     alignItems: 'center',
