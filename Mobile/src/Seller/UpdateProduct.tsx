@@ -19,7 +19,6 @@ import {
 import {Dropdown} from 'react-native-element-dropdown';
 import {useNavigation} from '@react-navigation/native';
 import {TouchableOpacity} from 'react-native-gesture-handler';
-import axios from 'axios';
 
 const UppdateProduct = ({route}: any) => {
   const [nameProduct, setnameProduct] = useState('');
@@ -49,6 +48,14 @@ const UppdateProduct = ({route}: any) => {
   //img
   const [img, setImg] = useState<string>('');
 
+  function convertToNumber(text: any) {
+    if (typeof text === 'string') {
+      var number = parseFloat(text.replace(/\./g, ''));
+      return number;
+    }
+    return text;
+  }
+
   //Formk
   const SignupSchema = Yup.object().shape({
     nameProduct: Yup.string()
@@ -68,9 +75,7 @@ const UppdateProduct = ({route}: any) => {
     const fetchProduct = async (itemId: string) => {
       if (itemId !== null) {
         try {
-          const response = await axios.get(
-            `http://nodejs-app-env-1.eba-q2t7wpq3.ap-southeast-2.elasticbeanstalk.com/products/${itemId}`,
-          );
+          const response = await api.get(`products/${itemId}`);
           const productData = response.data.data;
           console.log('UPDATE PRODUCT DATA', productData);
           setnameProduct(productData.name);
@@ -89,7 +94,7 @@ const UppdateProduct = ({route}: any) => {
     fetchProduct(itemId);
   }, [itemId]);
 
-  console.log('UPDATE fileIMG', img);
+  // console.log('UPDATE fileIMG', img);
   //Loading
   const [isLoading, setIsLoading] = useState(true);
 
@@ -188,17 +193,16 @@ const UppdateProduct = ({route}: any) => {
     setIsLoading(false);
     let ojb = {
       category_id: categoryId,
-      seller_id: '23',
       name: nameProduct,
-      price: priceProduct,
+      price: convertToNumber(priceProduct),
       description: descProduct,
-      inventory: quantityProduct,
-      weight: weightProduct,
+      inventory: convertToNumber(quantityProduct),
+      weight: convertToNumber(weightProduct),
       domain_id: domainId,
     };
 
     const formData = new FormData();
-    if (img) {
+    if (img && !img.includes('https://')) {
       formData.append('files', {
         uri: img,
         type: 'image/jpeg',
@@ -210,33 +214,28 @@ const UppdateProduct = ({route}: any) => {
       formData.append(key, ojb[key]);
     });
 
-    console.log('data updated......', formData);
 
     try {
-      console.log('first data before post', formData);
-      const response = await api.patch(
-        `http://nodejs-app-env-1.eba-q2t7wpq3.ap-southeast-2.elasticbeanstalk.com/products/${itemId}`,
-        {
-          data: formData,
-        },
-      );
+      const response = await api.patch(`products/${itemId}`, {
+        data: formData,
+      });
 
-      setnameProduct('');
-      setdescProduct('');
-      setquantityProduct('');
-      setweightProduct('');
-      setpriceProduct('');
-      setImg('');
-      setData([]);
-      setDataCategory([]);
+        setnameProduct('');
+        setdescProduct('');
+        setquantityProduct('');
+        setweightProduct('');
+        setpriceProduct('');
+        setImg('');
+        setData([]);
+        setDataCategory([]);
 
-      setIsLoading(true);
-      Alert.alert('Update successful');
-      navigation.navigate('ProductScreen');
+        setIsLoading(true);
+        Alert.alert('Update successful');
+        navigation.navigate('ProductScreen');
     } catch (error) {
-      console.log('error when update:', error);
-      Alert.alert('Update was not successful');
-      setIsLoading(true);
+      console.log('error when update:', error?.response.data);
+        Alert.alert('Update was not successful');
+        setIsLoading(true);
     }
   };
 
@@ -466,13 +465,16 @@ const UppdateProduct = ({route}: any) => {
               </View>
 
               <TouchableOpacity
-                onPress={UpdateProduct}
                 disabled={!isValid}
                 style={[
                   styles.sumbitBtn,
                   {backgroundColor: isValid ? '#ffa000' : '#FAE1B7'},
                 ]}>
-                <Text style={[styles.BtnAdd]}>Cập nhật sản phẩm</Text>
+                <Text
+                  onPress={() => UpdateProduct(itemId)}
+                  style={[styles.BtnAdd]}>
+                  Cập nhật sản phẩm
+                </Text>
               </TouchableOpacity>
             </View>
           </ScrollView>

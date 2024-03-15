@@ -4,6 +4,7 @@ import ProductImg from './ProductImg';
 import {Formik} from 'formik';
 import * as Yup from 'yup';
 import api from '../api/request';
+import {getUserAccessToken} from '../api/storage';
 
 import {
   View,
@@ -20,6 +21,7 @@ import {Dropdown} from 'react-native-element-dropdown';
 import axios from 'axios';
 import {useNavigation} from '@react-navigation/native';
 import {TouchableOpacity} from 'react-native-gesture-handler';
+import {useQueryClient} from '@tanstack/react-query';
 
 // import {useMutation} from 'react-query';
 
@@ -51,6 +53,15 @@ const AddProduct = () => {
   //img
   const [img, setImg] = useState<string>('');
 
+  function convertToNumber(text: any) {
+    // Loại bỏ các dấu chấm trong chuỗi
+    if (typeof text === 'string') {
+      var so = parseFloat(text.replace(/\./g, ''));
+      return so;
+    }
+    return text;
+  }
+
   //Formk
   const SignupSchema = Yup.object().shape({
     nameProduct: Yup.string()
@@ -65,6 +76,18 @@ const AddProduct = () => {
 
   //Loading
   const [isLoading, setIsLoading] = useState(true);
+
+  //token
+  const [userInfo, setUserInfo] = useState<any>();
+
+  const getUserData = async () => {
+    setUserInfo(await getUserAccessToken());
+  };
+
+  useEffect(() => {
+    getUserData();
+    console.log('userInfo', userInfo);
+  }, []);
 
   const formatPrice = (text: string) => {
     const formattedText = text.replace(/\D/g, '');
@@ -167,7 +190,6 @@ const AddProduct = () => {
       domainId: item.value,
       domainName: item.label,
     });
-    console.log('category:', categoryId);
   };
 
   const saveProduct = async () => {
@@ -177,13 +199,13 @@ const AddProduct = () => {
     }
     setIsLoading(false);
     let ojb = {
+      seller_id: userInfo?.user.id,
       category_id: categoryId,
-      seller_id: '23',
       name: nameProduct,
-      price: priceProduct,
+      price: convertToNumber(priceProduct),
       description: descProduct,
-      inventory: quantityProduct,
-      weight: weightProduct,
+      inventory: convertToNumber(quantityProduct),
+      weight: convertToNumber(weightProduct),
       domain_id: domainId,
     };
 
@@ -200,10 +222,7 @@ const AddProduct = () => {
       formData.append(key, ojb[key]);
     });
 
-    console.log('formData', formData);
-
     try {
-      console.log('first data before post', formData);
       const response = await api.post('products', {
         data: formData,
       });
@@ -221,7 +240,6 @@ const AddProduct = () => {
       Alert.alert('Thêm thành công');
       navigation.navigate('ProductScreen');
     } catch (error) {
-      console.log('error when post:', error);
       Alert.alert('Thêm chưa thành công vui lòng kiểm tra lại');
       setIsLoading(true);
     }

@@ -32,13 +32,6 @@ const AccSetup = () => {
     } else {
       navigation.navigate('ProductScreen');
     }
-    // navigation.navigate('/', {
-    //   itemId: item.id,
-    //   itemName: item.name,
-    //   itemImage: item.image,
-    // });
-    // console.log('first data before send', item);
-    // console.log(typeof item.image);
   };
   const [cartItems, setCartItems] = useState(data);
 
@@ -70,7 +63,7 @@ const AccSetup = () => {
 
       <View style={{paddingHorizontal: 10, paddingTop: 20}}>
         <Text style={styles.titleChose}>Chọn loại tài khoản</Text>
-        <Text style={styles.titleMessanger}>
+        <Text>
           Thông tin này giúp chúng tôi đem đén cho bạn những quyền lợi đặc biệt
           theo từng loại tài khoản và tối ưu trải nghiệm của bạn
         </Text>
