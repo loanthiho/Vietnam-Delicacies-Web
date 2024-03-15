@@ -1,50 +1,72 @@
-
-import React, { useState, useEffect } from 'react';
-import Ionicons from 'react-native-vector-icons/Ionicons';
+import React, {useState, useEffect} from 'react';
 import {
   View,
   Text,
   Image,
   FlatList,
   StyleSheet,
-  Modal,
-  Pressable,
+  TouchableOpacity,
 } from 'react-native';
+import {useNavigation} from '@react-navigation/native'; 
 
-const  Review = () => {
+const Review = () => {
+  const navigation = useNavigation(); 
+
   const [cartItems, setCartItems] = useState([
     {
       id: 1,
       name: 'Nem chua Thanh Hoá',
       price: 150000,
-      Files: [{ src: 'https://i.pinimg.com/564x/6a/9a/12/6a9a122a60a435725152db7a6632da58.jpg' }],
+      Files: [
+        {
+          src: 'https://i.pinimg.com/564x/6a/9a/12/6a9a122a60a435725152db7a6632da58.jpg',
+        },
+      ],
     },
     {
       id: 2,
       name: 'Gạo đen Tây Bắc',
       price: 300000,
-      Files: [{ src: 'https://i.pinimg.com/736x/8d/98/1e/8d981eadabf77f64baad46aac7279241.jpg' }],
+      Files: [
+        {
+          src: 'https://i.pinimg.com/736x/8d/98/1e/8d981eadabf77f64baad46aac7279241.jpg',
+        },
+      ],
     },
     {
-      id: 2,
+      id: 3,
       name: 'Gạo đen Tây Bắc',
       price: 300000,
-      Files: [{ src: 'https://i.pinimg.com/736x/8d/98/1e/8d981eadabf77f64baad46aac7279241.jpg' }],
+      Files: [
+        {
+          src: 'https://i.pinimg.com/736x/8d/98/1e/8d981eadabf77f64baad46aac7279241.jpg',
+        },
+      ],
     },
   ]);
 
-  const renderItem = ({ item }:any) => (
+  const renderItem = ({item}: any) => (
     <View key={item.id} style={styles.itemContainer}>
-      <Image source={{ uri: item.Files?.[0]?.src }} style={styles.itemImage} />
+      <Image source={{uri: item.Files?.[0]?.src}} style={styles.itemImage} />
       <View style={styles.content}>
         <Text style={styles.itemText}>{item.name}</Text>
-        <Text style={styles.itemPrice}>{item.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.')}đ</Text>
-
+        <Text style={styles.itemPrice}>
+          {item.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.')}đ
+        </Text>
       </View>
       <View style={styles.status}>
-        <Text style={styles.update}>Đánh giá</Text>
-        <Text style={styles.statusText}>Mua lại</Text>
-        
+        <TouchableOpacity
+          style={styles.review}
+          onPress={() =>
+            navigation.navigate({
+              name: 'ReviewScreen'
+            })
+          }>
+          <Text style={styles.buttonText}>Đánh giá</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.statusText}>
+          <Text style={styles.buttonText}>Mua lại</Text>
+        </TouchableOpacity>
       </View>
     </View>
   );
@@ -81,31 +103,41 @@ const styles = StyleSheet.create({
     marginTop: 15,
   },
   itemImage: {
-    width:70,
+    width: 70,
     height: 70,
     borderRadius: 10,
-    marginRight:10,
+    marginRight: 10,
   },
   status: {
     flexDirection: 'column',
-    alignItems: 'flex-end',
+    alignItems: 'center',
+    textAlign: 'center',
   },
-  statusText:{
-    fontSize: 13,
+  review: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    margin: 7,
     backgroundColor: '#2E7D32',
-    color:'white',
-    margin:7,
-    width:50,
-    height:20,
-    borderRadius:5,
-    textAlign:'center',
+    color: 'white',
+    width: 70,
+    height: 20,
+    borderRadius: 5,
+    textAlign: 'center',
   },
-  update: {
-    fontSize: 13,
+  statusText: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    margin: 7,
+    backgroundColor: '#FFA000',
     color: '#2E7D32',
-    margin:7,
+    width: 70,
+    height: 20,
+    borderRadius: 5,
+    textAlign: 'center',
+  },
+  buttonText: {
+    fontSize: 13,
   },
 });
 
-export default  Review;
-
+export default Review;

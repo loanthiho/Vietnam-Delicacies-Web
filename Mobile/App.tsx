@@ -30,7 +30,11 @@ import AccSetup from './src/AccConversion/AccSetup';
 import AddProduct from './src/Seller/AddProduct';
 import ProductScreen from './src/Seller/ProductScreen';
 import UpdateProduct from './src/Seller/UpdateProduct';
-import ShopSeller from './src/Seller/ShopSeller';
+import EditProfileScreen from './src/components/Profile/EditProfile';
+import OrderScreen from './src/Screens/Order/OrderScreen';
+import MessegesScreen from './src/Screens/MessengesScreen';
+import {getUserAccessToken} from './src/api/storage';
+import ReviewScreen from './src/Screens/ReviewScreen';
 
 LogBox.ignoreLogs([
   'Non-serializable values were found in the navigation state',
@@ -38,13 +42,10 @@ LogBox.ignoreLogs([
   'Each child in a list should have a unique "key" prop.',
   'ViewPropTypes will be removed from React Native, along with all other PropTypes',
 ]);
-import EditProfileScreen from './src/components/Profile/EditProfile';
-import OrderScreen from './src/Screens/Order/OrderScreen';
+
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
-import MessegesScreen from './src/Screens/MessengesScreen';
-import {getUserAccessToken} from './src/api/storage';
 
 const TabNavigator = () => {
   return (
@@ -139,7 +140,8 @@ const App: React.FC = () => {
             <Stack.Screen name="ProductScreen" component={ProductScreen} />
             <Stack.Screen name="AddProduct" component={AddProduct} />
             <Stack.Screen name="UpdateProduct" component={UpdateProduct} />
-            <Stack.Screen name="ShopSeller" component={ShopSeller} />
+            <Stack.Screen name="OrderScreen" component={OrderScreen} />
+            <Stack.Screen name="ReviewScreen" component={ReviewScreen} />
             {/* seller */}
           </Stack.Navigator>
         </NavigationContainer>
