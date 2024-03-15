@@ -1,37 +1,3 @@
-// import React from 'react';
-// import { View, Text, StyleSheet } from 'react-native';
-// import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'; 
-// import { TouchableOpacity } from 'react-native-gesture-handler'; 
-
-// const Wait_for_confirmation = () => {
-//   return (
-//     <View style={styles.container}>
-//       <MaterialCommunityIcons name="file-document-edit" style={styles.icon} /> 
-//       <Text style={styles.text}>Chưa có đơn hàng nào</Text> 
-//     </View>
-//   );
-// };
-
-// const styles = StyleSheet.create({
-//   container: {
-//     flex: 1,
-//     justifyContent: 'center',
-//     alignItems: 'center',
-//   },
-//   text: {
-//     fontSize: 13,
-//     fontWeight: 'bold',
-//     marginTop: 10,
-//     color:'#FFA000'
-//   },
-//   icon: {
-//     color:'#FFA000',
-//     fontSize:70,
-//   },
-// });
-
-// export default Wait_for_confirmation;
-
 
 import React, { useState, useEffect } from 'react';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -45,7 +11,7 @@ import {
 } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 
-const  Wait_for_confirmation = () => {
+const  Canceled = () => {
   const [cartItems, setCartItems] = useState([
     {
       id: 1,
@@ -75,11 +41,11 @@ const  Wait_for_confirmation = () => {
         <Text style={styles.itemPrice}>{item.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.')}đ</Text>
       </View>
       <View style={styles.status}>
-        <TouchableOpacity style={styles.waiting}>
-        <Text style={styles.cancelText}> Chờ xác nhận</Text>
+        <TouchableOpacity style={styles.cancel}>
+        <Text style={styles.cancelText}>Đã huỷ</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.statusText}>
-          <Text style={styles.statusText}>Huỷ đơn hàng</Text>
+          <Text style={styles.statusText}>Mua lại</Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -127,21 +93,26 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     textAlign:'center',
   },
-  waiting: {
+  cancel: {
     justifyContent: 'center',
     alignItems: 'center',
     margin: 7,
+    color:'red',
+    width: 70,
+    height: 20,
+    borderRadius: 5,
+    textAlign: 'center',
   },
   cancelText: {
     fontSize: 13,
-    color: '#2E7D32', 
+    color: 'red', 
   },
   statusText: {
     justifyContent: 'center',
     alignItems: 'center',
     margin: 7,
-    backgroundColor: 'red',
-    color: 'white',
+    backgroundColor: '#FFA000',
+    color: '#2E7D32',
     width: 70,
     height: 20,
     borderRadius: 5,
@@ -153,6 +124,5 @@ const styles = StyleSheet.create({
   
 });
 
-export default  Wait_for_confirmation;
-
+export default  Canceled;
 
