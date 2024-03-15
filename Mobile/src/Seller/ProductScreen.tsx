@@ -11,29 +11,43 @@ import {
 } from 'react-native';
 import api from '../api/request';
 import {useQuery} from '@tanstack/react-query';
-import axios from 'axios';
 import {useNavigation, useFocusEffect} from '@react-navigation/native';
+import {getUserAccessToken} from '../api/storage';
+import LoaderKit from 'react-native-loader-kit';
 
 const ProductScreen = () => {
   const [cartItems, setCartItems] = useState<any[]>([]);
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedItemId, setSelectedItemId] = useState(null);
   const navigation = useNavigation<any>();
+  const [isPending, setisPending] = useState(false);
 
-  const {data, isLoading, isError, refetch} = useQuery({
+  const [userInfo, setUserInfo] = useState<any>();
+
+  const getUserData = async () => {
+    setUserInfo(await getUserAccessToken());
+  };
+
+  useEffect(() => {
+    getUserData();
+  }, [userInfo]);
+
+  const {
+    data,
+    isLoading,
+    isError,
+    refetch: refreshProductList,
+  } = useQuery({
     queryKey: ['data'],
     queryFn: async () => {
-      const response = await axios.get(
-        'http://nodejs-app-env-1.eba-q2t7wpq3.ap-southeast-2.elasticbeanstalk.com/products',
-      );
+      const userActken = await getUserAccessToken();
+      const response = await api.get('/products', {
+        params: {seller_id: userActken?.user.id},
+      });
       setCartItems(response.data.data);
       return response.data.data;
     },
   });
-
-  const refreshProductList = async () => {
-    await refetch();
-  };
 
   useEffect(() => {
     refreshProductList();
@@ -51,9 +65,8 @@ const ProductScreen = () => {
   const handleDeleteItem = async (itemId: null) => {
     try {
       const updatedCartItems = cartItems.filter(item => item.id !== itemId);
-      await axios.delete(
-        `http://nodejs-app-env-1.eba-q2t7wpq3.ap-southeast-2.elasticbeanstalk.com/products/${itemId}`,
-      );
+      setisPending(true);
+      await api.delete(`products/${itemId}`);
       setCartItems(updatedCartItems);
       setModalVisible(false);
     } catch (error) {
@@ -62,7 +75,7 @@ const ProductScreen = () => {
   };
 
   const OnClickBack = () => {
-    navigation.navigate('AddProduct');
+    navigation.navigate('ShopSeller');
   };
 
   const handleEditItem = (itemId: any) => {
@@ -79,22 +92,24 @@ const ProductScreen = () => {
           {item.price?.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.')} đ
         </Text>
       </View>
-      <View style={styles.status}>
-        <Text
-          style={styles.update}
-          onPress={() => {
-            handleEditItem(item.id);
-          }}>
-          Sửa
-        </Text>
-        <Pressable
-          onPress={() => {
-            setSelectedItemId(item.id);
-            setModalVisible(true); // Mở modal
-          }}>
-          <Text style={styles.delete}>Xóa</Text>
-        </Pressable>
-      </View>
+      {item.seller_id === userInfo.user.id && (
+        <View style={styles.status}>
+          <Text
+            style={styles.update}
+            onPress={() => {
+              handleEditItem(item.id);
+            }}>
+            Sửa
+          </Text>
+          <Pressable
+            onPress={() => {
+              setSelectedItemId(item.id);
+              setModalVisible(true); // Mở modal
+            }}>
+            <Text style={styles.delete}>Xóa</Text>
+          </Pressable>
+        </View>
+      )}
     </View>
   );
 
@@ -137,6 +152,13 @@ const ProductScreen = () => {
                   handleDeleteItem(selectedItemId);
                 }}>
                 <Text style={styles.textStyle}>Có</Text>
+                {isPending ? (
+                  <LoaderKit
+                    style={{width: 20, height: 20}}
+                    name={'BallPulse'}
+                    color={'#fff'}
+                  />
+                ) : null}
               </Pressable>
             </View>
           </View>
@@ -179,6 +201,10 @@ const styles = StyleSheet.create({
     backgroundColor: '#2196F3',
   },
   buttonYes: {
+    gap: 4,
+    flexDirection: 'row',
+    alignSelf: 'center',
+    alignItems: 'center',
     backgroundColor: 'red',
   },
 
@@ -233,7 +259,7 @@ const styles = StyleSheet.create({
     color: '#FFA000',
   },
   itemPrice: {
-    marginRight: 40,
+    marginRight: 90,
     paddingTop: 5,
     paddingBottom: 5,
     paddingLeft: 10,

@@ -30,7 +30,6 @@ import AccSetup from './src/AccConversion/AccSetup';
 import AddProduct from './src/Seller/AddProduct';
 import ProductScreen from './src/Seller/ProductScreen';
 import UpdateProduct from './src/Seller/UpdateProduct';
-import Seller from './src/Seller/Seller';
 import EditProfileScreen from './src/components/Profile/EditProfile';
 import OrderScreen from './src/Screens/Order/OrderScreen';
 import MessegesScreen from './src/Screens/MessengesScreen';
@@ -46,6 +45,7 @@ LogBox.ignoreLogs([
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
+
 
 const TabNavigator = () => {
   return (
