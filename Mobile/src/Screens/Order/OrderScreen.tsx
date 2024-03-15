@@ -21,7 +21,7 @@ const styles = StyleSheet.create({
   },
   arrowLeft:{
     fontSize:25,
-    
+    margin:10,
   }
 });
 
