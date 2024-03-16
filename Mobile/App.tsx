@@ -27,6 +27,7 @@ import SuccessfulPayment from './src/components/Payment/SuccessfulPayment';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import {LogBox} from 'react-native';
 import AccSetup from './src/AccConversion/AccSetup';
+import AccSeller from './src/AccConversion/AccSeller';
 import AddProduct from './src/Seller/AddProduct';
 import ProductScreen from './src/Seller/ProductScreen';
 import UpdateProduct from './src/Seller/UpdateProduct';
@@ -35,6 +36,12 @@ import OrderScreen from './src/Screens/Order/OrderScreen';
 import MessegesScreen from './src/Screens/MessengesScreen';
 import {getUserAccessToken} from './src/api/storage';
 import ReviewScreen from './src/Screens/ReviewScreen';
+// Seller
+import ShopSeller from './src/Seller/ShopSeller';
+import Help from './src/Support/Help';
+import AppInf from './src/Support/AppInf';
+import Notification from './src/Seller/Notifications/Notification';
+import MessageSeller from './src/Seller/Notifications/MessageSeller';
 
 LogBox.ignoreLogs([
   'Non-serializable values were found in the navigation state',
@@ -45,7 +52,6 @@ LogBox.ignoreLogs([
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
-
 
 const TabNavigator = () => {
   return (
@@ -141,19 +147,19 @@ const App: React.FC = () => {
             <Stack.Screen name="AddProduct" component={AddProduct} />
             <Stack.Screen name="UpdateProduct" component={UpdateProduct} />
             <Stack.Screen name="OrderScreen" component={OrderScreen} />
+            <Stack.Screen name="ShopSeller" component={ShopSeller} />
             <Stack.Screen name="ReviewScreen" component={ReviewScreen} />
+            <Stack.Screen name="Help" component={Help} />
+            <Stack.Screen name="AppInf" component={AppInf} />
+            <Stack.Screen name="AccSeller" component={AccSeller} />
+            <Stack.Screen name="Notification" component={Notification} />
+            <Stack.Screen name="MessageSeller" component={MessageSeller} />
             {/* seller */}
           </Stack.Navigator>
         </NavigationContainer>
         <FlashMessage position="top" />
       </QueryClientProvider>
     </GestureHandlerRootView>
-
-    //  <GestureHandlerRootView style={{flex: 1}}>
-    //   <QueryClientProvider client={queryClient}>
-    //     <Seller />
-    //   </QueryClientProvider>
-    // </GestureHandlerRootView>
   );
 };
 

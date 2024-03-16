@@ -4,7 +4,7 @@ import {View, Text, Image, StyleSheet, TouchableOpacity} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import {SwipeListView} from 'react-native-swipe-list-view';
 
-const AccSetup = () => {
+const AccSeller = () => {
   const navigation = useNavigation<any>();
 
   const data = [
@@ -16,14 +16,14 @@ const AccSetup = () => {
     },
     {
       id: 2,
-      name: 'tài khoản bán hàng',
+      name: 'Tài khoản bán hàng',
       messenger: 'Người có nhu câu bán hàng',
       image: require('../assets/huong.jpg'),
     },
   ];
 
   const OnClickBack = () => {
-    navigation.navigate('Tôi');
+    navigation.navigate('ShopSeller');
   };
 
   const handlePress = (item: any) => {
@@ -73,7 +73,7 @@ const AccSetup = () => {
   );
 };
 
-export default AccSetup;
+export default AccSeller;
 
 const styles = StyleSheet.create({
   container: {

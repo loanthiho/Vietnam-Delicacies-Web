@@ -126,7 +126,7 @@ const ProductScreen = () => {
       <FlatList data={cartItems} renderItem={renderItem} />
 
       <View style={styles.btn}>
-        <Text style={styles.BtnAdd} onPress={() => OnClickBack()}>
+        <Text style={styles.BtnAdd} onPress={()=>navigation.navigate("AddProduct")}>
           Thêm
         </Text>
         <Text style={styles.BtnShow}>Xem Shop</Text>
