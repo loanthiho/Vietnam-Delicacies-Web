@@ -33,6 +33,7 @@ import ProductScreen from './src/Seller/ProductScreen';
 import UpdateProduct from './src/Seller/UpdateProduct';
 import EditProfileScreen from './src/components/Profile/EditProfile';
 import OrderScreen from './src/Screens/Order/OrderScreen';
+import OrderScreenSeller from './src/Seller/Order/OrderScreenSeller';
 import MessegesScreen from './src/Screens/MessengesScreen';
 import {getUserAccessToken} from './src/api/storage';
 import ReviewScreen from './src/Screens/ReviewScreen';
@@ -141,12 +142,16 @@ const App: React.FC = () => {
             />
             <Stack.Screen name="MessegesScreen" component={MessegesScreen} />
             <Stack.Screen name="AccSetup" component={AccSetup} />
+            <Stack.Screen name="OrderScreen" component={OrderScreen} />
 
             {/* seller */}
             <Stack.Screen name="ProductScreen" component={ProductScreen} />
             <Stack.Screen name="AddProduct" component={AddProduct} />
             <Stack.Screen name="UpdateProduct" component={UpdateProduct} />
-            <Stack.Screen name="OrderScreen" component={OrderScreen} />
+            <Stack.Screen
+              name="OrderScreenSeller"
+              component={OrderScreenSeller}
+            />
             <Stack.Screen name="ShopSeller" component={ShopSeller} />
             <Stack.Screen name="ReviewScreen" component={ReviewScreen} />
             <Stack.Screen name="Help" component={Help} />
