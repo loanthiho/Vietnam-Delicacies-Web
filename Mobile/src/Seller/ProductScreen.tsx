@@ -126,10 +126,11 @@ const ProductScreen = () => {
       <FlatList data={cartItems} renderItem={renderItem} />
 
       <View style={styles.btn}>
-        <Text style={styles.BtnAdd} onPress={()=>navigation.navigate("AddProduct")}>
-          Thêm
+        <Text
+          style={styles.BtnAdd}
+          onPress={() => navigation.navigate('AddProduct')}>
+          <Ionicons style={styles.iconAdd} name="add-outline"></Ionicons>
         </Text>
-        <Text style={styles.BtnShow}>Xem Shop</Text>
       </View>
 
       <Modal animationType="slide" transparent={true} visible={modalVisible}>
@@ -306,17 +307,21 @@ const styles = StyleSheet.create({
     paddingRight: 24,
     paddingLeft: 24,
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'center',
   },
 
   BtnAdd: {
-    width: 110,
     textAlign: 'center',
-    fontSize: 16,
-    padding: 8,
+    padding: 15,
     color: 'white',
     backgroundColor: '#2E7D32',
-    borderRadius: 10,
+    borderRadius: 50,
+    elevation: 15,
+    shadowColor: '#2E7D32',
+  },
+
+  iconAdd: {
+    fontSize: 26,
   },
 
   BtnShow: {

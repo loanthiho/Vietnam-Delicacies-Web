@@ -1,5 +1,12 @@
 import React, {useEffect, useState} from 'react';
-import {View, Text, StyleSheet, TouchableOpacity, Image} from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  Image,
+  ScrollView,
+} from 'react-native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -34,20 +41,21 @@ const ShopSeller = ({navigation}: any) => {
           alignItems: 'center',
           marginBottom: 10,
         }}>
-        <Text style={styles.Subtitle}>CỬA HÀNG CỦA TÔI</Text>
+        <Text style={styles.Subtitle}>Cửa hàng của tôi</Text>
         <View style={{position: 'relative'}}>
           <Text
             style={{
               position: 'absolute',
               right: 0,
               bottom: 18,
+              fontWeight: 'bold',
               fontSize: 10,
               color: '#ffa000',
             }}>
             1
           </Text>
           <Ionicons
-          onPress={() => navigation.navigate("Notification")}
+            onPress={() => navigation.navigate('Notification')}
             name="notifications-outline"
             style={styles.IconNoti}></Ionicons>
         </View>
@@ -73,13 +81,12 @@ const ShopSeller = ({navigation}: any) => {
           <Text style={{color: '#ffa000'}}>Xem cửa hàng</Text>
         </TouchableOpacity>
       </View>
-
-      <View style={styles.orderStatus}>
+      <ScrollView style={styles.orderStatus} horizontal={true}>
         <TouchableOpacity
           style={styles.iconTextContainer}
           onPress={() =>
             navigation.navigate({
-              name: 'OrderScreen',
+              name: 'OrderScreenSeller',
             })
           }>
           <MaterialCommunityIcons
@@ -92,7 +99,7 @@ const ShopSeller = ({navigation}: any) => {
           style={styles.iconTextContainer}
           onPress={() =>
             navigation.navigate({
-              name: 'OrderScreen',
+              name: 'OrderScreenSeller',
             })
           }>
           <AntDesign name="inbox" style={styles.iconStatus} />
@@ -103,7 +110,7 @@ const ShopSeller = ({navigation}: any) => {
           style={styles.iconTextContainer}
           onPress={() =>
             navigation.navigate({
-              name: 'OrderScreen',
+              name: 'OrderScreenSeller',
             })
           }>
           <MaterialCommunityIcons
@@ -117,7 +124,7 @@ const ShopSeller = ({navigation}: any) => {
           style={styles.iconTextContainer}
           onPress={() =>
             navigation.navigate({
-              name: 'OrderScreen',
+              name: 'OrderScreenSeller',
             })
           }>
           <MaterialCommunityIcons
@@ -126,19 +133,7 @@ const ShopSeller = ({navigation}: any) => {
           />
           <Text style={styles.textStatus}>Thành công</Text>
         </TouchableOpacity>
-
-        <TouchableOpacity
-          style={styles.iconTextContainer}
-          onPress={() =>
-            navigation.navigate({
-              name: 'OrderScreen',
-            })
-          }>
-          <AntDesign name="staro" style={styles.iconStatus} />
-          <Text style={styles.textStatus}>Đánh giá</Text>
-        </TouchableOpacity>
-      </View>
-
+      </ScrollView>
       <View>
         <Text style={styles.titleStatistical}>Thống kê</Text>
         <View style={{flexDirection: 'row', justifyContent: 'space-around'}}>
@@ -156,7 +151,6 @@ const ShopSeller = ({navigation}: any) => {
           </View>
         </View>
       </View>
-
       <TouchableOpacity
         onPress={() => {
           navigation.navigate('AppInf');
@@ -164,23 +158,30 @@ const ShopSeller = ({navigation}: any) => {
         <View style={styles.info}>
           <Text style={styles.introductionText}>Thông tin ứng dụng</Text>
           <TouchableOpacity>
-            <AntDesign name="right" style={styles.iconStatus} />
+            <AntDesign
+              onPress={() => {
+                navigation.navigate('AppInf');
+              }}
+              name="right"
+              style={styles.iconStatus}
+            />
           </TouchableOpacity>
         </View>
       </TouchableOpacity>
-
       <TouchableOpacity
         onPress={() => {
           navigation.navigate('Help');
         }}>
         <View style={styles.info}>
           <Text style={styles.introductionText}>Trợ giúp</Text>
-          <TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => {
+              navigation.navigate('Help');
+            }}>
             <AntDesign name="right" style={styles.iconStatus} />
           </TouchableOpacity>
         </View>
       </TouchableOpacity>
-
       <TouchableOpacity
         onPress={() => {
           navigation.navigate('AccSeller');
@@ -188,11 +189,16 @@ const ShopSeller = ({navigation}: any) => {
         <View style={styles.info}>
           <Text style={styles.introductionText}>Thiết lập tài khoản</Text>
           <TouchableOpacity>
-            <AntDesign name="right" style={styles.iconStatus} />
+            <AntDesign
+              onPress={() => {
+                navigation.navigate('AccSeller');
+              }}
+              name="right"
+              style={styles.iconStatus}
+            />
           </TouchableOpacity>
         </View>
       </TouchableOpacity>
-
       <TouchableOpacity
         style={styles.btn}
         onPress={() => {
@@ -285,16 +291,24 @@ const styles = StyleSheet.create({
     color: '#2E7D32',
     fontSize: 24,
   },
+
   orderStatus: {
-    gap: 6,
-    flexWrap: 'wrap',
-    flexDirection: 'row',
-    marginTop: 10,
-    borderWidth: 2,
-    borderColor: '#ffa000',
-    justifyContent: 'center',
-    padding: 10,
+    marginTop: 15,
+    borderBottomWidth: 2,
+    borderBottomColor: '#2E7D32',
+    maxHeight: 55,
+    // flexDirection: 'row',
   },
+  // orderStatus: {
+  //   gap: 6,
+  //   flexWrap: 'wrap',
+  //   flexDirection: 'row',
+  //   marginTop: 10,
+  //   borderWidth: 2,
+  //   borderColor: '#ffa000',
+  //   justifyContent: 'center',
+  //   padding: 10,
+  // },
   iconStatus: {
     marginRight: 5,
     color: '#2E7D32',
