@@ -73,8 +73,6 @@ const updateProduct = async (req, res, next) => {
 
     const isHasProduct = await Product.findOne({ where: { seller_id: user_id, id: id } });
     if (isHasProduct) {
-
-
         /**
          * @updated The response after update product.
          */
