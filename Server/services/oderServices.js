@@ -139,7 +139,7 @@ const createNewOrder = async (req, res, next) => {
         }
     }
     else {
-        return resBadRequest(res, "Not enough feild!");
+        return resBadRequest(res, "Vui Thêm Thông tin địa chỉ!");
     }
 }
 /**
