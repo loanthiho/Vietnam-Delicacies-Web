@@ -90,7 +90,8 @@ const userSignIn = async (req, res, next) => {
                             id: user.id,
                             email: user.email,
                             password: user.password,
-                            name: user.name
+                            name: user.name,
+                            role: user.role
                         }, process.env.JWT_KEY, (err, token) => {
                             res.status(200).json({
                                 message: "Authentication successful!",

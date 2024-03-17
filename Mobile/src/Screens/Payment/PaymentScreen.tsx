@@ -31,7 +31,6 @@ const PaymentScreen = ({ route, navigation }: any) => {
   const [order, setOrder] = useState({
     payment_method: 'CashOnDelivery',
     shipping_address: '',
-    status: 'AWAITING_CONFIRMATION',
     total_amount: 0,
     total_quantity: 0,
     product_cart_ids: []
