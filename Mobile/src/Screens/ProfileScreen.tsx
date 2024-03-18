@@ -1,5 +1,12 @@
 import React, {useEffect, useState} from 'react';
-import {View, Text, StyleSheet, TouchableOpacity, Image} from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  Image,
+  ScrollView,
+} from 'react-native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {getUserAccessToken} from '../api/storage';
@@ -10,7 +17,7 @@ const ProfileScreen = ({navigation}: any) => {
 
   const getUserData = async () => {
     const userInfoOld = await getUserAccessToken();
-    console.log('user:', userInfoOld.user);
+    console.log('user....:', userInfoOld.user);
     if (userInfoOld.user) {
       setUserInfo(userInfoOld.user);
       setIsLoggedIn(true);
@@ -57,7 +64,7 @@ const ProfileScreen = ({navigation}: any) => {
             style={styles.editIconContainer}
             onPress={() =>
               navigation.navigate({
-                name: 'SignIn', 
+                name: 'SignIn',
               })
             }>
             <View style={styles.loginButton}>
@@ -76,7 +83,8 @@ const ProfileScreen = ({navigation}: any) => {
           <AntDesign name="right" style={styles.iconStatus} />
         </TouchableOpacity>
       </View>
-      <View style={styles.orderStatus}>
+
+      <ScrollView style={styles.orderStatus} horizontal={true}>
         <TouchableOpacity
           style={styles.iconTextContainer}
           onPress={() =>
@@ -123,7 +131,8 @@ const ProfileScreen = ({navigation}: any) => {
           <AntDesign name="staro" style={styles.iconStatus} />
           <Text style={styles.textStatus}>Đánh giá</Text>
         </TouchableOpacity>
-      </View>
+      </ScrollView>
+
       <View style={styles.info}>
         <Text style={styles.introductionText}>Cộng đông khách VnD</Text>
         <TouchableOpacity>
@@ -142,12 +151,14 @@ const ProfileScreen = ({navigation}: any) => {
           <AntDesign name="right" style={styles.iconStatus} />
         </TouchableOpacity>
       </View>
+
       <View style={styles.info}>
         <Text style={styles.introductionText}>Trợ giúp</Text>
         <TouchableOpacity>
           <AntDesign name="right" style={styles.iconStatus} />
         </TouchableOpacity>
       </View>
+
       <View style={styles.info}>
         <Text style={styles.introductionText}>Đã xem gần đây</Text>
         <TouchableOpacity>
@@ -155,17 +166,19 @@ const ProfileScreen = ({navigation}: any) => {
         </TouchableOpacity>
       </View>
 
-      <TouchableOpacity
-        onPress={() => {
-          navigation.navigate('AccSetup');
-        }}>
-        <View style={styles.info}>
-          <Text style={styles.introductionText}>Thiết lập tài khoản</Text>
-          <TouchableOpacity>
-            <AntDesign name="right" style={styles.iconStatus} />
-          </TouchableOpacity>
-        </View>
-      </TouchableOpacity>
+      {userInfo?.role === 'seller' ? (
+        <TouchableOpacity
+          onPress={() => {
+            navigation.navigate('AccSetup');
+          }}>
+          <View style={styles.info}>
+            <Text style={styles.introductionText}>Thiết lập tài khoản</Text>
+            <TouchableOpacity>
+              <AntDesign name="right" style={styles.iconStatus} />
+            </TouchableOpacity>
+          </View>
+        </TouchableOpacity>
+      ) : null}
     </View>
   );
 };
@@ -238,17 +251,15 @@ const styles = StyleSheet.create({
     fontSize: 24,
   },
   orderStatus: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginTop: 10,
+    marginTop: 15,
     borderBottomWidth: 2,
     borderBottomColor: '#2E7D32',
-    padding: 5,
+    maxHeight: 55,
   },
   iconStatus: {
     marginRight: 5,
     color: '#2E7D32',
-    fontSize: 24,
+    fontSize: 20,
   },
   textStatus: {
     marginRight: 10,

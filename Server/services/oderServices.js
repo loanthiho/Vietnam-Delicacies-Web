@@ -1,16 +1,18 @@
 const { Op } = require('sequelize');
-const { Order, ProductCart, Product, OrderDetail, File } = require('../models');
+const { Order, ProductCart, Product, OrderDetail, File, User } = require('../models');
+
 const { resBadRequest, resInternalError, resSuccessData, resNotFound } = require('../utils/response');
 const { isNumber, formatDate } = require('../utils/helper');
-const orderdetail = require('../models/orderdetail');
 const order = require('../models/order');
+const { orderStatus, isValidStatus } = require('../utils/enum');
+const { CHO_XAC_NHAN, CHO_LAY_HANG, CHO_GIAO_HANG, DANH_GIA, DA_HUY } = orderStatus;
+
 
 const createNewOrder = async (req, res, next) => {
     const user_id = req.userData.id;
     const {
         payment_method,
         shipping_address,
-        status,
         total_amount,
         total_quantity,
         product_cart_ids
@@ -25,10 +27,10 @@ const createNewOrder = async (req, res, next) => {
         order_date: new Date(),
         payment_method,
         shipping_address,
-        status: status ? status : "cho-xac-nhan",
         total_quantity,
         total_amount
     };
+
     /**
      * Comfirm user exist.
      * Comfirm data filled enough.
@@ -42,6 +44,11 @@ const createNewOrder = async (req, res, next) => {
     } else if (!Array.isArray(product_cart_ids)) {
         return resBadRequest(res, "Product cart ids must be an array!");
     }
+
+    if (!total_quantity) {
+        return resBadRequest(res, "total_quantity can not be null!")
+    }
+
 
     if (!total_amount) {
         return resBadRequest(res, "total_amount can not be null!")
@@ -62,8 +69,7 @@ const createNewOrder = async (req, res, next) => {
         /**
          * Check does product cart exit with those ids product cart?
          */
-        if (pCartFIds) {
-            // resSuccessData(res, pCartFIds, "Data order Detail")
+        if (pCartFIds && pCartFIds.length > 0) {
             /**
              * If Have product cart with these ids.
              */
@@ -74,12 +80,15 @@ const createNewOrder = async (req, res, next) => {
                  */
                 for (let pCart of pCartFIds) {
                     const oDetail = {
-                        product_id: pCart.product_id,
                         order_id: rCOrder.id,
+                        seller_id: pCart.Product?.seller_id,
+                        product_id: pCart.product_id,
                         quantity: pCart.quantity,
+                        status: CHO_XAC_NHAN,
                         unit_price: pCart.Product.price,
                         total_price: pCart.Product.price * pCart.quantity,
                     }
+                    // return resSuccessData(res, oDetail, "data Order detail!");
                     const createOrderDetail = await OrderDetail.create(oDetail);
                     /**
                      * If Order detail create successfull:
@@ -113,7 +122,12 @@ const createNewOrder = async (req, res, next) => {
                     }
                 }
                 if (isSuccess) {
-                    resSuccessData(res, rCOrder, "Order Successfully!")
+
+                    const order = await Order.findOne({ where: { id: rCOrder.id }, include: [OrderDetail] });
+                    if (!order) {
+                        return resNotFound(res, "Can not find the order just created latest!")
+                    }
+                    return resSuccessData(res, order, "Order created Successfully!");
                 }
             }
             else {
@@ -125,17 +139,8 @@ const createNewOrder = async (req, res, next) => {
         }
     }
     else {
-        return resBadRequest(res, "Not enough feild!");
+        return resBadRequest(res, "Vui Thêm Thông tin địa chỉ!");
     }
-
-    /**
-     * Status:
-     * - Chờ vận chuyển;
-     * - Chờ giao hàng
-     * - Đã giao
-     * - Đã hủy
-     * - Trả hàng
-     */
 }
 /**
  * status ENUM;
@@ -145,30 +150,114 @@ const createNewOrder = async (req, res, next) => {
  * - RETURNED: The order have been returned from customer.
  */
 
+const commonGetAllOrder = async (req, res, next) => {
+    try {
+        const orders = await Order.findAll({
+            include: [
+                { model: User },
+                {
+                    model: OrderDetail,
+                    include: [
+                        { model: User },
+                        { model: Product, include: [{ model: File }] }
+                    ]
+                },
+            ]
+        });
+        return resSuccessData(res, orders, "Get all order successfully");
+    }
+    catch (error) {
+        return resInternalError(res, error);
+    }
+}
+
 const getAllOrder = async (req, res, next) => {
-    const customer_id = req.userData.id;
+    const userId = req.userData.id;
+    const status = req.query.status;
+    var q = {};
+    if (status) {
+        if (!isValidStatus(status)) {
+            return resBadRequest(res, `error: "${status}" is invalid order status!`)
+        }
+        q.status = status
+    }
+    if (req.userData.role === 'customer') {
+        const orders = await Order.findAll({ where: { customer_id: userId } });
+        var orderIds = orders && orders.length > 0 ? orders.map(order => order.id) : [];
+        if (!orders) {
+            return resNotFound(res, "Order can not be found!")
+        }
+        if (orderIds.length > 0) {
+            const orderDetails = await OrderDetail.findAll({
+                where: { ...q, order_id: orderIds },
+                include: [
+                    { model: Product, include: [File] }
+                ]
+            })
+            if (!orderDetails) {
+                return resNotFound(res, "Can not get all the order detail!")
+            }
+            return resSuccessData(res, orderDetails, "get order detail successfully!")
+        }
+        return resNotFound(res, "This customer have no order!")
+    }
+    else if (req.userData.role === 'seller') {
+        const orderDetails = await OrderDetail.findAll({
+            where: { seller_id: userId, ...q },
+            include: [{ model: Product, include: [File] }]
+        });
+        if (!orderDetails) {
+            return resNotFound(res, "Order detail not found!")
+        }
+        return resSuccessData(res, orderDetails, "request order successfully")
+    }
+    return resBadRequest(res, `user.role = ${req.userData.role} is not found!`)
+    /**
+    * Check the user have order any product;
+    * If user have order some product -> list product detail
+    */
+}
+
+const sellerGetAllOrder = async (req, res, next) => {
+    const seller_id = req.userData.id;
     const status = req.query.status;
     var q;
     if (status) {
-        q = { status: status }
+        if (!isValidStatus(status)) {
+            return resBadRequest(res, `error: ${status} is invalid order status in ${{ orderStatus }} `)
+        }
+        q = { status: status };
     }
-    const order = await Order.findAll({
-        where: { customer_id: customer_id, ...q },
-        include: [{ model: OrderDetail, include: [{ model: Product, include: [File] }] }]
-    });
-    /**
-     * Check the user have order any product;
-     * If user have order some product -> list product detail
-     */
-    if (order) {
-        resSuccessData(res, order, "Get all order Successfully!")
+    try {
+
     }
-    else {
-        resNotFound(res, "Can not find any order!")
+    catch (error) {
+        return resNotFound(res, error)
     }
+}
+
+
+const updateOrderStatus = async (req, res, next) => {
+    const order_detail_id = req.params.id;
+    const { status } = req.query;
+    if (!isValidStatus(status)) {
+        return resBadRequest(res, `error: ${status} is invalid status!`);
+    }
+    const rUpdate = await OrderDetail.update({ status: status }, { where: { id: order_detail_id } });
+    if (rUpdate) {
+        const order_detail_after_update = await OrderDetail.findByPk(order_detail_id);
+        if (!order_detail_after_update) {
+            return resNotFound(res, "Order status after update not found!");
+        }
+        return resSuccessData(res, order_detail_after_update, "Update status successfully!");
+    }
+    return resInternalError(res, "Update order status Failed!");
 }
 
 module.exports = {
     createNewOrder,
-    getAllOrder
+    getAllOrder,
+    sellerGetAllOrder,
+    commonGetAllOrder,
+    updateOrderStatus
 }

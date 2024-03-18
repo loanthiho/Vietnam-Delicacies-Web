@@ -25,6 +25,13 @@ module.exports = (sequelize, DataTypes) => {
           type: DataTypes.UUID
         }
       });
+
+      OrderDetail.belongsTo(models.User, {
+        foreignKey: {
+          name: 'seller_id',
+          type: DataTypes.UUID
+        }
+      });
     }
   }
   OrderDetail.init({
@@ -33,6 +40,8 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.UUID,
       defaultValue: DataTypes.UUIDV4
     },
+    seller_id: DataTypes.UUID,
+    status: DataTypes.STRING,
     product_id: DataTypes.UUID,
     order_id: DataTypes.UUID,
     quantity: DataTypes.INTEGER,

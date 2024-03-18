@@ -1,8 +1,8 @@
-import React, {useEffect, useState} from 'react';
-import {StyleSheet} from 'react-native';
-import {NavigationContainer} from '@react-navigation/native';
-import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import React, { useEffect, useState } from 'react';
+import { StyleSheet } from 'react-native';
+import { NavigationContainer } from '@react-navigation/native';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import ProductDetailScreen from './src/Screens/Product/ProductDetail';
 import HomePage from './src/Screens/HomeScreens';
@@ -24,17 +24,25 @@ import {
 import FlashMessage from 'react-native-flash-message';
 import SignIn from './src/Screens/userAuth/logIn';
 import SuccessfulPayment from './src/components/Payment/SuccessfulPayment';
-import {GestureHandlerRootView} from 'react-native-gesture-handler';
-import {LogBox} from 'react-native';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { LogBox } from 'react-native';
 import AccSetup from './src/AccConversion/AccSetup';
+import AccSeller from './src/AccConversion/AccSeller';
 import AddProduct from './src/Seller/AddProduct';
 import ProductScreen from './src/Seller/ProductScreen';
 import UpdateProduct from './src/Seller/UpdateProduct';
 import EditProfileScreen from './src/components/Profile/EditProfile';
 import OrderScreen from './src/Screens/Order/OrderScreen';
+import OrderScreenSeller from './src/Seller/Order/OrderScreenSeller';
 import MessegesScreen from './src/Screens/MessengesScreen';
-import {getUserAccessToken} from './src/api/storage';
+import { getUserAccessToken } from './src/api/storage';
 import ReviewScreen from './src/Screens/ReviewScreen';
+// Seller
+import ShopSeller from './src/Seller/ShopSeller';
+import Help from './src/Support/Help';
+import AppInf from './src/Support/AppInf';
+import Notification from './src/Seller/Notifications/Notification';
+import MessageSeller from './src/Seller/Notifications/MessageSeller';
 
 LogBox.ignoreLogs([
   'Non-serializable values were found in the navigation state',
@@ -46,12 +54,11 @@ LogBox.ignoreLogs([
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
-
 const TabNavigator = () => {
   return (
     <Tab.Navigator
-      screenOptions={({route}) => ({
-        tabBarIcon: ({focused, color, size}) => {
+      screenOptions={({ route }) => ({
+        tabBarIcon: ({ focused, color, size }) => {
           let iconName = '';
           if (route.name === 'Trang chủ') {
             iconName = focused ? 'home' : 'home-outline';
@@ -103,12 +110,12 @@ const App: React.FC = () => {
   const queryClient = new QueryClient();
 
   return (
-    <GestureHandlerRootView style={{flex: 1}}>
+    <GestureHandlerRootView style={{ flex: 1 }}>
       <QueryClientProvider client={queryClient}>
         <NavigationContainer>
           <Stack.Navigator
-            screenOptions={{headerShown: false}}
-            initialRouteName={'ReviewScreen'}>
+            screenOptions={{ headerShown: false }}
+            initialRouteName={'SignIn'}>
             <Stack.Screen
               name="ProductDetailScreen"
               component={ProductDetailScreen}
@@ -135,25 +142,29 @@ const App: React.FC = () => {
             />
             <Stack.Screen name="MessegesScreen" component={MessegesScreen} />
             <Stack.Screen name="AccSetup" component={AccSetup} />
+            <Stack.Screen name="OrderScreen" component={OrderScreen} />
 
             {/* seller */}
             <Stack.Screen name="ProductScreen" component={ProductScreen} />
             <Stack.Screen name="AddProduct" component={AddProduct} />
             <Stack.Screen name="UpdateProduct" component={UpdateProduct} />
-            <Stack.Screen name="OrderScreen" component={OrderScreen} />
+            <Stack.Screen
+              name="OrderScreenSeller"
+              component={OrderScreenSeller}
+            />
+            <Stack.Screen name="ShopSeller" component={ShopSeller} />
             <Stack.Screen name="ReviewScreen" component={ReviewScreen} />
+            <Stack.Screen name="Help" component={Help} />
+            <Stack.Screen name="AppInf" component={AppInf} />
+            <Stack.Screen name="AccSeller" component={AccSeller} />
+            <Stack.Screen name="Notification" component={Notification} />
+            <Stack.Screen name="MessageSeller" component={MessageSeller} />
             {/* seller */}
           </Stack.Navigator>
         </NavigationContainer>
         <FlashMessage position="top" />
       </QueryClientProvider>
     </GestureHandlerRootView>
-
-    //  <GestureHandlerRootView style={{flex: 1}}>
-    //   <QueryClientProvider client={queryClient}>
-    //     <Seller />
-    //   </QueryClientProvider>
-    // </GestureHandlerRootView>
   );
 };
 

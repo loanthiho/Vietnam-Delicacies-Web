@@ -73,6 +73,13 @@ module.exports = (sequelize, DataTypes) => {
           name: 'customer_id',
           type: DataTypes.UUID
         }
+      });
+
+      User.hasMany(models.OrderDetail, {
+        foreignKey: {
+          name: 'seller_id',
+          type: DataTypes.UUID
+        }
       })
     }
   }

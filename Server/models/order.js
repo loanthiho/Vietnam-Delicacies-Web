@@ -34,10 +34,6 @@ module.exports = (sequelize, DataTypes) => {
     customer_id: DataTypes.UUID,
     order_date: DataTypes.DATE,
     payment_method: DataTypes.STRING,
-    status: {
-      type: DataTypes.STRING,
-      allowNull: true
-    },
     total_amount: {
       type: DataTypes.FLOAT,
       allowNull: false

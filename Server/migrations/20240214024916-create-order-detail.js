@@ -4,9 +4,11 @@ module.exports = {
   async up(queryInterface, Sequelize) {
     await queryInterface.createTable('OrderDetails', {
       id: {
-        primaryKey:true,
+        primaryKey: true,
         type: Sequelize.UUID,
       },
+      seller_id: Sequelize.UUID,
+      status: Sequelize.STRING,
       product_id: {
         type: Sequelize.UUID
       },
