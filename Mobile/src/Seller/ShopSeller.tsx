@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -10,11 +10,19 @@ import {
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import {getUserAccessToken} from '../api/storage';
+import { getUserAccessToken } from '../api/storage';
 
-const ShopSeller = ({navigation}: any) => {
+const ShopSeller = ({ navigation }: any) => {
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
   const [userInfo, setUserInfo] = useState<any>();
+
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('focus', () => {
+      // Thực hiện refresh lại các giá trị ở đây
+      console.log('shop Screen is focused!');
+    });
+    return unsubscribe;
+  }, [navigation]);
 
   const getUserData = async () => {
     const userInfoOld = await getUserAccessToken();
@@ -42,7 +50,7 @@ const ShopSeller = ({navigation}: any) => {
           marginBottom: 10,
         }}>
         <Text style={styles.Subtitle}>Cửa hàng của tôi</Text>
-        <View style={{position: 'relative'}}>
+        <View style={{ position: 'relative' }}>
           <Text
             style={{
               position: 'absolute',
@@ -65,7 +73,7 @@ const ShopSeller = ({navigation}: any) => {
           <Image
             source={
               userInfo?.avatar
-                ? {uri: userInfo.avatar}
+                ? { uri: userInfo.avatar }
                 : require('../assets/huong.jpg')
             }
             style={styles.profileImage}
@@ -76,7 +84,7 @@ const ShopSeller = ({navigation}: any) => {
           <Text style={styles.phoneNumber}>(84+){userInfo?.phone_number}</Text>
         </View>
         <TouchableOpacity onPress={() => navigation.navigate('ProductScreen')}>
-          <Text style={{color: '#ffa000'}}>Xem cửa hàng</Text>
+          <Text style={{ color: '#ffa000' }}>Xem cửa hàng</Text>
         </TouchableOpacity>
       </View>
       <ScrollView style={styles.orderStatus} horizontal={true}>
@@ -134,12 +142,12 @@ const ShopSeller = ({navigation}: any) => {
       </ScrollView>
       <View>
         <Text style={styles.titleStatistical}>Thống kê</Text>
-        <View style={{flexDirection: 'row', justifyContent: 'space-around'}}>
-          <View style={{alignItems: 'center'}}>
+        <View style={{ flexDirection: 'row', justifyContent: 'space-around' }}>
+          <View style={{ alignItems: 'center' }}>
             <Text style={styles.statisticsNumber}> 10</Text>
             <Text style={styles.statisticTitle}> Đã bán</Text>
           </View>
-          <View style={{alignItems: 'center'}}>
+          <View style={{ alignItems: 'center' }}>
             <Text style={styles.statisticsNumber}> 10</Text>
             <Text style={styles.statisticTitle}> Đơn hàng của bạn</Text>
           </View>

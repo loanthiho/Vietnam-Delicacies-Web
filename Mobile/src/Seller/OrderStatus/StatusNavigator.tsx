@@ -11,6 +11,7 @@ const Tab = createMaterialTopTabNavigator();
 const StatusNavigator = () => {
   return (
     <Tab.Navigator
+      // initialRouteName='Đã xác nhận'
       screenOptions={{
         tabBarActiveTintColor: '#2E7D32',
         tabBarInactiveTintColor: '#ffffff',

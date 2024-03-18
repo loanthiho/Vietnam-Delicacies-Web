@@ -1,3 +1,4 @@
+import { useNavigation } from '@react-navigation/native';
 import React, { useState, useEffect } from 'react';
 import {
   View,
@@ -8,6 +9,8 @@ import {
 } from 'react-native';
 
 const Wait_for_delivery = () => {
+  const navigation = useNavigation<any>();
+
   const [cartItems, setCartItems] = useState([
     {
       id: 1,
@@ -23,14 +26,24 @@ const Wait_for_delivery = () => {
     },
   ]);
 
-  const renderItem = ({ item }:any) => (
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('focus', () => {
+      // Thực hiện refresh lại các giá trị ở đây
+      console.log('wait for delivery Screen is focused!');
+    });
+
+    return unsubscribe;
+  }, [navigation]);
+
+
+  const renderItem = ({ item }: any) => (
     <View key={item.id} style={styles.itemContainer}>
       <Image source={{ uri: item.Files?.[0]?.src }} style={styles.itemImage} />
       <View style={styles.content}>
         <Text style={styles.itemText}>{item.name}</Text>
         <Text style={styles.itemPrice}>{item.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.')}đ</Text>
       </View>
-        <Text style={styles.update}>Xác nhận giao hàng</Text>
+      <Text style={styles.update}>Xác nhận giao hàng</Text>
     </View>
   );
 
@@ -62,21 +75,21 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   itemPrice: {
-    backgroundColor:"#ffa000",
-    padding:2,
+    backgroundColor: "#ffa000",
+    padding: 2,
     fontSize: 13,
     color: "#fff",
     marginTop: 15,
     marginRight: 10,
-    maxWidth:95,
+    maxWidth: 95,
     textAlign: 'center',
     borderRadius: 5,
   },
   itemImage: {
-    width:70,
+    width: 70,
     height: 70,
     borderRadius: 10,
-    marginRight:10,
+    marginRight: 10,
   },
 
   update: {

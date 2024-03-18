@@ -6,7 +6,6 @@ import { SwipeListView } from 'react-native-swipe-list-view';
 
 const AccSeller = () => {
   const navigation = useNavigation<any>();
-
   const data = [
     {
       id: 1,
@@ -21,6 +20,17 @@ const AccSeller = () => {
       image: require('../assets/huong.jpg'),
     },
   ];
+
+
+  useEffect(() => {
+    // const unsubscribe = navigation.addListener('focus', () => {
+    // Thực hiện refresh lại các giá trị ở đây
+    console.log('Screen is focused!');
+    // });
+
+    // return unsubscribe;
+  }, [navigation]);
+
 
   const OnClickBack = () => {
     navigation.navigate('ShopSeller');

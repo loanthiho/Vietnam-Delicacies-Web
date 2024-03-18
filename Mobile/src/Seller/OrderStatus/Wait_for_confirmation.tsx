@@ -39,11 +39,14 @@ import LoaderKit from 'react-native-loader-kit';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import api from '../../api/request';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useNavigation } from '@react-navigation/native';
 
 const Wait_for_confirmation = () => {
+  const navigation = useNavigation<any>();
+
   const queryClient = useQueryClient();
   const { data, isLoading } = useQuery({
-    queryKey: ['get_order_CHO_XAC_NHAN'],
+    queryKey: ['seller_get_order_CHO_XAC_NHAN'],
     queryFn: async () => {
       const res = await api.get('orders', { params: { status: "CHO_XAC_NHAN" } });
       if (res) {
@@ -53,7 +56,7 @@ const Wait_for_confirmation = () => {
   });
   const mutation = useMutation({
     mutationKey: ['customer_cancel_order'],
-    mutationFn: async (id: string) => (await api.patch(`orders/${id}`, { params: { status: 'DA_HUY' } })).data?.data,
+    mutationFn: async ({ id, status }: any) => (await api.patch(`orders/${id}`, { params: { status: status } })).data?.data,
     onSuccess: async (data, vari) => {
       await queryClient.invalidateQueries({
         queryKey: ['get_order_CHO_XAC_NHAN'],
@@ -61,9 +64,18 @@ const Wait_for_confirmation = () => {
       await queryClient.invalidateQueries({
         queryKey: ['get_order_DA_HUY'],
       });
-    }
+    },
+    onError: (err, varr) => console.error("Error:", err.response?.data)
   })
 
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('focus', () => {
+      // Thực hiện refresh lại các giá trị ở đây
+      console.log('wait for confirm Screen is focused!');
+    });
+
+    return unsubscribe;
+  }, [navigation]);
 
   const renderItem = ({ item }: any) => (
     <View key={item.id} style={styles.itemContainer}>
