@@ -32,52 +32,46 @@
 
 // export default Wait_for_confirmation;
 
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import {View, Text, Image, FlatList, StyleSheet, Pressable} from 'react-native';
-import {TouchableOpacity} from 'react-native-gesture-handler';
+import { View, Text, Image, FlatList, StyleSheet, Pressable } from 'react-native';
+import LoaderKit from 'react-native-loader-kit';
+import { TouchableOpacity } from 'react-native-gesture-handler';
+import api from '../../api/request';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
 const Wait_for_confirmation = () => {
-  const [cartItems, setCartItems] = useState([
-    {
-      id: 1,
-      name: 'Nem chua Thanh Hoá',
-      price: 150000,
-      Files: [
-        {
-          src: 'https://i.pinimg.com/564x/6a/9a/12/6a9a122a60a435725152db7a6632da58.jpg',
-        },
-      ],
+  const queryClient = useQueryClient();
+  const { data, isLoading } = useQuery({
+    queryKey: ['get_order_CHO_XAC_NHAN'],
+    queryFn: async () => {
+      const res = await api.get('orders', { params: { status: "CHO_XAC_NHAN" } });
+      if (res) {
+        return res.data?.data;
+      }
     },
-    {
-      id: 2,
-      name: 'Gạo đen Tây Bắc',
-      price: 300000,
-      Files: [
-        {
-          src: 'https://i.pinimg.com/736x/8d/98/1e/8d981eadabf77f64baad46aac7279241.jpg',
-        },
-      ],
-    },
-    {
-      id: 2,
-      name: 'Gạo đen Tây Bắc',
-      price: 300000,
-      Files: [
-        {
-          src: 'https://i.pinimg.com/736x/8d/98/1e/8d981eadabf77f64baad46aac7279241.jpg',
-        },
-      ],
-    },
-  ]);
+  });
+  const mutation = useMutation({
+    mutationKey: ['customer_cancel_order'],
+    mutationFn: async (id: string) => (await api.patch(`orders/${id}`, { params: { status: 'DA_HUY' } })).data?.data,
+    onSuccess: async (data, vari) => {
+      await queryClient.invalidateQueries({
+        queryKey: ['get_order_CHO_XAC_NHAN'],
+      });
+      await queryClient.invalidateQueries({
+        queryKey: ['get_order_DA_HUY'],
+      });
+    }
+  })
 
-  const renderItem = ({item}: any) => (
+
+  const renderItem = ({ item }: any) => (
     <View key={item.id} style={styles.itemContainer}>
-      <Image source={{uri: item.Files?.[0]?.src}} style={styles.itemImage} />
+      <Image source={{ uri: item.Product?.Files?.[0]?.src }} style={styles.itemImage} />
       <View style={styles.content}>
-        <Text style={styles.itemText}>{item.name}</Text>
+        <Text style={styles.itemText}>{item.Product?.name}</Text>
         <Text style={styles.itemPrice}>
-          {item.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.')}đ
+          {item.Product?.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.')}đ
         </Text>
       </View>
       <View style={styles.status}>
@@ -93,7 +87,21 @@ const Wait_for_confirmation = () => {
 
   return (
     <View style={styles.container}>
-      <FlatList data={cartItems} renderItem={renderItem} />
+      {
+        isLoading ?
+          (
+            <LoaderKit
+              style={{ width: 45, height: 45, alignSelf: 'center' }}
+              name={'BallPulse'}
+              color={'green'}
+            />
+          )
+          :
+          data && data.length > 0 ?
+            < FlatList data={data} renderItem={renderItem} />
+            : <Text style={{ alignSelf: 'center', marginTop: 10 }}>Không có đơn chờ xác nhận nào cả!</Text>
+      }
+      <FlatList data={data} renderItem={renderItem} />
     </View>
   );
 };

@@ -1,8 +1,8 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import {View, Text, Image, StyleSheet, TouchableOpacity} from 'react-native';
-import {useNavigation} from '@react-navigation/native';
-import {SwipeListView} from 'react-native-swipe-list-view';
+import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import { SwipeListView } from 'react-native-swipe-list-view';
 
 const AccSeller = () => {
   const navigation = useNavigation<any>();
@@ -28,19 +28,19 @@ const AccSeller = () => {
 
   const handlePress = (item: any) => {
     if (item.id === 1) {
-      navigation.navigate('Trang chủ');
+      navigation.navigate('Main');
     } else {
       navigation.navigate('ShopSeller');
     }
   };
   const [cartItems, setCartItems] = useState(data);
 
-  const renderItem = ({item}: any) => (
+  const renderItem = ({ item }: any) => (
     <TouchableOpacity
       style={styles.itemContainer}
       onPress={() => handlePress(item)}>
       <Image
-        source={typeof item.image === 'string' ? {uri: item.image} : item.image}
+        source={typeof item.image === 'string' ? { uri: item.image } : item.image}
         style={styles.itemImage}
       />
       <View style={styles.content}>
@@ -61,7 +61,7 @@ const AccSeller = () => {
         <Text style={styles.Subtitle}>Thiết lập tài khoản</Text>
       </View>
 
-      <View style={{paddingHorizontal: 10, paddingTop: 20}}>
+      <View style={{ paddingHorizontal: 10, paddingTop: 20 }}>
         <Text style={styles.titleChose}>Chọn loại tài khoản</Text>
         <Text>
           Thông tin này giúp chúng tôi đem đén cho bạn những quyền lợi đặc biệt
