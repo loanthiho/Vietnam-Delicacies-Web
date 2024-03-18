@@ -18,10 +18,6 @@ module.exports = {
       payment_method: {
         type: Sequelize.STRING
       },
-      status: {
-        allowNull: true,
-        type: Sequelize.STRING
-      },
       total_amount: {
         allowNull: false,
         type: Sequelize.FLOAT

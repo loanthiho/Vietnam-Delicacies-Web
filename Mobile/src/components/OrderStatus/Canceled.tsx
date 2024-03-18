@@ -10,50 +10,42 @@ import {
   Pressable,
 } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
+import LoaderKit from 'react-native-loader-kit';
+import { useQuery } from '@tanstack/react-query';
+import api from '../../api/request';
 
-const  Canceled = () => {
-  const [cartItems, setCartItems] = useState([
-    {
-      id: 1,
-      name: 'Nem chua Thanh Hoá',
-      price: 150000,
-      Files: [{ src: 'https://i.pinimg.com/564x/6a/9a/12/6a9a122a60a435725152db7a6632da58.jpg' }],
+const Canceled = () => {
+  const { data, isLoading } = useQuery({
+    queryKey: ['get_order_DA_HUY'],
+    queryFn: async () => {
+      const res = await api.get('orders', { params: { status: "DA_HUY" } });
+      if (res) {
+        return res.data?.data;
+      }
     },
-    {
-      id: 2,
-      name: 'Gạo đen Tây Bắc',
-      price: 300000,
-      Files: [{ src: 'https://i.pinimg.com/736x/8d/98/1e/8d981eadabf77f64baad46aac7279241.jpg' }],
-    },
-    {
-      id: 2,
-      name: 'Gạo đen Tây Bắc',
-      price: 300000,
-      Files: [{ src: 'https://i.pinimg.com/736x/8d/98/1e/8d981eadabf77f64baad46aac7279241.jpg' }],
-    },
-  ]);
+  });
 
   const renderItem = ({ item }: any) => (
     <View key={item.id} style={styles.itemContainer}>
-      <Image source={{ uri: item.Files?.[0]?.src }} style={styles.itemImage} />
+      <Image source={{ uri: item.Product?.Files?.[0]?.src }} style={styles.itemImage} />
       <View style={styles.content}>
-        <Text style={styles.itemText}>{item.name}</Text>
-        <Text style={styles.itemPrice}>{item.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.')}đ</Text>
+        <Text style={styles.itemText}>{item.Product?.name}</Text>
+        <Text style={styles.itemPrice}>{item.Product?.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.')}đ</Text>
       </View>
       <View style={styles.status}>
-        <TouchableOpacity style={styles.cancel}>
-        <Text style={styles.cancelText}>Đã huỷ</Text>
+        {/* <TouchableOpacity style={styles.cancel}>
+          <Text style={styles.cancelText}>Đã huỷ</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.statusText}>
           <Text style={styles.statusText}>Mua lại</Text>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
       </View>
     </View>
   );
-  
+
   return (
     <View style={styles.container}>
-      <FlatList data={cartItems} renderItem={renderItem} />
+      <FlatList data={data} renderItem={renderItem} />
     </View>
   );
 };
@@ -83,21 +75,21 @@ const styles = StyleSheet.create({
     marginTop: 15,
   },
   itemImage: {
-    width:70,
+    width: 70,
     height: 70,
     borderRadius: 10,
-    marginRight:10,
+    marginRight: 10,
   },
   status: {
     flexDirection: 'column',
     alignItems: 'center',
-    textAlign:'center',
+    textAlign: 'center',
   },
   cancel: {
     justifyContent: 'center',
     alignItems: 'center',
     margin: 7,
-    color:'red',
+    color: 'red',
     width: 70,
     height: 20,
     borderRadius: 5,
@@ -105,7 +97,7 @@ const styles = StyleSheet.create({
   },
   cancelText: {
     fontSize: 13,
-    color: 'red', 
+    color: 'red',
   },
   statusText: {
     justifyContent: 'center',
@@ -121,8 +113,8 @@ const styles = StyleSheet.create({
   buttonText: {
     fontSize: 13,
   },
-  
+
 });
 
-export default  Canceled;
+export default Canceled;
 

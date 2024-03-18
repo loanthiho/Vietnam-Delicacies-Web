@@ -12,7 +12,12 @@ const useCheckout = (navigation: any) => {
       return rCheckOut.data;
     },
     onSuccess: async (data, vari) => {
-      queryClient.invalidateQueries({queryKey: ['shoppingCart']});
+      await queryClient.invalidateQueries({
+        queryKey: ['shoppingCart'],
+      });
+      await queryClient.invalidateQueries({
+        queryKey: ['get_order_CHO_XAC_NHAN'],
+      });
       return navigation.navigate({name: 'SuccessfulPayment'});
     },
     onError: async (err, vari, context) => {
