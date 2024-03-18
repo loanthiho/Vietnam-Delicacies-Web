@@ -1,48 +1,146 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, Image, FlatList, StyleSheet, TouchableOpacity, TextInput, Alert } from 'react-native';
+import React, {useState} from 'react';
+import {
+  View,
+  Text,
+  Image,
+  FlatList,
+  StyleSheet,
+  TouchableOpacity,
+  TextInput,
+  Alert,
+} from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import { useNavigation } from '@react-navigation/native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
-import ImagePicker from 'react-native-image-crop-picker';
+import {useNavigation} from '@react-navigation/native';
+import {launchCamera, launchImageLibrary} from 'react-native-image-picker'; 
+import ImageResizer from 'react-native-image-resizer';
+import {
+  requestCameraPermission,
+  requestImageLibraryPermission,
+} from '../Seller/permissions';
+import Video from 'react-native-video';
 
 const ReviewScreen: React.FC = () => {
   const navigation = useNavigation();
-  const [rating, setRating] = useState(0);
-  const [textValue, setTextValue] = useState('');
-  const [image, setImage] = useState('');
-  const [video, setVideo] = useState('');
+  const [textValue, setTextValue] = useState<string>('');
+  const [image, setImage] = useState<string>('');
+  const [video, setVideo] = useState<string>(''); // Thêm state để lưu đường dẫn của video
+  const [showIcon, setShowIcon] = useState<boolean>(true);
 
   const [cartItems, setCartItems] = useState([
     {
       id: 1,
       name: 'Nem chua Thanh Hoá',
       price: 150000,
-      Files: [{ src: 'https://i.pinimg.com/564x/6a/9a/12/6a9a122a60a435725152db7a6632da58.jpg' }],
+      Files: [
+        {
+          src: 'https://i.pinimg.com/564x/6a/9a/12/6a9a122a60a435725152db7a6632da58.jpg',
+        },
+      ],
     },
   ]);
 
-  const renderStarIcons = () => {
-    const stars = [];
-    for (let i = 0; i < 5; i++) {
-      stars.push(
-        <TouchableOpacity key={i} onPress={() => setRating(i + 1)}>
-          <AntDesign
-            name={i < rating ? 'star' : 'staro'}
-            size={24}
-            color={i < rating ? '#FFD700' : '#FFD700'}
-          />
-        </TouchableOpacity>
-      );
-    }
-    return stars;
+  const handleChooseOption = () => {
+    Alert.alert(
+      'Chọn phương thức',
+      'Bạn muốn chọn ảnh từ thư viện hay chụp ảnh mới?',
+      [
+        {
+          text: 'Chọn ảnh từ thư viện',
+          onPress: () => requestImageLibrary(),
+        },
+        {
+          text: 'Chụp ảnh mới',
+          onPress: () => requestCamera(),
+        },
+        {
+          text: 'Quay video',
+          onPress: () => requestVideo(),
+        },
+      ],
+      {cancelable: true},
+    );
   };
 
-  const renderItem = ({ item }: any) => (
+  const requestCamera = async () => {
+    try {
+      const granted = await requestCameraPermission();
+      if (granted) {
+        launchCamera(
+          {mediaType: 'photo', cameraType: 'back'},
+          handleImageCapture,
+        );
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const requestImageLibrary = async () => {
+    try {
+      const granted = await requestImageLibraryPermission();
+      if (granted) {
+        launchImageLibrary(
+          {mediaType: 'photo', selectionLimit: 3},
+          handleImageCapture,
+        );
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const requestVideo = async () => {
+    try {
+      const granted = await requestCameraPermission();
+      if (granted) {
+        launchCamera(
+          {mediaType: 'video', cameraType: 'back'},
+          handleVideoCapture,
+        );
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleImageCapture = async (result: any) => {
+    if (!result.didCancel) {
+      try {
+        const resizedImageUri = await ImageResizer.createResizedImage(
+          result.assets[0].uri,
+          300,
+          300,
+          'JPEG',
+          80,
+        );
+        setImage(resizedImageUri.uri);
+        setShowIcon(false);
+      } catch (error) {
+        console.error('resizeImage error:', error);
+        setImage(result.assets[0].uri);
+        setShowIcon(false);
+      }
+    }
+  };
+
+  const handleVideoCapture = async (result: any) => {
+    if (!result.didCancel) {
+      try {
+      } catch (error) {
+        console.error('Video capture error:', error);
+      }
+    }
+  };
+  
+  const renderItem = ({item}: any) => (
     <View key={item.id} style={styles.itemContainer}>
-      <Image source={{ uri: item.Files?.[0]?.src }} style={styles.itemImage} />
+      <Image source={{uri: item.Files?.[0]?.src}} style={styles.itemImage} />
       <View style={styles.content}>
         <Text style={styles.itemText}>{item.name}</Text>
-        <Text style={styles.itemPrice}>{item.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.')}đ</Text>
+        <Text style={styles.itemPrice}>
+          {item.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.')}đ
+        </Text>
       </View>
       <View style={styles.status}>
         <TouchableOpacity style={styles.reviewButton}>
@@ -51,25 +149,6 @@ const ReviewScreen: React.FC = () => {
       </View>
     </View>
   );
-
-  const handleCameraPress = () => {
-    ImagePicker.openPicker({
-      mediaType: 'any',
-    }).then((response) => {
-      if (!response.cancelled) {
-        if (response.mime.includes('image')) {
-          setImage(response.path);
-          setVideo('');
-        } else if (response.mime.includes('video')) {
-          setVideo(response.path);
-          setImage('');
-        }
-      }
-    }).catch((error) => {
-      console.log('ImagePicker Error: ', error);
-    });
-  };
-  
 
   return (
     <View style={styles.container}>
@@ -80,15 +159,28 @@ const ReviewScreen: React.FC = () => {
       </View>
       <View>
         <FlatList data={cartItems} renderItem={renderItem} />
-        <View style={styles.starContainer}>{renderStarIcons()}</View>
-        <View style={styles.iconContainer}>
-          <TouchableOpacity onPress={handleCameraPress}>
-            <AntDesign name="camerao" style={styles.iconCamerao} />
-          </TouchableOpacity>
-          <AntDesign name="videocamera" style={styles.iconVideocamera} />
-        </View>
-        {image !== '' && <Image source={{ uri: image }} style={{ width: 100, height: 100 }} />}
-        {video !== '' && <Text>Video: {video}</Text>}
+
+        <View style={styles.image}>
+  {showIcon && (
+    <TouchableOpacity onPress={() => handleChooseOption()}>
+      <AntDesign name="camerao" size={24} style={styles.camera} />
+    </TouchableOpacity>
+  )}
+  {image !== '' && (
+    <TouchableOpacity onPress={() => handleChooseOption()}>
+      <Image source={{uri: image}} style={styles.imagePreview} />
+    </TouchableOpacity>
+  )}
+  {video !== '' ? (
+    <Video source={{uri: video}} style={styles.videoPreview} />
+  ) : (
+    <TouchableOpacity onPress={() => handleChooseOption()}>
+      <AntDesign name="videocamera" size={24} style={styles.camera} />
+    </TouchableOpacity>
+  )}
+</View>
+
+
         <TextInput
           style={styles.input}
           value={textValue}
@@ -108,6 +200,34 @@ const styles = StyleSheet.create({
   arrowLeft: {
     paddingLeft: 10,
     fontSize: 25,
+  },
+  image: {
+    justifyContent: 'space-between',
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  camera: {
+    margin: 20,
+    fontSize: 50,
+    color: 'white',
+    backgroundColor: '#2E7D32',
+    borderRadius: 20,
+    width: 100,
+    height: 100,
+    lineHeight: 100,
+    textAlign: 'center',
+  },
+  imagePreview: {
+    width: 100,
+    height: 100,
+    marginHorizontal: 20,
+    margin: 20,
+  },
+  videoPreview: {
+    width: 100,
+    height: 100,
+    marginHorizontal: 20,
+    margin: 20,
   },
   itemContainer: {
     flexDirection: 'row',
@@ -152,36 +272,6 @@ const styles = StyleSheet.create({
   buttonText: {
     fontSize: 13,
     color: '#2E7D32',
-  },
-  starContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-evenly',
-  },
-  iconContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-evenly',
-    alignItems: 'center',
-    margin: 20,
-  },
-  iconCamerao: {
-    fontSize: 50,
-    color: 'white',
-    backgroundColor: '#2E7D32',
-    borderRadius: 20,
-    width: 100,
-    height: 100,
-    lineHeight: 100,
-    textAlign: 'center',
-  },
-  iconVideocamera: {
-    fontSize: 50,
-    color: 'white',
-    backgroundColor: '#2E7D32',
-    borderRadius: 20,
-    width: 100,
-    height: 100,
-    lineHeight: 100,
-    textAlign: 'center',
   },
   input: {
     borderWidth: 1,

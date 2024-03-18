@@ -115,7 +115,11 @@ const App: React.FC = () => {
         <NavigationContainer>
           <Stack.Navigator
             screenOptions={{ headerShown: false }}
+<<<<<<< HEAD
             initialRouteName={'ShopSeller'}>
+=======
+            initialRouteName={'Main'}>
+>>>>>>> 04ffdc74460d8796cd45d3bd3ff5ed50b888ca03
             <Stack.Screen
               name="ProductDetailScreen"
               component={ProductDetailScreen}
@@ -140,6 +144,8 @@ const App: React.FC = () => {
               name="SuccessfulPayment"
               component={SuccessfulPayment}
             />
+
+            
             <Stack.Screen name="MessegesScreen" component={MessegesScreen} />
             <Stack.Screen name="AccSetup" component={AccSetup} />
             <Stack.Screen name="OrderScreen" component={OrderScreen} />

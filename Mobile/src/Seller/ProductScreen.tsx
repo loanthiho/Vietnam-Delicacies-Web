@@ -64,9 +64,10 @@ const ProductScreen = () => {
 
   const handleDeleteItem = async (itemId: null) => {
     try {
-      const updatedCartItems = cartItems.filter(item => item.id !== itemId);
       setisPending(true);
+      const updatedCartItems = cartItems.filter(item => item.id !== itemId);
       await api.delete(`products/${itemId}`);
+      setisPending(false);
       setCartItems(updatedCartItems);
       setModalVisible(false);
     } catch (error) {
