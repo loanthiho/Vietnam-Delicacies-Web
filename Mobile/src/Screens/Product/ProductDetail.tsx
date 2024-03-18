@@ -50,9 +50,12 @@ const ProductDetailScreen = ({route, navigation}: any) => {
 
   return (
     <View style={{flex: 1}}>
-      <TouchableOpacity onPress={() => navigation.goBack()}>
-        <Ionicons name="arrow-back-outline" style={styles.arrowLeft} />
-      </TouchableOpacity>
+     <View style={styles.row}>
+        <TouchableOpacity onPress={() => navigation.goBack()}>
+          <Ionicons name="arrow-back-outline" style={styles.arrowLeft} />
+        </TouchableOpacity>
+        <Text style={styles.textNavigation}>Chi tiết sản phẩm</Text>
+      </View>
 
       <ScrollView>
         <View style={styles.container}>
@@ -63,7 +66,7 @@ const ProductDetailScreen = ({route, navigation}: any) => {
           <Text style={styles.text}>{selectedItem.name}</Text>
           <View style={styles.ratingContainer}>
             <Ionicons name="star" style={styles.starIcon} />
-            <Text style={styles.textIcon}>4.5 - 26 phút</Text>
+            <Text style={styles.textIcon}>5- 26 phút</Text>
           </View>
           <ScrollView>
             <Text style={styles.textscript}>{selectedItem.description}</Text>
@@ -123,8 +126,21 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     marginBottom: 20,
   },
+  row: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding:10,
+  },
+  textNavigation: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginRight: 10,
+    color: '#2E7D32',
+    paddingLeft:10,
+  },
   arrowLeft: {
-    fontSize: 22,
+    fontSize: 24,
+    paddingLeft:10,
   },
   text: {
     fontSize: 18,
@@ -204,6 +220,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
     color: '#FFA000',
+    paddingTop:10,
   },
   cartContainer: {
     backgroundColor: '#2E7D32',

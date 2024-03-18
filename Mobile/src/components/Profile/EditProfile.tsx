@@ -77,6 +77,7 @@ const EditProfileScreen = ({ navigation, route }: any) => {
 
   return (
     <View style={styles.container}>
+       <Text style={styles.textNavigation}>Chỉnh sửa thông tin</Text>
       <TouchableOpacity onPress={() => navigation.goBack()}>
         <Ionicons name="arrow-back-outline" style={styles.arrowLeft} />
       </TouchableOpacity>
@@ -144,9 +145,6 @@ const EditProfileScreen = ({ navigation, route }: any) => {
               {isEditing ? 'Lưu' : 'Chỉnh sửa'}
             </Text>
           </TouchableOpacity>
-          <TouchableOpacity onPress={() => LogOut(navigation)}>
-            <Text style={styles.logoutButton}>Đăng xuất</Text>
-          </TouchableOpacity>
         </View>
       </View>
     </View>
@@ -160,10 +158,18 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  textNavigation:{
+    fontSize: 15,
+    bottom: 60,
+    fontWeight:'bold',
+    color: '#2E7D32',
+    marginRight: '40%',
+  },
   arrowLeft: {
     fontSize: 22,
     bottom: 80,
     right: 150,
+    marginRight: 'auto',
   },
   profileImageContainer: {
     marginBottom: 20,
@@ -195,25 +201,16 @@ const styles = StyleSheet.create({
   },
   saveButtonTextContainer: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'center',
     marginTop: 50,
   },
   saveButtonText: {
     fontSize: 16,
     color: '#fff',
-    paddingVertical: 12,
-    paddingHorizontal: 20,
+    paddingVertical: 13,
+    paddingHorizontal: 70,
     borderRadius: 5,
     backgroundColor: '#2E7D32',
-  },
-  logoutButton: {
-    marginLeft: 10,
-    backgroundColor: '#2E7D32',
-    paddingVertical: 12,
-    paddingHorizontal: 20,
-    borderRadius: 5,
-    fontSize: 16,
-    color: '#fff',
   },
 });
 
