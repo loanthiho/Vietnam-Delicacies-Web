@@ -6,10 +6,12 @@ const signupSchema = yup.object().shape({
     .string()
     .max(50, 'Tên người dùng không quá 50 ký tự')
     .min(5, 'Cần ít nhất 5 ký tự')
+    .matches(/^[a-zA-Z0-9 ]*$/, 'Tên người dùng không được chứa ký tự đặc biệt')
     .required('Vui lòng nhập tên người dùng'),
   email: yup
     .string()
     .email('Địa chỉ email không hợp lệ')
+    .matches(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/, 'Địa chỉ email không được chứa ký tự đặc biệt')
     .required('Vui lòng nhập địa chỉ email'),
   password: yup
     .string()
