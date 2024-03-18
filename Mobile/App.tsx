@@ -114,8 +114,8 @@ const App: React.FC = () => {
       <QueryClientProvider client={queryClient}>
         <NavigationContainer>
           <Stack.Navigator
-            screenOptions={{headerShown: false}}
-            initialRouteName={'ShopSeller'}>
+            screenOptions={{ headerShown: false }}
+            initialRouteName={'Main'}>
             <Stack.Screen
               name="ProductDetailScreen"
               component={ProductDetailScreen}
