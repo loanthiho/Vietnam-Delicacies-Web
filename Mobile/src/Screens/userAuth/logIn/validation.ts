@@ -5,6 +5,7 @@ const signupSchema = yup.object().shape({
   email: yup
     .string()
     .email('Địa chỉ email không hợp lệ')
+    .matches(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/, 'Địa chỉ email không được chứa ký tự đặc biệt')
     .required('Vui lòng nhập địa chỉ email'),
   password: yup
     .string()

@@ -9,7 +9,7 @@ import {
 } from 'react-native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import {getUserAccessToken} from '../api/storage';
+import {LogOut, getUserAccessToken} from '../api/storage';
 
 const ProfileScreen = ({navigation}: any) => {
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
@@ -79,9 +79,6 @@ const ProfileScreen = ({navigation}: any) => {
         <Text style={styles.introductionText}>
           Giới thiệu bạn bè nhận quà ngay
         </Text>
-        <TouchableOpacity>
-          <AntDesign name="right" style={styles.iconStatus} />
-        </TouchableOpacity>
       </View>
 
       <ScrollView style={styles.orderStatus} horizontal={true}>
@@ -133,39 +130,37 @@ const ProfileScreen = ({navigation}: any) => {
         </TouchableOpacity>
       </ScrollView>
 
-      <View style={styles.info}>
-        <Text style={styles.introductionText}>Cộng đông khách VnD</Text>
-        <TouchableOpacity>
-          <AntDesign name="right" style={styles.iconStatus} />
-        </TouchableOpacity>
-      </View>
-      <View style={styles.info}>
-        <Text style={styles.introductionText}>Chia sẻ phản hồi</Text>
-        <TouchableOpacity>
-          <AntDesign name="right" style={styles.iconStatus} />
-        </TouchableOpacity>
-      </View>
-      <View style={styles.info}>
-        <Text style={styles.introductionText}>Thông tin ứng dụng</Text>
-        <TouchableOpacity>
-          <AntDesign name="right" style={styles.iconStatus} />
-        </TouchableOpacity>
-      </View>
-
-      <View style={styles.info}>
-        <Text style={styles.introductionText}>Trợ giúp</Text>
-        <TouchableOpacity>
-          <AntDesign name="right" style={styles.iconStatus} />
-        </TouchableOpacity>
-      </View>
-
-      <View style={styles.info}>
-        <Text style={styles.introductionText}>Đã xem gần đây</Text>
-        <TouchableOpacity>
-          <AntDesign name="right" style={styles.iconStatus} />
-        </TouchableOpacity>
-      </View>
-
+      <TouchableOpacity
+        onPress={() => {
+          navigation.navigate('AppInf');
+        }}>
+        <View style={styles.info}>
+          <Text style={styles.introductionText}>Thông tin ứng dụng</Text>
+          <TouchableOpacity>
+            <AntDesign
+              onPress={() => {
+                navigation.navigate('AppInf');
+              }}
+              name="right"
+              style={styles.iconStatus}
+            />
+          </TouchableOpacity>
+        </View>
+      </TouchableOpacity>
+      <TouchableOpacity
+        onPress={() => {
+          navigation.navigate('Help');
+        }}>
+        <View style={styles.info}>
+          <Text style={styles.introductionText}>Trợ giúp</Text>
+          <TouchableOpacity
+            onPress={() => {
+              navigation.navigate('Help');
+            }}>
+            <AntDesign name="right" style={styles.iconStatus} />
+          </TouchableOpacity>
+        </View>
+      </TouchableOpacity>
       {userInfo?.role === 'seller' ? (
         <TouchableOpacity
           onPress={() => {
@@ -179,6 +174,9 @@ const ProfileScreen = ({navigation}: any) => {
           </View>
         </TouchableOpacity>
       ) : null}
+      <TouchableOpacity onPress={() => LogOut(navigation)}>
+        <Text style={styles.logoutButton}>Đăng xuất</Text>
+      </TouchableOpacity>
     </View>
   );
 };
@@ -289,6 +287,17 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingVertical: 5,
     margin: 3,
+  },
+  logoutButton: {
+    marginLeft: 10,
+    backgroundColor: '#2E7D32',
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+    borderRadius: 5,
+    fontSize: 16,
+    color: '#fff',
+    textAlign:'center',
+    margin:10,
   },
 });
 

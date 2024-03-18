@@ -6,9 +6,13 @@ import StatusNavigator from '../../components/OrderStatus/StatusNavigator';
 const OrderScreen = ({ navigation }: any) => {
   return (
     <View style={styles.container}>
-      <TouchableOpacity onPress={() => navigation.navigate('Main')}>
+       <View style={styles.row}>
+       <TouchableOpacity onPress={() => navigation.navigate('Main')}>
         <Ionicons name="arrow-back-outline" style={styles.arrowLeft} />
       </TouchableOpacity>
+        <Text style={styles.textNavigation}>Trạng thái đơn hàng</Text>
+      </View>
+      
       <StatusNavigator />
     </View>
   );
@@ -19,10 +23,21 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingHorizontal: 10,
   },
+  row: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding:10,
+  },
+  textNavigation: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginRight: 10,
+    color: '#2E7D32',
+    paddingLeft:10,
+  },
   arrowLeft: {
-    fontSize: 25,
-    margin: 10,
-  }
+    fontSize: 24,
+  },
 });
 
 export default OrderScreen;
