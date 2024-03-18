@@ -115,7 +115,7 @@ const App: React.FC = () => {
         <NavigationContainer>
           <Stack.Navigator
             screenOptions={{ headerShown: false }}
-            initialRouteName={'SignIn'}>
+            initialRouteName={'ReviewScreen'}>
             <Stack.Screen
               name="ProductDetailScreen"
               component={ProductDetailScreen}
