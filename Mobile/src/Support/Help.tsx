@@ -14,7 +14,7 @@ const Help = () => {
   return (
     <View style={{paddingHorizontal: 20}}>
       <View style={styles.Title}>
-        <TouchableOpacity onPress={() => navigation.navigate('ShopSeller')}>
+      <TouchableOpacity onPress={() => navigation.goBack()}>
           <Ionicons name="arrow-back-outline" style={styles.arrowLeft} />
         </TouchableOpacity>
         <Text style={styles.SubTitle}>Dịch vụ chăm sóc khách hàng</Text>
