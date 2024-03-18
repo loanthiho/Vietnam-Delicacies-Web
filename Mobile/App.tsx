@@ -43,6 +43,7 @@ import Help from './src/Support/Help';
 import AppInf from './src/Support/AppInf';
 import Notification from './src/Seller/Notifications/Notification';
 import MessageSeller from './src/Seller/Notifications/MessageSeller';
+// import Demo from './src/Seller/Demo';
 
 LogBox.ignoreLogs([
   'Non-serializable values were found in the navigation state',
@@ -110,7 +111,7 @@ const App: React.FC = () => {
   const queryClient = new QueryClient();
 
   return (
-    <GestureHandlerRootView style={{ flex: 1 }}>
+    <GestureHandlerRootView style={{flex: 1}}>
       <QueryClientProvider client={queryClient}>
         <NavigationContainer>
           <Stack.Navigator
@@ -141,7 +142,6 @@ const App: React.FC = () => {
               component={SuccessfulPayment}
             />
 
-            
             <Stack.Screen name="MessegesScreen" component={MessegesScreen} />
             <Stack.Screen name="AccSetup" component={AccSetup} />
             <Stack.Screen name="OrderScreen" component={OrderScreen} />

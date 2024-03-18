@@ -4,7 +4,6 @@ import {
   Text,
   StyleSheet,
   Alert,
-  PermissionsAndroid,
   Image,
 } from 'react-native';
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
