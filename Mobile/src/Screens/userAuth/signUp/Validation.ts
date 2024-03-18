@@ -6,7 +6,7 @@ const signupSchema = yup.object().shape({
     .string()
     .max(50, 'Tên người dùng không quá 50 ký tự')
     .min(5, 'Cần ít nhất 5 ký tự')
-    .matches(/^[a-zA-Z ]+$/, 'Tên người dùng không được chứa ký tự đặc biệt hoặc số')
+    .matches(/^[\p{L} \p{M}]+$/u, 'Không chứa ký tự đặc biệt hoặc số')
     .required('Vui lòng nhập tên người dùng'),
   email: yup
     .string()
