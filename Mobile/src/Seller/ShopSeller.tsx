@@ -75,9 +75,7 @@ const ShopSeller = ({navigation}: any) => {
           <Text style={styles.textName}>{userInfo?.name}</Text>
           <Text style={styles.phoneNumber}>(84+){userInfo?.phone_number}</Text>
         </View>
-        <TouchableOpacity
-          style={styles.editIconContainer}
-          onPress={() => navigation.navigate('ProductScreen')}>
+        <TouchableOpacity onPress={() => navigation.navigate('ProductScreen')}>
           <Text style={{color: '#ffa000'}}>Xem cửa hàng</Text>
         </TouchableOpacity>
       </View>
@@ -221,7 +219,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 20,
   },
-  editIconContainer: {},
   profileImageContainer: {
     borderRadius: 50,
     overflow: 'hidden',
@@ -258,7 +255,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginBottom: 15,
     marginTop: 15,
-    color: '#ffa000',
+    color: '#2E7D32',
   },
 
   statisticsNumber: {
@@ -297,18 +294,8 @@ const styles = StyleSheet.create({
     borderBottomWidth: 2,
     borderBottomColor: '#2E7D32',
     maxHeight: 55,
-    // flexDirection: 'row',
   },
-  // orderStatus: {
-  //   gap: 6,
-  //   flexWrap: 'wrap',
-  //   flexDirection: 'row',
-  //   marginTop: 10,
-  //   borderWidth: 2,
-  //   borderColor: '#ffa000',
-  //   justifyContent: 'center',
-  //   padding: 10,
-  // },
+
   iconStatus: {
     marginRight: 5,
     color: '#2E7D32',
@@ -327,7 +314,7 @@ const styles = StyleSheet.create({
     padding: 12,
     backgroundColor: '#2E7D32',
     borderRadius: 10,
-    elevation: 5,
+    elevation: 2,
     marginHorizontal: 15,
   },
 
@@ -365,8 +352,7 @@ const styles = StyleSheet.create({
   Subtitle: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#ffa000',
-    // marginBottom: 10,
+    color: '#2E7D32',
   },
   IconNoti: {
     fontSize: 26,

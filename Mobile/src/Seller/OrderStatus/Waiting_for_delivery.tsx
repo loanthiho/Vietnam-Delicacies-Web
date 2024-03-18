@@ -1,13 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import Ionicons from 'react-native-vector-icons/Ionicons';
 import {
   View,
   Text,
   Image,
   FlatList,
   StyleSheet,
-  Modal,
-  Pressable,
 } from 'react-native';
 
 const Wait_for_delivery = () => {
@@ -33,7 +30,7 @@ const Wait_for_delivery = () => {
         <Text style={styles.itemText}>{item.name}</Text>
         <Text style={styles.itemPrice}>{item.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.')}đ</Text>
       </View>
-        <Text style={styles.update}>Hàng đã xác nhận</Text>
+        <Text style={styles.update}>Xác nhận giao hàng</Text>
     </View>
   );
 

@@ -140,6 +140,8 @@ const App: React.FC = () => {
               name="SuccessfulPayment"
               component={SuccessfulPayment}
             />
+
+            
             <Stack.Screen name="MessegesScreen" component={MessegesScreen} />
             <Stack.Screen name="AccSetup" component={AccSetup} />
             <Stack.Screen name="OrderScreen" component={OrderScreen} />

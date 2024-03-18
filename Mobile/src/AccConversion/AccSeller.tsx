@@ -28,7 +28,7 @@ const AccSeller = () => {
 
   const handlePress = (item: any) => {
     if (item.id === 1) {
-      navigation.navigate('Trang chủ');
+      navigation.navigate('Main');
     } else {
       navigation.navigate('ShopSeller');
     }

@@ -61,11 +61,11 @@ const UppdateProduct = ({route}: any) => {
     nameProduct: Yup.string()
       .min(2, 'Tên quá ngắn!')
       .max(40, 'Vui lòng đặt tên ngắn gọn!')
-      .required('Vui lòng nhập tên sản phẩm'),
-    priceProduct: Yup.string().required('Chưa nhập giá'),
-    quantityProduct: Yup.string().required('Chưa nhập số lượng'),
-    weightProduct: Yup.string().required('Chưa nhập cân nặng'),
-    category: Yup.string().required('Chưa chọn loại hàng'),
+      .required('Chưa cập nhật tên sản phẩm'),
+    priceProduct: Yup.string().required('Chưa cập nhật giá'),
+    quantityProduct: Yup.string().required('Chưa cập nhật số lượng'),
+    weightProduct: Yup.string().required('Chưa cập nhật cân nặng'),
+    category: Yup.string().required('Vui lòng chọn loại lại hàng'),
   });
 
   //router
@@ -214,28 +214,27 @@ const UppdateProduct = ({route}: any) => {
       formData.append(key, ojb[key]);
     });
 
-
     try {
       const response = await api.patch(`products/${itemId}`, {
         data: formData,
       });
 
-        setnameProduct('');
-        setdescProduct('');
-        setquantityProduct('');
-        setweightProduct('');
-        setpriceProduct('');
-        setImg('');
-        setData([]);
-        setDataCategory([]);
+      setnameProduct('');
+      setdescProduct('');
+      setquantityProduct('');
+      setweightProduct('');
+      setpriceProduct('');
+      setImg('');
+      setData([]);
+      setDataCategory([]);
 
-        setIsLoading(true);
-        Alert.alert('Update successful');
-        navigation.navigate('ProductScreen');
+      setIsLoading(true);
+      Alert.alert('Update successful');
+      navigation.navigate('ProductScreen');
     } catch (error) {
       console.log('error when update:', error?.response.data);
-        Alert.alert('Update was not successful');
-        setIsLoading(true);
+      Alert.alert('Update was not successful');
+      setIsLoading(true);
     }
   };
 
@@ -465,11 +464,7 @@ const UppdateProduct = ({route}: any) => {
               </View>
 
               <TouchableOpacity
-                disabled={!isValid}
-                style={[
-                  styles.sumbitBtn,
-                  {backgroundColor: isValid ? '#ffa000' : '#FAE1B7'},
-                ]}>
+                style={[styles.sumbitBtn, {backgroundColor: '#ffa000'}]}>
                 <Text
                   onPress={() => UpdateProduct(itemId)}
                   style={[styles.BtnAdd]}>
