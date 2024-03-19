@@ -1,4 +1,5 @@
 import { useNavigation } from '@react-navigation/native';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import React, { useState, useEffect } from 'react';
 import {
   View,
@@ -6,29 +7,38 @@ import {
   Image,
   FlatList,
   StyleSheet,
+  TouchableOpacity,
 } from 'react-native';
+import api from '../../api/request';
+import LoaderKit from 'react-native-loader-kit';
 
 const Wait_for_delivery = () => {
   const navigation = useNavigation<any>();
+  const queryClient = useQueryClient();
+  const { data, isLoading, refetch: refetchOrder, isRefetching } = useQuery({
+    queryKey: ['seller_get_order_CHO_LAY_HANG'],
+    queryFn: async () => {
+      const res = await api.get('orders', { params: { status: "CHO_LAY_HANG" } });
+      if (res) {
+        return res.data?.data;
+      }
+    },
+  });
 
-  const [cartItems, setCartItems] = useState([
-    {
-      id: 1,
-      name: 'Nem chua Thanh Hoá',
-      price: 150000,
-      Files: [{ src: 'https://i.pinimg.com/564x/6a/9a/12/6a9a122a60a435725152db7a6632da58.jpg' }],
+  const { mutate, isPending, data: dataMutation } = useMutation({
+    mutationKey: ['seller_interact_order_CHO_GIAO_HANG'],
+    mutationFn: async ({ id, status }: any) => (await api.patch(`orders/${id}`, { params: { status: status } })).data?.data,
+    onSuccess: async (data, vari) => {
+      await queryClient.invalidateQueries({
+        queryKey: ['seller_get_order_CHO_LAY_HANG'],
+      });
     },
-    {
-      id: 2,
-      name: 'Gạo đen Tây Bắc',
-      price: 300000,
-      Files: [{ src: 'https://i.pinimg.com/736x/8d/98/1e/8d981eadabf77f64baad46aac7279241.jpg' }],
-    },
-  ]);
+    onError: (err, varr) => console.error("Error:", err.response?.data)
+  });
 
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
-      // Thực hiện refresh lại các giá trị ở đây
+      refetchOrder()
       console.log('wait for delivery Screen is focused!');
     });
 
@@ -38,18 +48,49 @@ const Wait_for_delivery = () => {
 
   const renderItem = ({ item }: any) => (
     <View key={item.id} style={styles.itemContainer}>
-      <Image source={{ uri: item.Files?.[0]?.src }} style={styles.itemImage} />
+      <Image source={{ uri: item.Product?.Files?.[0]?.src }} style={styles.itemImage} />
       <View style={styles.content}>
-        <Text style={styles.itemText}>{item.name}</Text>
-        <Text style={styles.itemPrice}>{item.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.')}đ</Text>
+        <Text style={styles.itemText}>{item.Product?.name}</Text>
+        <Text style={styles.itemPrice}>{item?.total_price?.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.')}đ</Text>
       </View>
-      <Text style={styles.update}>Xác nhận giao hàng</Text>
+      <TouchableOpacity
+        disabled={isPending}
+        onPress={() => mutate({ id: item.id, status: 'CHO_GIAO_HANG' })}
+      >
+        <Text style={styles.update}>Giao hàng</Text>
+      </TouchableOpacity>
     </View>
   );
 
   return (
     <View style={styles.container}>
-      <FlatList data={cartItems} renderItem={renderItem} />
+      {
+        isPending ?
+          (<View style={{ flexDirection: 'row', justifyContent: 'center', columnGap: 20, alignItems: 'center' }}>
+            <Text style={{ color: 'green' }}>Đang xác nhận</Text>
+            <LoaderKit
+              style={{ width: 35, height: 35, alignSelf: 'center' }}
+              name={'BallPulse'}
+              color={'green'}
+            />
+          </View>
+          )
+          : null
+      }
+      {
+        isLoading ?
+          (
+            <LoaderKit
+              style={{ width: 35, height: 35, alignSelf: 'center' }}
+              name={'BallPulse'}
+              color={'green'}
+            />
+          )
+          :
+          data && data.length > 0 ?
+            < FlatList data={data} renderItem={renderItem} />
+            : <Text style={{ alignSelf: 'center', marginTop: 10 }}>Không có đơn chờ giao hàng nào cả!</Text>
+      }
     </View>
   );
 };
@@ -93,9 +134,12 @@ const styles = StyleSheet.create({
   },
 
   update: {
+    padding: 8,
+    borderRadius: 5,
+    backgroundColor: 'green',
     fontSize: 13,
-    color: '#2E7D32',
-    maxWidth: 70,
+    color: 'white',
+    maxWidth: 100,
     textAlign: 'center',
   },
 });

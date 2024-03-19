@@ -49,6 +49,8 @@ LogBox.ignoreLogs([
   'VirtualizedLists should never be nested inside plain ScrollViews with the same orientation because it can break windowing and other functionality',
   'Each child in a list should have a unique "key" prop.',
   'ViewPropTypes will be removed from React Native, along with all other PropTypes',
+  'Encountered two children with the same key',
+  `Image source "null" doesn't exist`
 ]);
 
 const Stack = createNativeStackNavigator();

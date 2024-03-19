@@ -11,34 +11,44 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { getUserAccessToken } from '../api/storage';
+import { useQuery } from '@tanstack/react-query';
+import api from '../api/request';
 
 const ShopSeller = ({ navigation }: any) => {
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
   const [userInfo, setUserInfo] = useState<any>();
-
-  useEffect(() => {
-    const unsubscribe = navigation.addListener('focus', () => {
-      // Thực hiện refresh lại các giá trị ở đây
-      console.log('shop Screen is focused!');
-    });
-    return unsubscribe;
-  }, [navigation]);
+  const [stats, setStats] = useState({
+    sold: 0,
+    products: 0,
+    orderCanceled: 0
+  })
 
   const getUserData = async () => {
     const userInfoOld = await getUserAccessToken();
     console.log('user:', userInfoOld.user);
     if (userInfoOld.user) {
       setUserInfo(userInfoOld.user);
-      setIsLoggedIn(true);
     } else {
       setUserInfo(null);
-      setIsLoggedIn(false);
     }
   };
 
+  const { data, isLoading } = useQuery({
+    queryKey: ['fectDataOrderDetail'],
+    queryFn: async () => {
+      const res = await api.get('orders');
+      console.log("data response: ", res.data?.data[0]);
+      return res.data?.data;
+
+    }
+  })
   useEffect(() => {
-    getUserData();
-  }, []);
+    const unsubscribe = navigation.addListener('focus', () => {
+      getUserData();
+      console.log('ShopSeller screen is focused!');
+    });
+    return unsubscribe;
+  }, [navigation]);
 
   return (
     <View style={styles.container}>
@@ -87,6 +97,10 @@ const ShopSeller = ({ navigation }: any) => {
           <Text style={{ color: '#ffa000' }}>Xem cửa hàng</Text>
         </TouchableOpacity>
       </View>
+      {/**
+        |Link navigate to order status
+        |
+        */}
       <ScrollView style={styles.orderStatus} horizontal={true}>
         <TouchableOpacity
           style={styles.iconTextContainer}
@@ -140,6 +154,10 @@ const ShopSeller = ({ navigation }: any) => {
           <Text style={styles.textStatus}>Thành công</Text>
         </TouchableOpacity>
       </ScrollView>
+
+      {/**
+        |End navigate to order status
+        */}
       <View>
         <Text style={styles.titleStatistical}>Thống kê</Text>
         <View style={{ flexDirection: 'row', justifyContent: 'space-around' }}>
