@@ -138,7 +138,7 @@ const ProductScreen = () => {
         <View style={styles.centeredView}>
           <View style={styles.modalView}>
             <Text style={styles.modalText}>
-              Bạn có chắc chắn muốn xóa sản phẩm không
+              Bạn có chắc chắn muốn xóa sản phẩm không 
             </Text>
 
             <View style={styles.confirm}>

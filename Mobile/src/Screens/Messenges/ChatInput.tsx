@@ -6,10 +6,44 @@ import {
   TextInput,
   Platform,
 } from 'react-native';
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import Voice from '@react-native-voice/voice';
+import LoaderKit from 'react-native-loader-kit';
 const ChatInput = () => {
+  const [results, setResults] = useState([]);
   const [message, setMessage] = useState('');
+  const [isRecognizing, setIsRecognizing] = useState(false);
+
+  useEffect(() => {
+    Voice.onSpeechResults = onSpeechResults;
+
+    return () => {
+      Voice.destroy().then(Voice.removeAllListeners);
+    };
+  }, []);
+
+  const onSpeechResults = e => {
+    console.log(e);
+    setResults(e.value);
+    setMessage(e.value.join(' '));
+    setIsRecognizing(false);
+  };
+
+  const startRecognizing = async () => {
+    try {
+      setIsRecognizing(true);
+      await Voice.start('vi-VN');
+      setResults([]);
+    } catch (error) {
+      console.log(error);
+      setIsRecognizing(false);
+    }
+  };
+
+  const cancelRecoding = () => {
+    setIsRecognizing(false);
+  };
   return (
     <View style={styles.container}>
       <View style={styles.innerContainer}>
@@ -21,22 +55,30 @@ const ChatInput = () => {
             multiline
             placeholder="Nhập tin..."
             style={styles.input}
+            value={message}
             onChangeText={text => setMessage(text)}
           />
-          {/* <TouchableOpacity style={styles.rightIconButtonStyle}>
-            <Ionicons name="attach-outline" size={23} />
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.rightIconButtonStyle}>
-            <Ionicons name="camera-outline" size={23} />
-          </TouchableOpacity> */}
         </View>
 
         <TouchableOpacity style={styles.sendButton}>
-          <Ionicons
-            name={message ? 'send-outline' : 'mic-outline'}
-            size={23}
-            color={'#fff'}
-          />
+          {isRecognizing ? (
+            <TouchableOpacity onPress={cancelRecoding}>
+              <LoaderKit
+                style={{width: 20, height: 20}}
+                name={'BallPulse'}
+                color={'#fff'}
+              />
+            </TouchableOpacity>
+          ) : message ? (
+            <Ionicons name="send-outline" size={23} color={'#fff'} />
+          ) : (
+            <Ionicons
+              onPress={startRecognizing}
+              name="mic-outline"
+              size={23}
+              color={'#fff'}
+            />
+          )}
         </TouchableOpacity>
       </View>
     </View>
@@ -78,16 +120,6 @@ const styles = StyleSheet.create({
     fontSize: 15,
     alignSelf: 'center',
   },
-
-  // rightIconButtonStyle: {
-  //   justifyContent: 'center',
-  //   alignItems: 'center',
-  //   backgroundColor: '#f0f0f0',
-  //   paddingRight: 15,
-  //   paddingLeft: 10,
-  //   borderLeftWidth: 1,
-  //   borderLeftColor: '#fff',
-  // },
 
   emoticonButton: {
     justifyContent: 'center',
