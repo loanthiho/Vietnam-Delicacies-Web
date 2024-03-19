@@ -48,7 +48,6 @@ const ProfileScreen = ({navigation}: any) => {
           <Text style={styles.textName}>{userInfo?.name}</Text>
           <Text style={styles.textEmail}>{userInfo?.email}</Text>
         </View>
-        {isLoggedIn ? (
           <TouchableOpacity
             style={styles.editIconContainer}
             onPress={() =>
@@ -59,20 +58,6 @@ const ProfileScreen = ({navigation}: any) => {
             }>
             <AntDesign name="edit" style={styles.IconEdit} />
           </TouchableOpacity>
-        ) : (
-          <TouchableOpacity
-            style={styles.editIconContainer}
-            onPress={() =>
-              navigation.navigate({
-                name: 'SignIn',
-              })
-            }>
-            <View style={styles.loginButton}>
-              <AntDesign name="login" style={styles.IconLogin} />
-              <Text style={styles.textLogin}>Đăng nhập</Text>
-            </View>
-          </TouchableOpacity>
-        )}
       </View>
       <View style={styles.introduction}>
         <AntDesign name="gift" style={styles.iconGiff} />
