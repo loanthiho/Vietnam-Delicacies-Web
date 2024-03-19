@@ -19,6 +19,7 @@ import api from '../api/request';
 import { debounce } from 'lodash';
 import fonts from '../ultils/_fonts';
 import { getUserAccessToken } from '../api/storage';
+import { useFocusEffect } from '@react-navigation/native';
 
 const HomePage = ({ navigation }: any) => {
   const [selectedItem, setSelectedItem] = useState('Tất cả');
@@ -118,7 +119,7 @@ const HomePage = ({ navigation }: any) => {
   /**
    * Fetch the first data products.
    */
-  const productsFetch = useQuery({
+  const { isLoading: productLoading, error: productIsError, refetch: refreshProductList } = useQuery({
     queryKey: ['products'],
     queryFn: async () => {
       try {
@@ -137,7 +138,7 @@ const HomePage = ({ navigation }: any) => {
   /**
    * @domain The first fetch to get all domain.
    */
-  const domain = useQuery({
+  const { data: domainData, refetch: refetchDomain, isLoading: domainLoading } = useQuery({
     queryKey: ['domains'],
     queryFn: async () => {
       try {
@@ -157,8 +158,21 @@ const HomePage = ({ navigation }: any) => {
         console.error("Error:", error)
       }
     },
+
   });
 
+
+  useEffect(() => {
+    refreshProductList();
+    refetchDomain();
+  }, [navigation]);
+
+  useFocusEffect(
+    React.useCallback(() => {
+      refreshProductList();
+      refetchDomain();
+    }, []),
+  );
 
 
 
@@ -194,12 +208,12 @@ const HomePage = ({ navigation }: any) => {
           <Text style={styles.textViet}>Việt</Text>
         </View>
         <TouchableOpacity style={styles.profileImageContainer}
-        onPress={() =>
-          navigation.navigate({
-            name: 'EditProfileScreen',
-            params: { userInfo, oldUserInfo, setUserInfo: setUserInfo },
-          })
-        }>
+          onPress={() =>
+            navigation.navigate({
+              name: 'EditProfileScreen',
+              params: { userInfo, oldUserInfo, setUserInfo: setUserInfo },
+            })
+          }>
           <Image
             source={require('../assets/huong.jpg')}
             style={styles.profileImage}
@@ -238,7 +252,7 @@ const HomePage = ({ navigation }: any) => {
            */
         }
 
-        {domain.isLoading
+        {domainLoading
           ?
           (
             <>
@@ -265,7 +279,7 @@ const HomePage = ({ navigation }: any) => {
       <ScrollView style={{ flex: 1 }}>
         <Banner />
         {
-          productsFetch.isLoading || loading.searchLoading ? (
+          productLoading || loading.searchLoading ? (
             <>
               <LoaderKit
                 style={{ width: 50, height: 50, flexDirection: 'row', justifyContent: 'center', alignSelf: 'center' }}
@@ -274,10 +288,10 @@ const HomePage = ({ navigation }: any) => {
               />
             </>
           ) :
-            productsFetch.isError
+            productIsError
               ?
               (
-                <Text style={{ color: 'red', opacity: 0.5, fontSize: fonts.$18, fontWeight: '700' }}> {productsFetch.error.message}</Text>
+                <Text style={{ color: 'red', opacity: 0.5, fontSize: fonts.$18, fontWeight: '700' }}> {productIsError?.message}</Text>
               )
               :
               products && products?.length === 0

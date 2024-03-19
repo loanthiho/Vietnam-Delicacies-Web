@@ -43,7 +43,7 @@ yarn-error.log
 
 # Ignore package-lock.json file
 package-lock.json
-package-lock.json
+.vscode
 # fastlane
 #
 # It is recommended to not store the screenshots in the git repo. Instead, use fastlane to re-generate the

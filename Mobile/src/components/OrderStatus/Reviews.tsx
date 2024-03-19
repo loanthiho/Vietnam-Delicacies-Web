@@ -14,7 +14,7 @@ import api from '../../api/request';
 
 const Review = () => {
   const navigation = useNavigation();
-  const { data, isLoading } = useQuery({
+  const { data, isLoading, refetch: refetchOrder } = useQuery({
     queryKey: ['get_order_CHO_DANH_GIA'],
     queryFn: async () => {
       const res = await api.get('orders', { params: { status: "CHO_DANH_GIA" } });
@@ -23,6 +23,16 @@ const Review = () => {
       }
     },
   });
+
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('focus', () => {
+      refetchOrder()
+      console.log('wait delivery Screen is focused!');
+    });
+
+    return unsubscribe;
+  }, [navigation]);
+
 
   const renderItem = ({ item }: any) => (
     <View key={item.id} style={styles.itemContainer}>

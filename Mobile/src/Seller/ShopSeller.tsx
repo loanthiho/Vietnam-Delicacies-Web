@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -10,27 +10,45 @@ import {
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import {getUserAccessToken} from '../api/storage';
+import { getUserAccessToken } from '../api/storage';
+import { useQuery } from '@tanstack/react-query';
+import api from '../api/request';
 
-const ShopSeller = ({navigation}: any) => {
+const ShopSeller = ({ navigation }: any) => {
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
   const [userInfo, setUserInfo] = useState<any>();
+  const [stats, setStats] = useState({
+    sold: 0,
+    products: 0,
+    orderCanceled: 0
+  })
 
   const getUserData = async () => {
     const userInfoOld = await getUserAccessToken();
     console.log('user:', userInfoOld.user);
     if (userInfoOld.user) {
       setUserInfo(userInfoOld.user);
-      setIsLoggedIn(true);
     } else {
       setUserInfo(null);
-      setIsLoggedIn(false);
     }
   };
 
+  const { data, isLoading } = useQuery({
+    queryKey: ['fectDataOrderDetail'],
+    queryFn: async () => {
+      const res = await api.get('orders');
+      console.log("data response: ", res.data?.data[0]);
+      return res.data?.data;
+
+    }
+  })
   useEffect(() => {
-    getUserData();
-  }, []);
+    const unsubscribe = navigation.addListener('focus', () => {
+      getUserData();
+      console.log('ShopSeller screen is focused!');
+    });
+    return unsubscribe;
+  }, [navigation]);
 
   return (
     <View style={styles.container}>
@@ -42,7 +60,7 @@ const ShopSeller = ({navigation}: any) => {
           marginBottom: 10,
         }}>
         <Text style={styles.Subtitle}>Cửa hàng của tôi</Text>
-        <View style={{position: 'relative'}}>
+        <View style={{ position: 'relative' }}>
           <Text
             style={{
               position: 'absolute',
@@ -65,7 +83,7 @@ const ShopSeller = ({navigation}: any) => {
           <Image
             source={
               userInfo?.avatar
-                ? {uri: userInfo.avatar}
+                ? { uri: userInfo.avatar }
                 : require('../assets/huong.jpg')
             }
             style={styles.profileImage}
@@ -76,9 +94,13 @@ const ShopSeller = ({navigation}: any) => {
           <Text style={styles.phoneNumber}>(84+){userInfo?.phone_number}</Text>
         </View>
         <TouchableOpacity onPress={() => navigation.navigate('ProductScreen')}>
-          <Text style={{color: '#ffa000'}}>Xem cửa hàng</Text>
+          <Text style={{ color: '#ffa000' }}>Xem cửa hàng</Text>
         </TouchableOpacity>
       </View>
+      {/**
+        |Link navigate to order status
+        |
+        */}
       <ScrollView style={styles.orderStatus} horizontal={true}>
         <TouchableOpacity
           style={styles.iconTextContainer}
@@ -132,14 +154,18 @@ const ShopSeller = ({navigation}: any) => {
           <Text style={styles.textStatus}>Thành công</Text>
         </TouchableOpacity>
       </ScrollView>
+
+      {/**
+        |End navigate to order status
+        */}
       <View>
         <Text style={styles.titleStatistical}>Thống kê</Text>
-        <View style={{flexDirection: 'row', justifyContent: 'space-around'}}>
-          <View style={{alignItems: 'center'}}>
+        <View style={{ flexDirection: 'row', justifyContent: 'space-around' }}>
+          <View style={{ alignItems: 'center' }}>
             <Text style={styles.statisticsNumber}> 10</Text>
             <Text style={styles.statisticTitle}> Đã bán</Text>
           </View>
-          <View style={{alignItems: 'center'}}>
+          <View style={{ alignItems: 'center' }}>
             <Text style={styles.statisticsNumber}> 10</Text>
             <Text style={styles.statisticTitle}> Đơn hàng của bạn</Text>
           </View>

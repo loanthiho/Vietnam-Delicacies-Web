@@ -14,12 +14,12 @@ import {
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import LoaderKit from 'react-native-loader-kit';
 import api from '../../api/request';
+import { useNavigation } from '@react-navigation/native';
 
 const Waiting_confirmation = () => {
   const queryClient = useQueryClient();
-  const [idUpdate, setIdUpdate] = useState('');
-
-  const { data, isLoading } = useQuery({
+  const navigation = useNavigation<any>();
+  const { data, isLoading, refetch: refetchOrder } = useQuery({
     queryKey: ['get_order_CHO_GIAO_HANG'],
     queryFn: async () => {
       const res = await api.get('orders', { params: { status: "CHO_GIAO_HANG" } });
@@ -36,11 +36,17 @@ const Waiting_confirmation = () => {
       await queryClient.invalidateQueries({
         queryKey: ['get_order_CHO_GIAO_HANG'],
       });
-      await queryClient.invalidateQueries({
-        queryKey: ['get_order_CHO_DANH_GIA'],
-      });
     }
-  })
+  });
+
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('focus', () => {
+      refetchOrder()
+      console.log('wait delivery Screen is focused!');
+    });
+
+    return unsubscribe;
+  }, [navigation]);
 
   const renderItem = ({ item }: any) => (
     <View key={item.id} style={styles.itemContainer}>
@@ -50,12 +56,19 @@ const Waiting_confirmation = () => {
         <Text style={styles.itemPrice}>{item.Product?.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.')}đ</Text>
       </View>
       <View style={styles.status}>
-        <Text style={styles.update}>Đang giao</Text>
+        <View style={{ flexDirection: 'row' }}>
+          <Text style={styles.update}> Đang vận chuyển </Text>
+          <LoaderKit
+            style={{ width: 35, height: 20, alignSelf: 'center' }}
+            name={'BallPulse'}
+            color={'green'}
+          />
+        </View>
         <TouchableOpacity
           disabled={mutation.isPending ? true : false}
           onPress={() => mutation.mutate(item.id)}
         >
-          <Text style={styles.statusText}>Đã nhận</Text>
+          <Text style={styles.statusText}>Đã nhận hàng</Text>
 
         </TouchableOpacity>
 
@@ -135,11 +148,9 @@ const styles = StyleSheet.create({
     fontSize: 13,
     backgroundColor: '#2E7D32',
     color: 'white',
-    margin: 7,
-    width: 50,
-    height: 20,
     borderRadius: 5,
     textAlign: 'center',
+    padding: 10
   },
   update: {
     fontSize: 13,

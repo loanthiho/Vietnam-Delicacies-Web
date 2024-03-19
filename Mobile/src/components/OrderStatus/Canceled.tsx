@@ -13,9 +13,11 @@ import { TouchableOpacity } from 'react-native-gesture-handler';
 import LoaderKit from 'react-native-loader-kit';
 import { useQuery } from '@tanstack/react-query';
 import api from '../../api/request';
+import { useNavigation } from '@react-navigation/native';
 
 const Canceled = () => {
-  const { data, isLoading } = useQuery({
+  const navigation = useNavigation<any>();
+  const { data, isLoading, refetch: refetchOrder, isRefetching } = useQuery({
     queryKey: ['get_order_DA_HUY'],
     queryFn: async () => {
       const res = await api.get('orders', { params: { status: "DA_HUY" } });
@@ -24,6 +26,16 @@ const Canceled = () => {
       }
     },
   });
+
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('focus', () => {
+      refetchOrder()
+      console.log('wait delivery Screen is focused!');
+    });
+
+    return unsubscribe;
+  }, [navigation]);
+
 
   const renderItem = ({ item }: any) => (
     <View key={item.id} style={styles.itemContainer}>
@@ -45,7 +57,20 @@ const Canceled = () => {
 
   return (
     <View style={styles.container}>
-      <FlatList data={data} renderItem={renderItem} />
+      {
+        isLoading ?
+          (
+            <LoaderKit
+              style={{ width: 35, height: 35, alignSelf: 'center' }}
+              name={'BallPulse'}
+              color={'green'}
+            />
+          )
+          :
+          data && data.length > 0 ?
+            < FlatList data={data} renderItem={renderItem} />
+            : <Text style={{ alignSelf: 'center', marginTop: 10 }}>Không có đơn hủy nào cả nào cả!</Text>
+      }
     </View>
   );
 };
