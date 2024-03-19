@@ -113,7 +113,7 @@ const App: React.FC = () => {
   const queryClient = new QueryClient();
 
   return (
-    <GestureHandlerRootView style={{flex: 1}}>
+    <GestureHandlerRootView style={{ flex: 1 }}>
       <QueryClientProvider client={queryClient}>
         <NavigationContainer>
           <Stack.Navigator
@@ -144,10 +144,6 @@ const App: React.FC = () => {
               component={SuccessfulPayment}
             />
 
-<<<<<<< HEAD
-
-=======
->>>>>>> 706b04f2fab61f19c56fcce6fb354e5753b522e1
             <Stack.Screen name="MessegesScreen" component={MessegesScreen} />
             <Stack.Screen name="AccSetup" component={AccSetup} />
             <Stack.Screen name="OrderScreen" component={OrderScreen} />
