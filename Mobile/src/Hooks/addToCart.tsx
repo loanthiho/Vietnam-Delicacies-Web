@@ -1,6 +1,6 @@
 import axios from 'axios';
-import {QueryClient, useQuery, useQueryClient} from '@tanstack/react-query';
-import {getUserAccessToken} from '../api/storage';
+import { QueryClient, useQuery, useQueryClient } from '@tanstack/react-query';
+import { getUserAccessToken } from '../api/storage';
 import api from '../api/request';
 
 export const addToCart = async (id_product: string) => {
@@ -10,7 +10,7 @@ export const addToCart = async (id_product: string) => {
     const res = await api.post(`carts/${id_product}`);
     if (res) {
       console.log('add response:', res.data);
-      // queryClient.invalidateQueries({ queryKey: ['shoppingCart'] }).
+      // queryClient.invalidateQueries({ queryKey: ['shoppingCart'] })
     } else {
       console.log('can not add to cart ');
     }

@@ -13,7 +13,7 @@ function runRouters(app) {
     app.use('/products', productRoutes);
     app.use('/categories', categoryRoutes);
     app.use('/provinces', provinceRoutes);
-    app.use('/districts', districtRoutes)
+    app.use('/districts', districtRoutes);
     app.use('/users', userRoutes);
     app.use('/domains', domainRoutes);
     app.use('/uploads', uploadRoutes);

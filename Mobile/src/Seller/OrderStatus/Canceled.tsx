@@ -19,9 +19,9 @@ import LoaderKit from 'react-native-loader-kit';
 const Canceled = () => {
   const navigation = useNavigation<any>();
   const { data, isLoading, refetch: refetchOrder, isRefetching } = useQuery({
-    queryKey: ['seller_get_order_CHO_DANH_GIA'],
+    queryKey: ['seller_get_order_DA_HUY'],
     queryFn: async () => {
-      const res = await api.get('orders', { params: { status: "CHO_DANH_GIA" } });
+      const res = await api.get('orders', { params: { status: "DA_HUY" } });
       if (res) {
         return res.data?.data;
       }
@@ -80,7 +80,7 @@ const Canceled = () => {
           :
           data && data.length > 0 ?
             < FlatList data={data} renderItem={renderItem} />
-            : <Text style={{ alignSelf: 'center', marginTop: 10 }}>Không có đơn đang giao hàng nào cả!</Text>
+            : <Text style={{ alignSelf: 'center', marginTop: 10 }}>Không có đơn đã hủy nào cả!</Text>
       }
     </View>
   );

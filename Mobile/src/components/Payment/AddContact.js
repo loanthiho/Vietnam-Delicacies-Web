@@ -28,7 +28,7 @@ const Contact = ({ route, navigation }) => {
           alignItems: 'center'
         },
         position: 'top',
-        message: data.msg,
+        message: "Cập nhật địa chỉ thành công!",
         type: 'success',
         animated: true
       })

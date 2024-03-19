@@ -51,7 +51,9 @@ LogBox.ignoreLogs([
   'Each child in a list should have a unique "key" prop.',
   'ViewPropTypes will be removed from React Native, along with all other PropTypes',
   'Encountered two children with the same key',
-  `Image source "null" doesn't exist`
+  `Image source "null" doesn't exist`,
+  "new NativeEventEmitter()` was called with a non-null argument without the required `addListener` method",
+  "`new NativeEventEmitter()` was called with a non-null argument without the required `removeListeners` method."
 ]);
 
 const Stack = createNativeStackNavigator();
