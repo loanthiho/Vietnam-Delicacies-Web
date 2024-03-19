@@ -277,7 +277,7 @@ const AddProduct = () => {
       }) => (
         <View>
           <View style={styles.title}>
-            <TouchableOpacity onPress={()=>navigation.navigate('ShopSeller')}>
+            <TouchableOpacity onPress={() => navigation.navigate('ShopSeller')}>
               <Ionicons name="arrow-back-outline" style={styles.arrowLeft} />
             </TouchableOpacity>
             <Text style={styles.Subtitle}>Thêm sản phẩm</Text>
