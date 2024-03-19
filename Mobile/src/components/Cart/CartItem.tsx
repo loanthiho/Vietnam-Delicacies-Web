@@ -26,7 +26,8 @@ const CartItem = ({
           onPress={() => removeItem(item.id)}>
           <Text style={styles.deleteButtonText}>Xoá</Text>
         </TouchableOpacity>
-      )}>
+      )}
+    >
       <View style={styles.itemContainer}>
         <TouchableOpacity onPress={toggleCheckbox}>
           {selected ? (
@@ -49,27 +50,33 @@ const CartItem = ({
             }}
             style={styles.itemImage}
           />
-
           <View style={styles.groupCartQuantity}>
             <View style={styles.groupCart}>
               <Text style={styles.itemText}>{item.Product?.name}</Text>
-              <Text style={styles.itemPrice}>
-                {formatPrice(item.Product?.price)}đ
-              </Text>
+              <Text style={styles.itemPrice}>{formatPrice(item.Product?.price)}đ</Text>
             </View>
 
-            <View style={styles.quantityContainer}>
-              <TouchableOpacity
-                onPress={async () => await changeQuantity(item.id, -1)}
-                style={[styles.button, { backgroundColor: '#FFA000' }]}>
-                <Text style={styles.buttonText}>-</Text>
-              </TouchableOpacity>
-              <Text style={styles.quantity}>{item?.quantity}</Text>
-              <TouchableOpacity
-                onPress={async () => await changeQuantity(item.id, 1)}
-                style={[styles.button, { backgroundColor: '#FFA000' }]}>
-                <Text style={styles.buttonText}>+</Text>
-              </TouchableOpacity>
+            <View style={{
+              flex: 2,
+              flexDirection: 'column',
+              backgroundColor: 'white',
+              height: '100%',
+              justifyContent: 'flex-end',
+              alignItems: 'flex-end'
+            }}>
+              <View style={styles.quantityContainer}>
+                <TouchableOpacity
+                  onPress={async () => await changeQuantity(item.id, -1)}
+                  style={[styles.button, { backgroundColor: '#FFA000' }]}>
+                  <Text style={styles.buttonText}>-</Text>
+                </TouchableOpacity>
+                <Text style={styles.quantity}>{item?.quantity}</Text>
+                <TouchableOpacity
+                  onPress={async () => await changeQuantity(item.id, 1)}
+                  style={[styles.button, { backgroundColor: '#FFA000' }]}>
+                  <Text style={styles.buttonText}>+</Text>
+                </TouchableOpacity>
+              </View>
             </View>
           </View>
         </View>
@@ -80,7 +87,8 @@ const CartItem = ({
 
 const styles = StyleSheet.create({
   itemContainer: {
-    justifyContent: 'center',
+    width: '100%',
+    // justifyContent: 'center',
     alignItems: 'center',
     flexDirection: 'row',
   },
@@ -94,20 +102,17 @@ const styles = StyleSheet.create({
   },
 
   groupCart: {
+    height: '100%',
     flexDirection: 'column',
-    justifyContent: 'space-between',
-    alignSelf: 'center',
-    gap: 8,
+    justifyContent: 'space-between'
   },
 
   groupCartQuantity: {
-    position: 'absolute',
-    justifyContent: 'space-between',
-    left: 100,
-    top: 0,
-    right: 0,
-    bottom: 0,
+    flex: 1,
     flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: 15,
   },
 
   itemText: {
@@ -161,15 +166,10 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     width: '90%',
     height: 100,
-    borderColor: 'white',
   },
   quantityContainer: {
-    position: 'absolute',
-    right: 6,
     flexDirection: 'row',
-    gap: 10,
-    alignSelf: 'flex-end',
-    bottom: 12,
+    columnGap: 10
   },
   quantity: {
     fontSize: 12,

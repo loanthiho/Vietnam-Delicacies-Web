@@ -132,6 +132,7 @@ const PaymentScreen = ({ route, navigation }: any) => {
         <TouchableOpacity
           style={styles.BtnShow}
           onPress={handleCheckout}
+          disabled={mutation.isPending}
         >
           <Text style={styles.textPayment}>Mua ngay</Text>
           {

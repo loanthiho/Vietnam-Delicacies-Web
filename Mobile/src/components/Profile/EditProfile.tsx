@@ -12,6 +12,11 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { LogOut, setUserAccessToken } from '../../api/storage';
+import { useMutation } from '@tanstack/react-query';
+import api from '../../api/request';
+import LoaderKit from 'react-native-loader-kit';
+import { showMessage } from 'react-native-flash-message';
+
 
 const EditProfileScreen = ({ navigation, route }: any) => {
   const { userInfo, oldUserInfo, setUserInfo } = route.params;
@@ -26,10 +31,45 @@ const EditProfileScreen = ({ navigation, route }: any) => {
   const [avatar, setAvatar] = useState(route.params?.userInfo.avatar || '');
   const [isEditing, setIsEditing] = useState(false);
 
+  const mutation = useMutation({
+    mutationKey: ['updateUserInfo'],
+    mutationFn: async (data) => {
+      const res = await api.patch(`users/${oldUserInfo.user?.id}`, { data: data });
+      return res.data?.data;
+    },
+    onSuccess: async (data, variable) => {
+      showMessage({
+        type: 'success',
+        message: 'Cập nhật thành công!'
+      });
+      await setUserAccessToken({ token: oldUserInfo?.token, user: data });
+      setUserInfo({
+        ...userInfo,
+        name: data?.name,
+        detail_address: data?.detail_address,
+        phone_number: data?.phone_number,
+        avatar: data?.avatar
+      });
+      setIsEditing(false);
+    },
+    onError: (error, variable) => {
+      console.error("error update", error.response?.data)
+      showMessage({
+        type: 'danger',
+        message: 'Lỗi cập nhật!'
+      });
+      setIsEditing(true);
+    }
+  })
+
   const handleSave = async () => {
     // Kiểm tra nếu tên chứa ký tự @
     if (name.includes('@')) {
       Alert.alert('Lỗi', 'Tên không được chứa ký tự @');
+      return;
+    }
+    if (name.length <= 0) {
+      Alert.alert('Lỗi', 'Vui lòng nhập tên người dùng!');
       return;
     }
 
@@ -47,6 +87,14 @@ const EditProfileScreen = ({ navigation, route }: any) => {
     }
 
     // Kiểm tra nếu số điện thoại không phải là số
+    if (phone_number.toString().length <= 0) {
+      Alert.alert('Lỗi', 'Vui lòng nhập số điện thoại!');
+      return;
+    }
+    if (detail_address.toString().length <= 0) {
+      Alert.alert('Lỗi', 'Vui lòng nhập địa chỉ của bạn!');
+      return;
+    }
     if (isNaN(phone_number)) {
       Alert.alert('Lỗi', 'Số điện thoại phải là số');
       return;
@@ -55,29 +103,20 @@ const EditProfileScreen = ({ navigation, route }: any) => {
       Alert.alert('Lỗi', 'Số điện thoại phải là số và có độ dài 10 chữ số');
       return;
     }
-
-    setUserInfo({
-      ...userInfo,
-      name,
-      email,
-      detail_address,
-      phone_number,
-      avatar,
-    });
-    await setUserAccessToken({ token: oldUserInfo?.token, user: userInfo });
+    const dataUpdate = {
+      name: name,
+      detail_address: detail_address,
+      phone_number: phone_number
+    }
+    console.log("data update", dataUpdate)
+    mutation.mutate(dataUpdate);
     setIsEditing(false);
-    console.log('Thông tin đã được lưu:', {
-      name,
-      email,
-      detail_address,
-      phone_number,
-      avatar,
-    });
+
   };
 
   return (
     <View style={styles.container}>
-       <Text style={styles.textNavigation}>Chỉnh sửa thông tin</Text>
+      <Text style={styles.textNavigation}>Chỉnh sửa thông tin</Text>
       <TouchableOpacity onPress={() => navigation.goBack()}>
         <Ionicons name="arrow-back-outline" style={styles.arrowLeft} />
       </TouchableOpacity>
@@ -92,7 +131,7 @@ const EditProfileScreen = ({ navigation, route }: any) => {
           <AntDesign name="user" style={styles.icon} />
           <TextInput
             placeholder="Tên"
-            style={styles.input}
+            style={[styles.input, !isEditing ? { opacity: 0.5 } : null]}
             value={name}
             onChangeText={(text) => {
               if (isEditing) setName(text);
@@ -104,19 +143,19 @@ const EditProfileScreen = ({ navigation, route }: any) => {
           <MaterialCommunityIcons name="email" style={styles.icon} />
           <TextInput
             placeholder="Email"
-            style={styles.input}
+            style={[styles.input, { opacity: 0.5 }]}
             value={email}
             onChangeText={(text) => {
               if (isEditing) setEmail(text);
             }}
-            editable={isEditing}
+            editable={false}
           />
         </View>
         <View style={styles.inputContainer}>
           <MaterialCommunityIcons name="map-marker" style={styles.icon} />
           <TextInput
             placeholder="Địa chỉ"
-            style={styles.input}
+            style={[styles.input, !isEditing ? { opacity: 0.5 } : null]}
             value={detail_address}
             onChangeText={(text) => {
               if (isEditing) setAddress(text);
@@ -128,22 +167,33 @@ const EditProfileScreen = ({ navigation, route }: any) => {
           <AntDesign name="phone" style={styles.icon} />
           <TextInput
             placeholder="Số điện thoại"
-            style={styles.input}
+            style={[styles.input, !isEditing ? { opacity: 0.5 } : null]}
             value={phone_number}
             onChangeText={(number) => {
               if (isEditing) setPhoneNumber(number);
             }}
-            keyboardType="numeric" 
+            keyboardType="numeric"
             editable={isEditing}
             maxLength={10}
           />
         </View>
         <View style={styles.saveButtonTextContainer}>
           <TouchableOpacity
+            disabled={mutation.isPending}
             onPress={isEditing ? handleSave : () => setIsEditing(true)}>
-            <Text style={styles.saveButtonText}>
-              {isEditing ? 'Lưu' : 'Chỉnh sửa'}
-            </Text>
+            {mutation.isPending ?
+              (
+                <LoaderKit
+                  style={{ width: 35, height: 35 }}
+                  name={'BallPulse'}
+                  color={'green'}
+                />
+              )
+              :
+              <Text style={styles.saveButtonText}>
+                {isEditing ? 'Lưu' : 'Chỉnh sửa'}
+              </Text>}
+
           </TouchableOpacity>
         </View>
       </View>
@@ -158,10 +208,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  textNavigation:{
+  textNavigation: {
     fontSize: 15,
     bottom: 60,
-    fontWeight:'bold',
+    fontWeight: 'bold',
     color: '#2E7D32',
     marginRight: '40%',
   },

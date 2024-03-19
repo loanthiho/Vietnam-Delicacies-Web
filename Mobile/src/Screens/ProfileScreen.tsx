@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -9,18 +9,19 @@ import {
 } from 'react-native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import {LogOut, getUserAccessToken} from '../api/storage';
+import { LogOut, getUserAccessToken } from '../api/storage';
 
-const ProfileScreen = ({navigation}: any) => {
+const ProfileScreen = ({ navigation }: any) => {
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
   const [userInfo, setUserInfo] = useState<any>();
+  const [oldUserInfo, setOldUserInfo] = useState<any>();
 
   const getUserData = async () => {
     const userInfoOld = await getUserAccessToken();
-    console.log('user....:', userInfoOld.user);
     if (userInfoOld.user) {
       setUserInfo(userInfoOld.user);
       setIsLoggedIn(true);
+      setOldUserInfo(userInfoOld);
     } else {
       setUserInfo(null);
       setIsLoggedIn(false);
@@ -28,17 +29,27 @@ const ProfileScreen = ({navigation}: any) => {
   };
 
   useEffect(() => {
-    getUserData();
-  }, []);
+    const unsubscribe = navigation.addListener('focus', () => {
+      console.log('Profile Screen is focused!');
+      getUserData();
+    });
+    return unsubscribe;
+  }, [navigation]);
 
   return (
     <View style={styles.container}>
+      <Text style={{
+        fontSize: 20,
+        fontWeight: 'bold',
+        color: '#2E7D32',
+        paddingBottom: 10
+      }}>THÔNG TIN CÁ NHÂN</Text>
       <View style={styles.profileContainer}>
         <TouchableOpacity style={styles.profileImageContainer}>
           <Image
             source={
               userInfo?.avatar
-                ? {uri: userInfo.avatar}
+                ? { uri: userInfo.avatar }
                 : require('../assets/huong.jpg')
             }
             style={styles.profileImage}
@@ -48,16 +59,16 @@ const ProfileScreen = ({navigation}: any) => {
           <Text style={styles.textName}>{userInfo?.name}</Text>
           <Text style={styles.textEmail}>{userInfo?.email}</Text>
         </View>
-          <TouchableOpacity
-            style={styles.editIconContainer}
-            onPress={() =>
-              navigation.navigate({
-                name: 'EditProfileScreen',
-                params: {userInfo},
-              })
-            }>
-            <AntDesign name="edit" style={styles.IconEdit} />
-          </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.editIconContainer}
+          onPress={() =>
+            navigation.navigate({
+              name: 'EditProfileScreen',
+              params: { userInfo, setUserInfo, oldUserInfo },
+            })
+          }>
+          <AntDesign name="edit" style={styles.IconEdit} />
+        </TouchableOpacity>
       </View>
       <View style={styles.introduction}>
         <AntDesign name="gift" style={styles.iconGiff} />
@@ -281,8 +292,8 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     fontSize: 16,
     color: '#fff',
-    textAlign:'center',
-    margin:10,
+    textAlign: 'center',
+    margin: 10,
   },
 });
 

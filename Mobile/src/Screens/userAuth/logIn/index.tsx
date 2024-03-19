@@ -30,7 +30,7 @@ const SignIn: React.FC = ({ navigation, route }: any) => {
     const checkMess = async () => {
         if (mutation.isSuccess) {
             showMessage({
-                message: "Login successfully!",
+                message: "Đăng nhập thành công!",
                 type: "success",
             })
         }
@@ -147,6 +147,7 @@ const SignIn: React.FC = ({ navigation, route }: any) => {
                     </View>
 
                     <TouchableOpacity
+                        disabled={mutation.isPending}
                         onPress={handleSubmit}
                         style={{
                             padding: 10,

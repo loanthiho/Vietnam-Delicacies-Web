@@ -9,9 +9,11 @@ import {
 import { useShoppingCartData } from '../Hooks/addToCart';
 import api from '../api/request';
 import CartItem from '../components/Cart/CartItem';
+import LoaderKit from 'react-native-loader-kit';
+import { showMessage } from 'react-native-flash-message';
 
 const CartScreen = ({ route, navigation }: any) => {
-  const { data, refetch } = useShoppingCartData();
+  const { data, refetch, isLoading, isRefetching } = useShoppingCartData();
   const [selected, setSelected] = useState<boolean[]>([]);
   const [errorMessage, setErrorMessage] = useState<string>('');
 
@@ -29,13 +31,7 @@ const CartScreen = ({ route, navigation }: any) => {
       0,
     );
   }, [data?.data, selected]);
-
-  if (!data) {
-    return <Text>Loading ... </Text>;
-  }
-
-  const cartItems = data.data;
-
+  const cartItems = data?.data;
   const changeQuantity = async (itemId: string, diff: number) => {
     const rIncrease = await api.post(`/carts/update-qty/${itemId}`, {
       params: { action: diff > 0 ? 'increase' : 'decrease' },
@@ -65,28 +61,65 @@ const CartScreen = ({ route, navigation }: any) => {
     }
   };
 
+
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('focus', () => {
+      refetch()
+      console.log('Cart Screen focus!');
+    });
+
+    return unsubscribe;
+  }, [navigation]);
+
   return (
     <View style={styles.container}>
-      {errorMessage && !selected.some(item => item) ? (
+      <Text style={{
+        paddingTop: 10, fontSize: 20,
+        fontWeight: 'bold',
+        color: '#2E7D32',
+      }}>GIỎ HÀNG CỦA BẠN</Text>
+
+      {/* {errorMessage && !selected.some(item => item) ? (
         <Text style={styles.setErrorMessage}>
           Vui lòng chọn ít nhất một sản phẩm để thanh toán
         </Text>
-      ) : null}
-      <ScrollView>
-        {cartItems && cartItems.length > 0
-          ? cartItems?.map((item: any, index: number) => (
-            <CartItem
-              key={index.toString()}
-              item={item}
-              changeQuantity={changeQuantity}
-              selected={selected[index]}
-              changeSelectedItem={(selected: boolean) =>
-                changeSelectedItem(index, selected)
-              }
-              removeItem={removeItem}
+      ) : null} */}
+      <ScrollView
+        // style={{ flexDirection: 'column', backgroundColor: 'red' }}
+        contentContainerStyle={[{
+          flexDirection: 'column',
+          alignItems: 'center',
+          flex: 1, // Thêm thuộc tính này để đảm bảo nội dung căn giữa trên toàn bộ ScrollView
+        }, cartItems && cartItems?.length <= 0 ? { justifyContent: 'center' } : null]}
+      >
+        {isLoading ?
+          (
+            <LoaderKit
+              style={{ width: 35, height: 35 }}
+              name={'BallPulse'}
+              color={'green'}
             />
-          ))
+          )
           : null}
+        {cartItems && cartItems.length > 0
+          ? cartItems?.map(
+            (item: any, index: number) =>
+            (
+              <CartItem
+                key={index.toString()}
+                item={item}
+                changeQuantity={changeQuantity}
+                selected={selected[index]}
+                changeSelectedItem={(selected: boolean) => changeSelectedItem(index, selected)}
+                removeItem={removeItem}
+              />
+            )
+          )
+          : null
+        }
+        {!isLoading && !cartItems.length ? (
+          <Text style={{ textAlign: 'center', alignSelf: "center" }}> Không có sản phẩm nào!</Text>
+        ) : null}
       </ScrollView>
       <View>
         <View style={styles.footer}>
@@ -100,6 +133,7 @@ const CartScreen = ({ route, navigation }: any) => {
           </View>
 
           <TouchableOpacity
+            disabled={data?.data.length == 0 ? true : false}
             onPress={() => {
               const selectedItems = cartItems.filter(
                 (item: any, index: number) => selected[index],
@@ -109,12 +143,13 @@ const CartScreen = ({ route, navigation }: any) => {
                   selectedItems: selectedItems,
                 });
               } else {
-                setErrorMessage(
-                  'Vui lòng chọn ít nhất một sản phẩm để thanh toán',
-                );
+                showMessage({
+                  type: 'warning',
+                  message: 'Vui lòng chọn sản phẩm'
+                })
               }
             }}>
-            <Text style={styles.checkoutButtonText}>Thanh toán</Text>
+            <Text style={[styles.checkoutButtonText, data?.data.length == 0 ? { opacity: 0.3 } : null]}>Thanh toán</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -157,7 +192,7 @@ const styles = StyleSheet.create({
   checkoutButtonText: {
     color: 'white',
     backgroundColor: '#2E7D32',
-    borderRadius: 10,
+    borderRadius: 5,
     fontSize: 16,
     fontWeight: 'bold',
     padding: 10,
