@@ -10,52 +10,78 @@ import {
   Pressable,
 } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
+import { useNavigation } from '@react-navigation/native';
+import { useQuery } from '@tanstack/react-query';
+import api from '../../api/request';
+import LoaderKit from 'react-native-loader-kit';
 
-const  Canceled = () => {
-  const [cartItems, setCartItems] = useState([
-    {
-      id: 1,
-      name: 'Nem chua Thanh Hoá',
-      price: 150000,
-      Files: [{ src: 'https://i.pinimg.com/564x/6a/9a/12/6a9a122a60a435725152db7a6632da58.jpg' }],
-    },
-    {
-      id: 2,
-      name: 'Gạo đen Tây Bắc',
-      price: 300000,
-      Files: [{ src: 'https://i.pinimg.com/736x/8d/98/1e/8d981eadabf77f64baad46aac7279241.jpg' }],
-    },
-    {
-      id: 2,
-      name: 'Gạo đen Tây Bắc',
-      price: 300000,
-      Files: [{ src: 'https://i.pinimg.com/736x/8d/98/1e/8d981eadabf77f64baad46aac7279241.jpg' }],
-    },
-  ]);
 
-  const renderItem = ({item}: any) => (
+const Canceled = () => {
+  const navigation = useNavigation<any>();
+  const { data, isLoading, refetch: refetchOrder, isRefetching } = useQuery({
+    queryKey: ['seller_get_order_CHO_DANH_GIA'],
+    queryFn: async () => {
+      const res = await api.get('orders', { params: { status: "CHO_DANH_GIA" } });
+      if (res) {
+        return res.data?.data;
+      }
+    },
+  });
+
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('focus', () => {
+      refetchOrder()
+      console.log('wait delivery Screen is focused!');
+    });
+
+    return unsubscribe;
+  }, [navigation]);
+
+  const renderItem = ({ item }: any) => (
     <View key={item.id} style={styles.itemContainer}>
-      <Image source={{uri: item.Files?.[0]?.src}} style={styles.itemImage} />
+      <Image source={{ uri: item.Product?.Files?.[0]?.src }} style={styles.itemImage} />
       <View style={styles.content}>
-        <Text style={styles.itemText}>{item.name}</Text>
+        <Text style={styles.itemText}>{item.Product?.name}</Text>
         <Text style={styles.itemPrice}>
-          {item.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.')}đ
+          {item.total_price?.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.')}đ
         </Text>
       </View>
       <View style={styles.status}>
-        <TouchableOpacity style={styles.cancelText}>
+        {/* <TouchableOpacity style={styles.cancelText}>
           <Text style={styles.cancelText}>Xác nhận lại hàng</Text>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
         <TouchableOpacity style={styles.statusText}>
           <Text style={styles.statusText}>Đã hủy</Text>
         </TouchableOpacity>
       </View>
     </View>
   );
-  
+
   return (
     <View style={styles.container}>
-      <FlatList data={cartItems} renderItem={renderItem} />
+      {isRefetching ?
+        (
+          <LoaderKit
+            style={{ width: 35, height: 35, alignSelf: 'center' }}
+            name={'BallPulse'}
+            color={'green'}
+          />
+        )
+        : null}
+      {
+        isLoading ?
+          (
+            <LoaderKit
+              style={{ width: 35, height: 35, alignSelf: 'center' }}
+              name={'BallPulse'}
+              color={'green'}
+            />
+          )
+          :
+          data && data.length > 0 ?
+            < FlatList data={data} renderItem={renderItem} />
+            : <Text style={{ alignSelf: 'center', marginTop: 10 }}>Không có đơn đang giao hàng nào cả!</Text>
+      }
     </View>
   );
 };
@@ -140,5 +166,5 @@ const styles = StyleSheet.create({
   },
 });
 
-export default  Canceled;
+export default Canceled;
 

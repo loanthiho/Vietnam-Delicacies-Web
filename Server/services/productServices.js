@@ -1,10 +1,36 @@
 const { Product, ProductCart, Province, User, Category, File, Review } = require("../models")
-const { resSuccessData, resInternalError, resCreated, resNotFound } = require("../utils/response")
+const { resSuccessData, resInternalError, resCreated, resNotFound, resBadRequest } = require("../utils/response")
 const cloudinary = require('../utils/cloudinary');
 const { Op } = require("sequelize");
 const createProduct = async (req, res, next) => {
     try {
-        const product = req.body;
+        const product = {
+            ...req.body,
+            inventory: parseInt(req.body.inventory),
+            price: parseInt(req.body.price),
+            weight: parseInt(req.body.weight),
+        };
+        if (typeof product.inventory !== 'number' || isNaN(product.inventory)) {
+            return resBadRequest(res, `Error: Field product.inventory ${product.inventory} is invalid data!`);
+        }
+
+        if (typeof product.price !== 'number' || isNaN(product.price)) {
+            return resBadRequest(res, `Error: Field product.price ${product.price} is invalid data!`);
+        }
+
+        if (product.weight && (typeof product.weight !== 'number' || isNaN(product.weight))) {
+            return resBadRequest(res, `Error: Field product.weight ${product.weight} is invalid data!`);
+        }
+        if (product.inventory < 1) {
+            return resBadRequest(res, `Error: Field product.inventory ${product.inventory} must larger than 0!`);
+        }
+        if (product.price < 1) {
+            return resBadRequest(res, `Error: Field product.price ${product.price} must larger than 0!`);
+        }
+
+        if (product.weight < 1) {
+            return resBadRequest(res, `Error: Field product.weight ${product.weight} must larger than 0!`);
+        }
         const files = req.files;
         if (product) {
             const productCreated = await Product.create(product);
@@ -51,7 +77,7 @@ const createProduct = async (req, res, next) => {
         }
 
     } catch (error) {
-        resInternalError(res, error);
+        resInternalError(res, error.response);
         console.log(error);
     }
 };

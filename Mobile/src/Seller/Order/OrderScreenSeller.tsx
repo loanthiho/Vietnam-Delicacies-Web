@@ -1,13 +1,13 @@
 import React from 'react';
-import {View, StyleSheet, TouchableOpacity, Text} from 'react-native';
+import { View, StyleSheet, TouchableOpacity, Text } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import StatusNavigator from '../OrderStatus/StatusNavigator';
 
-const OrderScreen = ({navigation}: any) => {
+const OrderScreen = ({ navigation }: any) => {
   return (
     <View style={styles.container}>
       <TouchableOpacity
-        style={{flexDirection: 'row', gap: 10, marginBottom: 10, marginTop: 10}}
+        style={{ flexDirection: 'row', gap: 10, marginBottom: 10, marginTop: 10 }}
         onPress={() => navigation.goBack()}>
         <Ionicons name="arrow-back-outline" style={styles.arrowLeft} />
         <Text style={styles.title}>Trạng thái đơn hàng</Text>

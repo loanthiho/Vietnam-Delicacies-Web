@@ -47,10 +47,12 @@ import LoaderKit from 'react-native-loader-kit';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import api from '../../api/request';
+import { useNavigation } from '@react-navigation/native';
 
 const Wait_for_confirmation = () => {
+  const navigation = useNavigation<any>();
   const queryClient = useQueryClient();
-  const { data, isLoading } = useQuery({
+  const { data, isLoading, refetch: refetchOrder } = useQuery({
     queryKey: ['get_order_CHO_XAC_NHAN'],
     queryFn: async () => {
       const res = await api.get('orders', { params: { status: "CHO_XAC_NHAN" } });
@@ -70,7 +72,16 @@ const Wait_for_confirmation = () => {
         queryKey: ['get_order_DA_HUY'],
       });
     }
-  })
+  });
+
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('focus', () => {
+      refetchOrder()
+      console.log('wait delivery Screen is focused!');
+    });
+
+    return unsubscribe;
+  }, [navigation]);
 
   const renderItem = ({ item }: any) => (
     <View key={item.id.toString()} style={styles.itemContainer}>

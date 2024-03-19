@@ -8,9 +8,12 @@ import Success from './Success';
 
 const Tab = createMaterialTopTabNavigator();
 
-const StatusNavigator = () => {
+const StatusNavigator = ({ route, navigation }: any) => {
+  // const status = route && route.params && route.params.status ? route.params.status : false;
+  console.log("status _ \n \n \n", route);
   return (
     <Tab.Navigator
+      initialRouteName={''}
       screenOptions={{
         tabBarActiveTintColor: '#2E7D32',
         tabBarInactiveTintColor: '#ffffff',
