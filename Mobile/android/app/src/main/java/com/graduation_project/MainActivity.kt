@@ -1,4 +1,4 @@
-package com.graduation_project
+package com.vnd
 
 import com.facebook.react.ReactActivity
 import com.facebook.react.ReactActivityDelegate
