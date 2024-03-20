@@ -16,6 +16,7 @@ import Contact from './src/components/Payment/AddContact';
 import AddressComponent from './src/components/Payment/AddressComponent';
 import SignUp from './src/Screens/userAuth/signUp';
 import ChooseRole from './src/Screens/userAuth/signUp/ChooseRule';
+import ForgotPasswordScreen from './src/Hooks/forgotPassword';
 import {
   QueryClient,
   QueryClientProvider,
@@ -120,7 +121,7 @@ const App: React.FC = () => {
         <NavigationContainer>
           <Stack.Navigator
             screenOptions={{headerShown: false}}
-            initialRouteName={'ShopSeller'}>
+            initialRouteName={'ForgotPasswordScreen'}>
             <Stack.Screen
               name="ProductDetailScreen"
               component={ProductDetailScreen}
@@ -131,6 +132,7 @@ const App: React.FC = () => {
             <Stack.Screen name="SignUp" component={SignUp} />
             <Stack.Screen name="ChooseRole" component={ChooseRole} />
             <Stack.Screen name="SignIn" component={SignIn} />
+            <Stack.Screen name="ForgotPasswordScreen" component={ForgotPasswordScreen} />
             <Stack.Screen name="Contact" component={Contact} />
             <Stack.Screen name="EditContact" component={EditContact} />
             <Stack.Screen
