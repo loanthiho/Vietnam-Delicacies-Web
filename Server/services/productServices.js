@@ -1,156 +1,124 @@
 const { Product, ProductCart, Province, User, Category, File, Review } = require("../models")
-const { resSuccessData, resInternalError, resCreated, resNotFound, resBadRequest } = require("../utils/response")
+const { resSuccessData, resInternalError, resCreated, resNotFound, resBadRequest, resUnauthorized } = require("../utils/response")
 const cloudinary = require('../utils/cloudinary');
 const { Op } = require("sequelize");
+
+const addFilesToProduct = async (res, product, files, dataRes) => {
+    if (!files || files.length === 0) {
+        return;
+    }
+    var file_into_dbs = [];
+    for (var file of files) {
+        var cloudFiles = {}
+        cloudFiles = {
+            product_id: product.id,
+            file_name: file.originalname,
+        }
+        if (file.mimetype.startsWith('video/') || file.mimetype.startsWith('image/')) {
+            const uploadOptions = file.mimetype.startsWith('video/') ? { resource_type: 'video' } : undefined;
+            const result = await cloudinary.uploader.upload(file.path, uploadOptions);
+            if (result) {
+                cloudFiles.src = result.secure_url;
+                cloudFiles.file_type = result.resource_type;
+            } else {
+                return resInternalError(res, error = { serverErr: result, msg: "Upload files to cloudinary failed!" })
+            }
+        }
+        file_into_dbs.push(cloudFiles);
+    }
+    // TODO: Updaste product with the file
+    const resInsertFile = await File.bulkCreate(file_into_dbs);
+    if (resInsertFile) {
+        dataRes.files = { resInsertFile, msg: "files create successful" };
+    }
+    else {
+        dataRes.fileError = { msg: "File create unsuccessful!" }
+    }
+};
+
+const validateData = (res, product) => {
+    if (typeof product.inventory !== 'number' || isNaN(product.inventory)) {
+        return resBadRequest(res, `Error: Field product.inventory ${product.inventory} is invalid data!`);
+    }
+
+    if (typeof product.price !== 'number' || isNaN(product.price)) {
+        return resBadRequest(res, `Error: Field product.price ${product.price} is invalid data!`);
+    }
+
+    if (product.weight && (typeof product.weight !== 'number' || isNaN(product.weight))) {
+        return resBadRequest(res, `Error: Field product.weight ${product.weight} is invalid data!`);
+    }
+    if (product.inventory < 1) {
+        return resBadRequest(res, `Error: Field product.inventory ${product.inventory} must larger than 0!`);
+    }
+    if (product.price < 1) {
+        return resBadRequest(res, `Error: Field product.price ${product.price} must larger than 0!`);
+    }
+
+    if (product.weight < 1) {
+        return resBadRequest(res, `Error: Field product.weight ${product.weight} must larger than 0!`);
+    }
+}
+
+
 const createProduct = async (req, res, next) => {
     try {
+        if (req.body.seller_id !== req.userData.id) {
+            return resUnauthorized(res)
+        }
         const product = {
             ...req.body,
             inventory: parseInt(req.body.inventory),
             price: parseInt(req.body.price),
             weight: parseInt(req.body.weight),
+            seller_id: req.userData.id
         };
-        if (typeof product.inventory !== 'number' || isNaN(product.inventory)) {
-            return resBadRequest(res, `Error: Field product.inventory ${product.inventory} is invalid data!`);
-        }
-
-        if (typeof product.price !== 'number' || isNaN(product.price)) {
-            return resBadRequest(res, `Error: Field product.price ${product.price} is invalid data!`);
-        }
-
-        if (product.weight && (typeof product.weight !== 'number' || isNaN(product.weight))) {
-            return resBadRequest(res, `Error: Field product.weight ${product.weight} is invalid data!`);
-        }
-        if (product.inventory < 1) {
-            return resBadRequest(res, `Error: Field product.inventory ${product.inventory} must larger than 0!`);
-        }
-        if (product.price < 1) {
-            return resBadRequest(res, `Error: Field product.price ${product.price} must larger than 0!`);
-        }
-
-        if (product.weight < 1) {
-            return resBadRequest(res, `Error: Field product.weight ${product.weight} must larger than 0!`);
-        }
+        validateData(res, product);
         const files = req.files;
         if (product) {
             const productCreated = await Product.create(product);
             var dataRes = {};
             if (productCreated) {
                 dataRes.product = { msg: "Create product successful", data: productCreated }
-                if (files && files.length > 0) {
-                    var file_into_dbs = [];
-                    for (var file of files) {
-                        var cloudFiles = {}
-                        cloudFiles = {
-                            product_id: productCreated.id,
-                            file_name: file.originalname,
-                        }
-                        if (file.mimetype.startsWith('video/')) {
-                            const result = await cloudinary.uploader.upload(file.path, { resource_type: 'video' });
-                            if (result) {
-                                cloudFiles.src = result.secure_url;
-                                cloudFiles.file_type = result.resource_type;
-                            } else {
-                                resInternalError(res, error = { serverErr: result, msg: "Upload files to cloudinary unsuccesful!" })
-                            }
-                        } else if (file.mimetype.startsWith('image/')) {
-                            const result = await cloudinary.uploader.upload(file.path);
-                            if (result) {
-                                cloudFiles.src = result.secure_url;
-                                cloudFiles.file_type = result.resource_type;
-                            } else {
-                                resInternalError(res, error = { serverErr: result, msg: "Upload files to cloudinary unsuccesful!" })
-                            }
-                        }
-                        file_into_dbs.push(cloudFiles);
-                    }
-                    await File.bulkCreate(file_into_dbs)
-                        .then(result => {
-                            dataRes.files = { result, msg: "files create successful" };
-                        })
-                        .catch(error => dataRes.fileError = { serverErr: error, msg: "File create unsuccessful!" });
-                };
-                resSuccessData(res, dataRes, "Create product successfully!");
+                await addFilesToProduct(res, productCreated, files, dataRes);
+                return resSuccessData(res, dataRes, "Create product successfully!");
             } else {
-                resInternalError(res, "Product create Unsuccessful!");
+                return resInternalError(res, "Product create Unsuccessful!");
             }
         }
-
     } catch (error) {
-        resInternalError(res, error.response);
-        console.log(error);
+        return resInternalError(res, error.response);
     }
 };
 
 const updateProduct = async (req, res, next) => {
-    /**
-     * Check isHasProduct
-     * @id Is id product
-     * @isHasProduct to check, is there product?
-     * @user_id To check role seller
-     * 
-     * @files To check does files exist!
-     * @product_data_update This is the body data used to update product
-     */
     const user_id = req.userData.id;
     const id = req.params.id;
-    const product_data_update = req.body;
+    if (req.body.seller_id !== req.userData.id) {
+        return resUnauthorized(res);
+    }
+    const product = {
+        ...req.body,
+        inventory: parseInt(req.body.inventory),
+        price: parseInt(req.body.price),
+        weight: parseInt(req.body.weight),
+    };
+    validateData(res, product);
     const files = req.files;
-
     const isHasProduct = await Product.findOne({ where: { seller_id: user_id, id: id } });
     if (isHasProduct) {
-        /**
-         * @updated The response after update product.
-         */
-        const updated = await Product.update(req.body, { where: { id: id } });
+        const updated = await Product.update(product, { where: { id: id } });
         if (updated) {
-            /**
-             * @product_updated
-             * - Get the product has been updated!
-             */
             const product_updated = await Product.findByPk(id);
+            var dataRes = { data: product_updated }
             if (product_updated) {
-                /**
-                 * @files
-                 * - Check does files exist
-                 * - will push files into cloudinary
-                 */
-                if (files && files.length > 0) {
-                    var file_into_dbs = [];
-                    for (var file of files) {
-                        var cloudFiles = {}
-                        cloudFiles = {
-                            product_id: product_updated.id,
-                            file_name: file.originalname,
-                        }
-                        if (file.mimetype.startsWith('video/')) {
-                            const result = await cloudinary.uploader.upload(file.path, { resource_type: 'video' });
-                            if (result) {
-                                cloudFiles.src = result.secure_url;
-                                cloudFiles.file_type = result.resource_type;
-                            } else {
-                                return resInternalError(res, error = { serverErr: result, msg: "Upload files to cloudinary failed!" })
-                            }
-                        } else if (file.mimetype.startsWith('image/')) {
-                            const result = await cloudinary.uploader.upload(file.path);
-                            if (result) {
-                                cloudFiles.src = result.secure_url;
-                                cloudFiles.file_type = result.resource_type;
-                            } else {
-                                return resInternalError(res, error = { serverErr: result, msg: "Upload files to cloudinary failed!" })
-                            }
-                        }
-                        file_into_dbs.push(cloudFiles);
-                    }
-
-                }
-                return resSuccessData(res, product_updated, "Create product successfully")
+                await addFilesToProduct(res, product_updated, files, dataRes);
+                return resSuccessData(res, dataRes, "Update product successfully")
             }
             else {
                 return resNotFound(res, "product not found!")
             }
         }
-
         else {
             resInternalError(res, "Update Unsuccessful");
         }
