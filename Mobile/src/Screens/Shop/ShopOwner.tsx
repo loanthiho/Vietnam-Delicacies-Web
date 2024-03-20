@@ -34,7 +34,11 @@ const ShopOwnerScreen = ({ navigation, route }: { navigation: any; route: any; }
   
   const renderProductOwner = ({ item }: { item: any }) => {
     return (
-      <TouchableOpacity style={styles.productContainer}>
+      <TouchableOpacity style={styles.productContainer} onPress={() =>
+        navigation.navigate('ProductDetailScreen', {
+          selectedItem: item,
+        })
+      }>
         <Image
           source={{ uri: item.Files[0].src }}
           style={styles.itemPhoto}
