@@ -19,6 +19,7 @@ import {
 import {Dropdown} from 'react-native-element-dropdown';
 import {useNavigation} from '@react-navigation/native';
 import {TouchableOpacity} from 'react-native-gesture-handler';
+import {getUserAccessToken} from '../api/storage';
 
 const UppdateProduct = ({route}: any) => {
   const [nameProduct, setnameProduct] = useState('');
@@ -36,7 +37,7 @@ const UppdateProduct = ({route}: any) => {
   //DataCategory
   const [categoryAPI, setDataCategoryAPI] = useState<any[]>();
   const [dataCategory, setDataCategory] = useState([]);
-  const [categoryId, setcategoryId] = useState(null);
+  const [categoryId, setCategoryId] = useState<number | null>(null);
   //focus
   const [isFocused, setIsFocused] = useState(false);
   const [isFocusedDetail, setIsFocusedDetail] = useState(false);
@@ -89,6 +90,7 @@ const UppdateProduct = ({route}: any) => {
           setweightProduct(productData.weight.toString());
           setpriceProduct(productData.price.toString());
           setSelectedItem(productData.Category.id);
+          setCategoryId(productData.Category.id);
           setImg(productData.Files[0]?.src);
           console.log('image', productData.Files[0]?.src);
         } catch (error) {
@@ -97,7 +99,7 @@ const UppdateProduct = ({route}: any) => {
       }
     };
     fetchProduct(itemId);
-  }, [itemId]);
+  }, [itemId, navigation]);
 
   //Loading
   const [isLoading, setIsLoading] = useState(true);
@@ -194,7 +196,7 @@ const UppdateProduct = ({route}: any) => {
 
   const handleCategoryChange = item => {
     setDataCategoryAPI(item);
-    setcategoryId(item.value);
+    setCategoryId(item.value);
     console.log('Data category before sending:', {
       domainId: item.value,
       domainName: item.label,
@@ -202,6 +204,7 @@ const UppdateProduct = ({route}: any) => {
   };
 
   const UpdateProduct = async (itemId: string) => {
+    const {user} = await getUserAccessToken();
     if (
       nameProduct === '' ||
       priceProduct === '' ||
@@ -215,6 +218,7 @@ const UppdateProduct = ({route}: any) => {
     let ojb = {
       category_id: categoryId,
       name: nameProduct,
+      seller_id: user.id,
       price: convertToNumber(priceProduct),
       description: descProduct,
       inventory: convertToNumber(quantityProduct),
@@ -235,7 +239,8 @@ const UppdateProduct = ({route}: any) => {
       formData.append(key, ojb[key]);
     });
 
-    console.log('fomadata', formData);
+    console.log('data before update', formData);
+    console.log('img before update', img);
     try {
       const response = await api.patch(`products/${itemId}`, {
         data: formData,

@@ -93,7 +93,7 @@ const ShopSeller = ({ navigation }: any) => {
           marginBottom: 10,
         }}>
         <Text style={styles.Subtitle}>Cửa hàng của tôi</Text>
-        <View style={{ position: 'relative' }}>
+        <View style={{position: 'relative'}}>
           <Text
             style={{
               position: 'absolute',
@@ -116,7 +116,7 @@ const ShopSeller = ({ navigation }: any) => {
           <Image
             source={
               userInfo?.avatar
-                ? { uri: userInfo.avatar }
+                ? {uri: userInfo.avatar}
                 : require('../assets/huong.jpg')
             }
             style={styles.profileImage}
@@ -127,7 +127,7 @@ const ShopSeller = ({ navigation }: any) => {
           <Text style={styles.phoneNumber}>(84+){userInfo?.phone_number}</Text>
         </View>
         <TouchableOpacity onPress={() => navigation.navigate('ProductScreen')}>
-          <Text style={{ color: '#ffa000' }}>Xem cửa hàng</Text>
+          <Text style={{color: '#ffa000'}}>Xem cửa hàng</Text>
         </TouchableOpacity>
       </View>
       {/**
@@ -193,18 +193,16 @@ const ShopSeller = ({ navigation }: any) => {
         */}
       <View>
         <Text style={styles.titleStatistical}>Thống kê</Text>
-        <View style={{ flexDirection: 'row', justifyContent: 'space-around' }}>
-          <View style={{ alignItems: 'center' }}>
-            <Text style={styles.statisticsNumber}>
-              {stats.sold}
-            </Text>
+        <View style={{flexDirection: 'row', justifyContent: 'space-around'}}>
+          <View style={{alignItems: 'center'}}>
+            <Text style={styles.statisticsNumber}>{stats.sold}</Text>
             <Text style={styles.statisticTitle}> Đã bán</Text>
           </View>
-          <View style={{ alignItems: 'center' }}>
+          <View style={{alignItems: 'center'}}>
             <Text style={styles.statisticsNumber}>{stats.products}</Text>
             <Text style={styles.statisticTitle}>Sản phẩm</Text>
           </View>
-          <View>
+          <View style={{alignItems: 'center'}}>
             <Text style={styles.statisticsNumber}> {stats.orderCanceled}</Text>
             <Text style={styles.statisticTitle}> Đã hủy</Text>
           </View>
@@ -326,8 +324,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#ffa000',
     color: 'white',
     fontWeight: 'bold',
-    alignSelf: 'center',
-    paddingRight: 12,
+    paddingRight: 8,
     textAlign: 'center'
   },
 

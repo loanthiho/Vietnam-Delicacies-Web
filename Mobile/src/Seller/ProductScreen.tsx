@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, {useState, useEffect} from 'react';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import {
   View,
@@ -10,9 +10,9 @@ import {
   Pressable,
 } from 'react-native';
 import api from '../api/request';
-import { useQuery } from '@tanstack/react-query';
-import { useNavigation, useFocusEffect } from '@react-navigation/native';
-import { getUserAccessToken } from '../api/storage';
+import {useQuery} from '@tanstack/react-query';
+import {useNavigation, useFocusEffect} from '@react-navigation/native';
+import {getUserAccessToken} from '../api/storage';
 import LoaderKit from 'react-native-loader-kit';
 
 const ProductScreen = () => {
@@ -42,7 +42,7 @@ const ProductScreen = () => {
     queryFn: async () => {
       const userActken = await getUserAccessToken();
       const response = await api.get('/products', {
-        params: { seller_id: userActken?.user.id },
+        params: {seller_id: userActken?.user.id},
       });
       setCartItems(response.data.data);
       return response.data.data;
@@ -59,10 +59,12 @@ const ProductScreen = () => {
     }, []),
   );
 
+  // console.log('----', cartItems);
+
   if (isLoading)
     return (
       <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-        <Text style={{alignSelf: 'center', color:"ffa000"}}>Loading...</Text>
+        <Text style={{alignSelf: 'center', color: 'ffa000'}}>Loading...</Text>
       </View>
     );
   if (isError)
@@ -92,13 +94,13 @@ const ProductScreen = () => {
   };
 
   const handleEditItem = (itemId: any) => {
-    navigation.navigate('UpdateProduct', { itemId: itemId });
+    navigation.navigate('UpdateProduct', {itemId: itemId});
     console.log('first ID before send', itemId);
   };
 
-  const renderItem = ({ item }: any) => (
+  const renderItem = ({item}: any) => (
     <View key={item.id} style={styles.itemContainer}>
-      <Image source={{ uri: item.Files?.[0]?.src }} style={styles.itemImage} />
+      <Image source={{uri: item.Files?.[0]?.src}} style={styles.itemImage} />
       <View style={styles.content}>
         <Text style={styles.itemText}>{item.name}</Text>
         <Text style={styles.itemPrice}>
@@ -169,7 +171,7 @@ const ProductScreen = () => {
                 <Text style={styles.textStyle}>Có</Text>
                 {isPending ? (
                   <LoaderKit
-                    style={{ width: 20, height: 20 }}
+                    style={{width: 20, height: 20}}
                     name={'BallPulse'}
                     color={'#fff'}
                   />
