@@ -48,6 +48,11 @@ const UppdateProduct = ({route}: any) => {
   //img
   const [img, setImg] = useState<string>('');
 
+  //limit number
+  const [limitPrice, setLimitPrice] = useState(false);
+  const [limitQuantity, setLimitQuantity] = useState(false);
+  const [limitWeight, setLimitWeight] = useState(false);
+
   function convertToNumber(text: any) {
     if (typeof text === 'string') {
       var number = parseFloat(text.replace(/\./g, ''));
@@ -61,11 +66,11 @@ const UppdateProduct = ({route}: any) => {
     nameProduct: Yup.string()
       .min(2, 'Tên quá ngắn!')
       .max(40, 'Vui lòng đặt tên ngắn gọn!')
-      .required('Chưa cập nhật tên sản phẩm'),
-    priceProduct: Yup.string().required('Chưa cập nhật giá'),
-    quantityProduct: Yup.string().required('Chưa cập nhật số lượng'),
-    weightProduct: Yup.string().required('Chưa cập nhật cân nặng'),
-    category: Yup.string().required('Vui lòng chọn loại lại hàng'),
+      .required('Chưa cập nhật tên sản phẩm mới'),
+    priceProduct: Yup.string().required('Chưa cập nhật giá mới'),
+    quantityProduct: Yup.string().required('Chưa cập nhật số lượng mới'),
+    weightProduct: Yup.string().required('Chưa cập nhật cân nặng mới'),
+    category: Yup.string().required('Chưa cập nhật loại hàng mới'),
   });
 
   //router
@@ -85,20 +90,31 @@ const UppdateProduct = ({route}: any) => {
           setpriceProduct(productData.price.toString());
           setSelectedItem(productData.Category.id);
           setImg(productData.Files[0]?.src);
-          console.log('image', productData.Files[0].src);
+          console.log('image', productData.Files[0]?.src);
         } catch (error) {
-          console.log('lỗi khi gọi api', error);
+          console.log('error when call api', error);
         }
       }
     };
     fetchProduct(itemId);
   }, [itemId]);
 
-  // console.log('UPDATE fileIMG', img);
   //Loading
   const [isLoading, setIsLoading] = useState(true);
 
-  const format = (text: string) => {
+  const formatPrice = (text: string) => {
+    const formattedText = text.replace(/\D/g, '');
+    const formattedNumber = Number(formattedText).toLocaleString();
+    return formattedNumber;
+  };
+
+  const formatQuantity = (text: string) => {
+    const formattedText = text.replace(/\D/g, '');
+    const formattedNumber = Number(formattedText).toLocaleString();
+    return formattedNumber;
+  };
+
+  const formatWeight = (text: string) => {
     const formattedText = text.replace(/\D/g, '');
     const formattedNumber = Number(formattedText).toLocaleString();
     return formattedNumber;
@@ -186,8 +202,13 @@ const UppdateProduct = ({route}: any) => {
   };
 
   const UpdateProduct = async (itemId: string) => {
-    if (nameProduct === '') {
-      Alert.alert('Vui lòng nhập thông tin');
+    if (
+      nameProduct === '' ||
+      priceProduct === '' ||
+      quantityProduct === '' ||
+      weightProduct === ''
+    ) {
+      Alert.alert('Vui lòng kiểm tra lại thông tin cập nhật');
       return;
     }
     setIsLoading(false);
@@ -214,6 +235,7 @@ const UppdateProduct = ({route}: any) => {
       formData.append(key, ojb[key]);
     });
 
+    console.log('fomadata', formData);
     try {
       const response = await api.patch(`products/${itemId}`, {
         data: formData,
@@ -229,11 +251,11 @@ const UppdateProduct = ({route}: any) => {
       setDataCategory([]);
 
       setIsLoading(true);
-      Alert.alert('Update successful');
+      Alert.alert('Cập nhật thành công');
       navigation.navigate('ProductScreen');
     } catch (error) {
       console.log('error when update:', error?.response.data);
-      Alert.alert('Update was not successful');
+      Alert.alert('Cập nhật chưa thành công');
       setIsLoading(true);
     }
   };
@@ -396,16 +418,26 @@ const UppdateProduct = ({route}: any) => {
                     onBlur={() => setFieldTouched('priceProduct')}
                     style={[styles.textInput, {textAlign: 'right'}]}
                     placeholder="Giá"
-                    value={format(priceProduct) || values.priceProduct}
+                    value={formatPrice(priceProduct) || values.priceProduct}
                     onChangeText={text => {
+                      if (text.length >= 13) {
+                        setLimitPrice(true);
+                        return;
+                      }
+                      setLimitPrice(false);
                       setpriceProduct(text);
                       handleChange('priceProduct')(text);
                     }}
                     keyboardType="numeric"
                   />
                 </View>
-                {touched.priceProduct && errors.priceProduct && (
-                  <Text style={styles.errorTsx}>{errors.priceProduct}</Text>
+                {limitPrice ? (
+                  <Text style={styles.errorTsx}>Giá vướt mức cho phép </Text>
+                ) : (
+                  touched.priceProduct &&
+                  errors.priceProduct && (
+                    <Text style={styles.errorTsx}>{errors.priceProduct}</Text>
+                  )
                 )}
               </View>
 
@@ -423,16 +455,32 @@ const UppdateProduct = ({route}: any) => {
                     onBlur={() => setFieldTouched('quantityProduct')}
                     style={[styles.textInput, {textAlign: 'right'}]}
                     placeholder="Số lượng"
-                    value={format(quantityProduct) || values.quantityProduct}
+                    value={
+                      formatQuantity(quantityProduct) || values.quantityProduct
+                    }
                     keyboardType="numeric"
                     onChangeText={text => {
+                      if (text.length >= 8) {
+                        setLimitQuantity(true);
+                        return;
+                      }
+                      setLimitQuantity(false);
                       setquantityProduct(text);
                       handleChange('quantityProduct')(text);
                     }}
                   />
                 </View>
-                {touched.quantityProduct && errors.quantityProduct && (
-                  <Text style={styles.errorTsx}>{errors.quantityProduct}</Text>
+                {limitQuantity ? (
+                  <Text style={styles.errorTsx}>
+                    Số lượng vướt mức cho phép
+                  </Text>
+                ) : (
+                  touched.quantityProduct &&
+                  errors.quantityProduct && (
+                    <Text style={styles.errorTsx}>
+                      {errors.quantityProduct}
+                    </Text>
+                  )
                 )}
               </View>
 
@@ -448,18 +496,30 @@ const UppdateProduct = ({route}: any) => {
                     ref={weightInputRef}
                     onFocus={() => handlePress(weightInputRef)}
                     onBlur={() => setFieldTouched('weightProduct')}
-                    value={format(weightProduct) || values.weightProduct}
+                    value={formatWeight(weightProduct) || values.weightProduct}
                     keyboardType="numeric"
                     style={[styles.textInput, {textAlign: 'right'}]}
                     placeholder="Cân nặng"
                     onChangeText={text => {
+                      if (text.length >= 8) {
+                        setLimitWeight(true);
+                        return;
+                      }
+                      setLimitWeight(false);
                       setweightProduct(text);
                       handleChange('weightProduct')(text);
                     }}
                   />
                 </View>
-                {touched.weightProduct && errors.weightProduct && (
-                  <Text style={styles.errorTsx}>{errors.weightProduct}</Text>
+                {limitWeight ? (
+                  <Text style={styles.errorTsx}>
+                    Cân nặng vướt mức cho phép
+                  </Text>
+                ) : (
+                  touched.weightProduct &&
+                  errors.weightProduct && (
+                    <Text style={styles.errorTsx}>{errors.weightProduct}</Text>
+                  )
                 )}
               </View>
 

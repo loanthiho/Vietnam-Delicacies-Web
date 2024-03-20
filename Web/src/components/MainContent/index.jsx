@@ -1,15 +1,17 @@
 import { useState } from "react";
 import styles from "./style.module.css";
 import { useQuery } from "@tanstack/react-query";
-import outstandingproducts from "../../../public/OutstandingProducts/products.json";
-import newproducts from "../../../public/NewProducts/products.json";
+// import outstandingproducts from "../../../public/OutstandingProducts/products.json";
+// import newproducts from "../../../public/NewProducts/products.json";
 
 const Index = () => {
   const [showOutstandingproducts, setShowOutstandingproducts] = useState(false);
   const [shownewProducts, setShownewProducts] = useState(false);
 
   const fetchtAPI = async () => {
-    const response = await fetch("http://localhost:3000/products");
+    const response = await fetch(
+      "http://nodejs-app-env-1.eba-q2t7wpq3.ap-southeast-2.elasticbeanstalk.com/products"
+    );
     return response.json();
   };
 
@@ -20,6 +22,8 @@ const Index = () => {
 
   if (isPending) return "Đang tải...";
   if (error) return "Lỗi tải dữ liệu";
+
+  console.log("data", data.data.Files?.[0]?.src);
 
   const toggleShowOutstandingproducts = () => {
     setShowOutstandingproducts(!showOutstandingproducts);
@@ -44,12 +48,17 @@ const Index = () => {
 
       <div className={styles.product}>
         {data?.data
-          .slice(0, showOutstandingproducts ? outstandingproducts.length : 6)
+          .slice(0, showOutstandingproducts ? data.length : 6)
           .map((product, index) => (
             <div key={index} className={styles.card} onClick={showNotification}>
-              <img src={product.Files[0].src} alt="" />
+              <img src={product.Files?.[0]?.src} alt="" />
               <div className={styles.name_product}>{product.name}</div>
-              <div className={styles.price_product}>{product.price}đ</div>
+              <div className={styles.price_product}>
+                {product.price
+                  ?.toString()
+                  .replace(/\B(?=(\d{3})+(?!\d))/g, ".")}
+                đ
+              </div>
             </div>
           ))}
       </div>
@@ -90,7 +99,7 @@ const Index = () => {
           <i className="fa-solid fa-burger"></i>
         </div>
       </div>
-
+      {/* 
       <div className={styles.product}>
         {newproducts
           .slice(0, shownewProducts ? newproducts.length : 6)
@@ -107,7 +116,7 @@ const Index = () => {
         <button onClick={toggleshowNewproduct} className={styles.highlight_btn}>
           XEM THÊM
         </button>
-      )}
+      )} */}
     </div>
   );
 };
