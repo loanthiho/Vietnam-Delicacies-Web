@@ -1,39 +1,28 @@
-import React, {useEffect} from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-  Image,
-  TextInput,
-  FlatList,
-} from 'react-native';
+import React, { useEffect } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, Image, TextInput, FlatList } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import {useQuery} from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import api from '../../api/request';
-const ShopOwnerScreen = ({
-  navigation,
-  route,
-}: {
-  navigation: any;
-  route: any;
-}) => {
-  const {selectedItem}: {selectedItem: any} = route.params || {};
+
+const ShopOwnerScreen = ({ navigation, route }: { navigation: any; route: any; }) => {
+  const { selectedItem }: { selectedItem: any } = route.params || {};
+  
   if (!selectedItem.User) {
     return <Text> Người dùng không tồn tại</Text>;
   }
-  const {data, refetch: refetchProduct} = useQuery({
+  
+  const { data, refetch: refetchProduct } = useQuery({
     queryKey: ['products'],
     queryFn: async () => {
       const response = await api.get('products', {
         auth: false,
-        params: {seller_id: selectedItem.seller_id},
+        params: { seller_id: selectedItem.seller_id },
       });
       console.log('res', response.data?.data);
       return response.data.data;
     },
   });
-  console.log('người dùng', selectedItem);
+
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
       refetchProduct();
@@ -42,21 +31,22 @@ const ShopOwnerScreen = ({
 
     return unsubscribe;
   }, [navigation]);
-  const renderProductOwner = ({item}: {item: any}) => {
+  
+  const renderProductOwner = ({ item }: { item: any }) => {
     return (
       <TouchableOpacity style={styles.productContainer}>
         <Image
-          source={{uri: item.Files[0].src}}
+          source={{ uri: item.Files[0].src }}
           style={styles.itemPhoto}
           resizeMode="cover"
         />
         <Text style={styles.itemText}>{item.name}</Text>
         <View style={styles.iconContainer}>
-          <Ionicons name="star-outline" style={styles.starIcon} />
+          <Ionicons name="star" style={styles.starIcon} />
           <Text style={styles.ratingText}>4.5</Text>
-          <Text style={styles.itemprice}>{item.price  ?.toString()
-                      .replace(/\B(?=(\d{3})+(?!\d))/g, '.')}
-                    đ</Text>
+          <Text style={styles.itemprice}>
+            {item.price?.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.')}đ
+          </Text>
         </View>
       </TouchableOpacity>
     );
@@ -79,7 +69,7 @@ const ShopOwnerScreen = ({
       </View>
       <View style={styles.search}>
         <Ionicons name="search-outline" style={styles.searchIcon} />
-        <TextInput placeholder="Search..." style={styles.searchInput} />
+        <TextInput placeholder="Tìm kiếm..." style={styles.searchInput} />
         <TouchableOpacity>
           <Ionicons name="chatbox" style={styles.chat} />
         </TouchableOpacity>
@@ -87,7 +77,6 @@ const ShopOwnerScreen = ({
       <FlatList
         data={data}
         numColumns={2}
-        contentContainerStyle={styles.productList}
         renderItem={renderProductOwner}
         keyExtractor={(_item, index) => index.toString()}
       />
@@ -98,27 +87,20 @@ const ShopOwnerScreen = ({
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 10,
-    marginHorizontal: 10,
+    padding: 5,
+    marginHorizontal: 5,
+    
   },
   productContainer: {
     marginVertical: 10,
     padding: 10,
-    backgroundColor: '#f0f0f0',
+    backgroundColor: 'white',
     borderRadius: 10,
-  },
-  productTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
     marginBottom: 10,
-  },
-  productText: {
-    fontSize: 16,
-    marginBottom: 5,
-  },
-  productList: {
-    flexDirection: 'column',
-    justifyContent: 'center',
+    justifyContent: 'space-between',
+    width: 160,
+    marginHorizontal: 5,
+    marginTop: 20,
   },
   header: {
     flexDirection: 'row',
@@ -127,9 +109,10 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   headerText: {
-    fontSize: 24,
+    fontSize: 23,
     fontWeight: 'bold',
     color: '#2E7D32',
+    marginLeft: 5,
   },
   profileImageContainer: {
     borderRadius: 50,
@@ -143,24 +126,21 @@ const styles = StyleSheet.create({
   search: {
     flexDirection: 'row',
     alignItems: 'center',
-    padding: 10,
+    padding: 5,
     borderRadius: 20,
     backgroundColor: '#ffffff',
-    marginBottom: 20,
   },
   searchIcon: {
-    fontSize: 30,
+    fontSize: 20,
     color: 'black',
-    marginRight: 5,
+    marginLeft: 5,
   },
   searchInput: {
     flex: 1,
     height: 40,
-    paddingHorizontal: 10,
-    borderWidth: 1,
-    borderColor: 'gray',
+    paddingHorizontal: 5,
     borderRadius: 10,
-    marginRight: 5,
+    marginLeft: 5,
   },
   chat: {
     fontSize: 30,
@@ -173,6 +153,7 @@ const styles = StyleSheet.create({
     width: 130,
     height: 130,
     borderRadius: 20,
+    marginLeft: 4,
   },
   itemText: {
     marginTop: 5,
@@ -185,24 +166,19 @@ const styles = StyleSheet.create({
     backgroundColor: '#ffa000',
     borderRadius: 6,
     fontSize: 13,
-    left:10,
   },
   iconContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     marginTop: 5,
+    justifyContent: 'space-between',
   },
   starIcon: {
     fontSize: 20,
     color: 'yellow',
   },
   ratingText: {
-    marginLeft: 5,
-  },
-  heartIcon: {
-    fontSize: 20,
-    color: 'red',
-    marginLeft: 10,
+    marginRight: 25,
   },
 });
 
