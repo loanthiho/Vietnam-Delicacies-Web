@@ -59,8 +59,20 @@ const ProductScreen = () => {
     }, []),
   );
 
-  if (isLoading) return <Text>Loading...</Text>;
-  if (isError) return <Text>Error fetching cart items</Text>;
+  if (isLoading)
+    return (
+      <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+        <Text style={{alignSelf: 'center', color:"ffa000"}}>Loading...</Text>
+      </View>
+    );
+  if (isError)
+    return (
+      <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+        <Text style={{alignSelf: 'center', color: 'ffa000'}}>
+          Error fetching cart items
+        </Text>
+      </View>
+    );
 
   const handleDeleteItem = async (itemId: null) => {
     try {
