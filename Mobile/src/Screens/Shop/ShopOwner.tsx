@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {
   View,
   Text,
@@ -11,8 +11,6 @@ import {
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import {useQuery} from '@tanstack/react-query';
 import api from '../../api/request';
-import SuggestionsList from '../../components/Homepage/SuggestionsList';
-
 const ShopOwnerScreen = ({
   navigation,
   route,
@@ -21,15 +19,29 @@ const ShopOwnerScreen = ({
   route: any;
 }) => {
   const {selectedItem}: {selectedItem: any} = route.params || {};
-  const {data} = useQuery({
+  if (!selectedItem.User) {
+    return <Text> Người dùng không tồn tại</Text>;
+  }
+  const {data, refetch: refetchProduct} = useQuery({
     queryKey: ['products'],
     queryFn: async () => {
-      const response = await api.get('products', {auth: false});
-      return response.data;
+      const response = await api.get('products', {
+        auth: false,
+        params: {seller_id: selectedItem.seller_id},
+      });
+      console.log('res', response.data?.data);
+      return response.data.data;
     },
   });
   console.log('người dùng', selectedItem);
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('focus', () => {
+      refetchProduct();
+      console.log('Shop owner is focus!');
+    });
 
+    return unsubscribe;
+  }, [navigation]);
   const renderProductOwner = ({item}: {item: any}) => {
     return (
       <TouchableOpacity style={styles.productContainer}>
@@ -42,7 +54,9 @@ const ShopOwnerScreen = ({
         <View style={styles.iconContainer}>
           <Ionicons name="star-outline" style={styles.starIcon} />
           <Text style={styles.ratingText}>4.5</Text>
-          <Ionicons name="heart-outline" style={styles.heartIcon} />
+          <Text style={styles.itemprice}>{item.price  ?.toString()
+                      .replace(/\B(?=(\d{3})+(?!\d))/g, '.')}
+                    đ</Text>
         </View>
       </TouchableOpacity>
     );
@@ -70,8 +84,6 @@ const ShopOwnerScreen = ({
           <Ionicons name="chatbox" style={styles.chat} />
         </TouchableOpacity>
       </View>
-      <SuggestionsList products={data} navigation={navigation} />
-      
       <FlatList
         data={data}
         numColumns={2}
@@ -106,7 +118,6 @@ const styles = StyleSheet.create({
   },
   productList: {
     flexDirection: 'column',
-    flexWrap: 'wrap',
     justifyContent: 'center',
   },
   header: {
@@ -167,6 +178,14 @@ const styles = StyleSheet.create({
     marginTop: 5,
     fontSize: 16,
     fontWeight: 'bold',
+  },
+  itemprice: {
+    color: '#fff',
+    padding: 4,
+    backgroundColor: '#ffa000',
+    borderRadius: 6,
+    fontSize: 13,
+    left:10,
   },
   iconContainer: {
     flexDirection: 'row',
