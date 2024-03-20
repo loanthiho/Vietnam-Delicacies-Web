@@ -30,7 +30,7 @@ const SignIn: React.FC = ({ navigation, route }: any) => {
     const checkMess = async () => {
         if (mutation.isSuccess) {
             showMessage({
-                message: "Login successfully!",
+                message: "Đăng nhập thành công!",
                 type: "success",
             })
         }
@@ -45,11 +45,12 @@ const SignIn: React.FC = ({ navigation, route }: any) => {
         checkMess()
         if (mutation.isSuccess) {
             const func = async () => {
-                const previousScreen = route.params?.previousScreen;
-
                 const { token, user } = mutation.data.data;
-                await setUserAccessToken({ token, user });
+                await setUserAccessToken({ token, user, isBuyer: false });
                 // Nếu không, điều hướng tới màn hình chính
+                if (user && user.role === 'seller') {
+                    return navigation.navigate('ShopSeller');
+                }
                 return navigation.navigate('Main');
             };
             func();
@@ -146,6 +147,7 @@ const SignIn: React.FC = ({ navigation, route }: any) => {
                     </View>
 
                     <TouchableOpacity
+                        disabled={mutation.isPending}
                         onPress={handleSubmit}
                         style={{
                             padding: 10,

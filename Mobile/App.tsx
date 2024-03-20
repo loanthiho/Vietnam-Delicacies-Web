@@ -50,6 +50,10 @@ LogBox.ignoreLogs([
   'VirtualizedLists should never be nested inside plain ScrollViews with the same orientation because it can break windowing and other functionality',
   'Each child in a list should have a unique "key" prop.',
   'ViewPropTypes will be removed from React Native, along with all other PropTypes',
+  'Encountered two children with the same key',
+  `Image source "null" doesn't exist`,
+  "new NativeEventEmitter()` was called with a non-null argument without the required `addListener` method",
+  "`new NativeEventEmitter()` was called with a non-null argument without the required `removeListeners` method."
 ]);
 
 const Stack = createNativeStackNavigator();
@@ -111,12 +115,12 @@ const App: React.FC = () => {
   const queryClient = new QueryClient();
 
   return (
-    <GestureHandlerRootView style={{flex: 1}}>
+    <GestureHandlerRootView style={{ flex: 1 }}>
       <QueryClientProvider client={queryClient}>
         <NavigationContainer>
           <Stack.Navigator
             screenOptions={{ headerShown: false }}
-            initialRouteName={'Main'}>
+            initialRouteName={'SignIn'}>
             <Stack.Screen
               name="ProductDetailScreen"
               component={ProductDetailScreen}

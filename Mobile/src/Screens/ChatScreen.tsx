@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import {View, Text, Image, StyleSheet, TouchableOpacity} from 'react-native';
-import {useNavigation} from '@react-navigation/native';
-import {SwipeListView} from 'react-native-swipe-list-view';
+import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import { SwipeListView } from 'react-native-swipe-list-view';
 
 const ChatScreen = () => {
   const navigation = useNavigation<any>();
@@ -63,12 +63,12 @@ const ChatScreen = () => {
   };
   const [cartItems, setCartItems] = useState(data);
 
-  const renderItem = ({item}: any) => (
+  const renderItem = ({ item }: any) => (
     <TouchableOpacity
       style={styles.itemContainer}
       onPress={() => handlePress(item)}>
       <Image
-        source={typeof item.image === 'string' ? {uri: item.image} : item.image}
+        source={typeof item.image === 'string' ? { uri: item.image } : item.image}
         style={styles.itemImage}
       />
       <View style={styles.content}>
@@ -95,12 +95,7 @@ const ChatScreen = () => {
   return (
     <View style={styles.container}>
       <View style={styles.title}>
-        <Ionicons
-          name="arrow-back-outline"
-          style={styles.arrowLeft}
-          onPress={() => OnClickBack()}
-        />
-        <Text style={styles.Subtitle}>Tin Nhắn</Text>
+        <Text style={styles.Subtitle}>TIN NHẮN</Text>
       </View>
       <SwipeListView
         data={cartItems}

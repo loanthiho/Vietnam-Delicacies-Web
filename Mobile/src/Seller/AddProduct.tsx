@@ -1,10 +1,10 @@
-import React, {useState, useEffect, useRef} from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import ProductImg from './ProductImg';
-import {Formik} from 'formik';
+import { Formik } from 'formik';
 import * as Yup from 'yup';
 import api from '../api/request';
-import {getUserAccessToken} from '../api/storage';
+import { getUserAccessToken } from '../api/storage';
 
 import {
   View,
@@ -17,11 +17,11 @@ import {
   StatusBar,
   TouchableWithoutFeedback,
 } from 'react-native';
-import {Dropdown} from 'react-native-element-dropdown';
+import { Dropdown } from 'react-native-element-dropdown';
 import axios from 'axios';
-import {useNavigation} from '@react-navigation/native';
-import {TouchableOpacity} from 'react-native-gesture-handler';
-import {useQueryClient} from '@tanstack/react-query';
+import { useNavigation } from '@react-navigation/native';
+import { TouchableOpacity } from 'react-native-gesture-handler';
+import { useQueryClient } from '@tanstack/react-query';
 
 // import {useMutation} from 'react-query';
 
@@ -395,7 +395,7 @@ const AddProduct = () => {
                     ref={priceInputRef}
                     onFocus={() => handlePress(priceInputRef)}
                     onBlur={() => setFieldTouched('priceProduct')}
-                    style={[styles.textInput, {textAlign: 'right'}]}
+                    style={[styles.textInput, { textAlign: 'right' }]}
                     placeholder="Giá"
                     value={formatPrice(priceProduct) || values.priceProduct}
                     onChangeText={text => {
@@ -422,7 +422,7 @@ const AddProduct = () => {
                     ref={quantityInputRef}
                     onFocus={() => handlePress(quantityInputRef)}
                     onBlur={() => setFieldTouched('quantityProduct')}
-                    style={[styles.textInput, {textAlign: 'right'}]}
+                    style={[styles.textInput, { textAlign: 'right' }]}
                     placeholder="Số lượng"
                     value={
                       formatWeight(quantityProduct) || values.quantityProduct
@@ -455,7 +455,7 @@ const AddProduct = () => {
                       formatQuantity(weightProduct) || values.weightProduct
                     }
                     keyboardType="numeric"
-                    style={[styles.textInput, {textAlign: 'right'}]}
+                    style={[styles.textInput, { textAlign: 'right' }]}
                     placeholder="Cân nặng"
                     onChangeText={text => {
                       setweightProduct(text);
@@ -473,7 +473,7 @@ const AddProduct = () => {
                 disabled={!isValid}
                 style={[
                   styles.sumbitBtn,
-                  {backgroundColor: isValid ? '#ffa000' : '#FAE1B7'},
+                  { backgroundColor: isValid ? '#ffa000' : '#FAE1B7' },
                 ]}>
                 <Text style={[styles.BtnAdd]} onPress={saveProduct}>
                   Thêm sản phẩm
