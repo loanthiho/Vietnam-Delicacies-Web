@@ -17,11 +17,9 @@ import {
   StatusBar,
   TouchableWithoutFeedback,
 } from 'react-native';
-import { Dropdown } from 'react-native-element-dropdown';
-import axios from 'axios';
-import { useNavigation } from '@react-navigation/native';
-import { TouchableOpacity } from 'react-native-gesture-handler';
-import { useQueryClient } from '@tanstack/react-query';
+import {Dropdown} from 'react-native-element-dropdown';
+import {useNavigation} from '@react-navigation/native';
+import {TouchableOpacity} from 'react-native-gesture-handler';
 
 // import {useMutation} from 'react-query';
 
@@ -52,6 +50,11 @@ const AddProduct = () => {
   const weightInputRef = useRef(null);
   //img
   const [img, setImg] = useState<string>('');
+
+  //limit number
+  const [limitPrice, setLimitPrice] = useState(false);
+  const [limitQuantity, setLimitQuantity] = useState(false);
+  const [limitWeight, setLimitWeight] = useState(false);
 
   function convertToNumber(text: any) {
     // Loại bỏ các dấu chấm trong chuỗi
@@ -193,8 +196,14 @@ const AddProduct = () => {
   };
 
   const saveProduct = async () => {
-    if (nameProduct === '') {
-      Alert.alert('Vui lòng nhập thông tin');
+    if (
+      nameProduct === '' ||
+      priceProduct === '' ||
+      quantityProduct === '' ||
+      weightProduct === '' ||
+      categoryId === null
+    ) {
+      Alert.alert('Bạn đang để trống thông tin vui lòng kiểm tra');
       return;
     }
     setIsLoading(false);
@@ -399,14 +408,24 @@ const AddProduct = () => {
                     placeholder="Giá"
                     value={formatPrice(priceProduct) || values.priceProduct}
                     onChangeText={text => {
+                      if (text.length >= 13) {
+                        setLimitPrice(true);
+                        return;
+                      }
+                      setLimitPrice(false);
                       setpriceProduct(text);
                       handleChange('priceProduct')(text);
                     }}
                     keyboardType="numeric"
                   />
                 </View>
-                {touched.priceProduct && errors.priceProduct && (
-                  <Text style={styles.errorTsx}>{errors.priceProduct}</Text>
+                {limitPrice ? (
+                  <Text style={styles.errorTsx}>Giá vướt mức cho phép </Text>
+                ) : (
+                  touched.priceProduct &&
+                  errors.priceProduct && (
+                    <Text style={styles.errorTsx}>{errors.priceProduct}</Text>
+                  )
                 )}
               </View>
 
@@ -429,13 +448,27 @@ const AddProduct = () => {
                     }
                     keyboardType="numeric"
                     onChangeText={text => {
+                      if (text.length >= 8) {
+                        setLimitQuantity(true);
+                        return;
+                      }
+                      setLimitQuantity(false);
                       setquantityProduct(text);
                       handleChange('quantityProduct')(text);
                     }}
                   />
                 </View>
-                {touched.quantityProduct && errors.quantityProduct && (
-                  <Text style={styles.errorTsx}>{errors.quantityProduct}</Text>
+                {limitQuantity ? (
+                  <Text style={styles.errorTsx}>
+                    Số lượng vướt mức cho phép
+                  </Text>
+                ) : (
+                  touched.quantityProduct &&
+                  errors.quantityProduct && (
+                    <Text style={styles.errorTsx}>
+                      {errors.quantityProduct}
+                    </Text>
+                  )
                 )}
               </View>
 
@@ -458,13 +491,26 @@ const AddProduct = () => {
                     style={[styles.textInput, { textAlign: 'right' }]}
                     placeholder="Cân nặng"
                     onChangeText={text => {
+                      if (text.length >= 8) {
+                        setLimitWeight(true);
+                        return;
+                      }
+                      setLimitWeight(false);
                       setweightProduct(text);
                       handleChange('weightProduct')(text);
                     }}
                   />
                 </View>
-                {touched.weightProduct && errors.weightProduct && (
-                  <Text style={styles.errorTsx}>{errors.weightProduct}</Text>
+                {limitWeight ? (
+                  <Text style={styles.errorTsx}>
+                    Cân nặng vướt mức cho phép
+                  </Text>
+                ) : (
+                  
+                  touched.weightProduct &&
+                  errors.weightProduct && (
+                    <Text style={styles.errorTsx}>{errors.weightProduct}</Text>
+                  )
                 )}
               </View>
 

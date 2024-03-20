@@ -23,8 +23,24 @@
   margin-bottom: 70px;
 }
 
+.card {
+  width: 262px;
+  margin-bottom: 50px;
+  /* box-shadow: #ffa000; */
+  background-color: #fff;
+  box-shadow: 0px 0px 2px 0px rgba(0, 0, 0, 0.75);
+}
+
 .card img {
-  max-width: 262px;
+  margin-top: 15px;
+  width: 230px;
+  height: 200px;
+  margin-bottom: 15px;
+}
+
+.price_product {
+  margin-bottom: 30px;
+  margin-top: 5px;
 }
 
 .highlight_btn {
@@ -55,7 +71,7 @@
   position: absolute;
 }
 
-.advertise_title .sub_advertise{
- font-weight: 600;
- color: #FFA000;
+.advertise_title .sub_advertise {
+  font-weight: 600;
+  color: #ffa000;
 }

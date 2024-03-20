@@ -1,7 +1,9 @@
 import { useQuery } from "@tanstack/react-query";
 
 const fetchtAPI = async () => {
-  const data = await fetch("http://localhost:3000/products");
+  const data = await fetch(
+    "http://nodejs-app-env-1.eba-q2t7wpq3.ap-southeast-2.elasticbeanstalk.com/products"
+  );
   return data.json();
 };
 

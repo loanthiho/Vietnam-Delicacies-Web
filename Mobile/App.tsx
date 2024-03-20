@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from 'react';
-import { StyleSheet } from 'react-native';
-import { NavigationContainer } from '@react-navigation/native';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import React, {useEffect, useState} from 'react';
+import {StyleSheet} from 'react-native';
+import {NavigationContainer} from '@react-navigation/native';
+import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import ProductDetailScreen from './src/Screens/Product/ProductDetail';
 import HomePage from './src/Screens/HomeScreens';
@@ -16,6 +16,7 @@ import Contact from './src/components/Payment/AddContact';
 import AddressComponent from './src/components/Payment/AddressComponent';
 import SignUp from './src/Screens/userAuth/signUp';
 import ChooseRole from './src/Screens/userAuth/signUp/ChooseRule';
+import ForgotPasswordScreen from './src/Hooks/forgotPassword';
 import {
   QueryClient,
   QueryClientProvider,
@@ -24,8 +25,8 @@ import {
 import FlashMessage from 'react-native-flash-message';
 import SignIn from './src/Screens/userAuth/logIn';
 import SuccessfulPayment from './src/components/Payment/SuccessfulPayment';
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import { LogBox } from 'react-native';
+import {GestureHandlerRootView} from 'react-native-gesture-handler';
+import {LogBox} from 'react-native';
 import AccSetup from './src/AccConversion/AccSetup';
 import AccSeller from './src/AccConversion/AccSeller';
 import AddProduct from './src/Seller/AddProduct';
@@ -35,7 +36,7 @@ import EditProfileScreen from './src/components/Profile/EditProfile';
 import OrderScreen from './src/Screens/Order/OrderScreen';
 import OrderScreenSeller from './src/Seller/Order/OrderScreenSeller';
 import MessegesScreen from './src/Screens/MessengesScreen';
-import { getUserAccessToken } from './src/api/storage';
+import {getUserAccessToken} from './src/api/storage';
 import ReviewScreen from './src/Screens/ReviewScreen';
 // Seller
 import ShopSeller from './src/Seller/ShopSeller';
@@ -62,8 +63,8 @@ const Tab = createBottomTabNavigator();
 const TabNavigator = () => {
   return (
     <Tab.Navigator
-      screenOptions={({ route }) => ({
-        tabBarIcon: ({ focused, color, size }) => {
+      screenOptions={({route}) => ({
+        tabBarIcon: ({focused, color, size}) => {
           let iconName = '';
           if (route.name === 'Trang chủ') {
             iconName = focused ? 'home' : 'home-outline';
@@ -115,12 +116,12 @@ const App: React.FC = () => {
   const queryClient = new QueryClient();
 
   return (
-    <GestureHandlerRootView style={{ flex: 1 }}>
+    <GestureHandlerRootView style={{flex: 1}}>
       <QueryClientProvider client={queryClient}>
         <NavigationContainer>
           <Stack.Navigator
-            screenOptions={{ headerShown: false }}
-            initialRouteName={'SignIn'}>
+            screenOptions={{headerShown: false}}
+            initialRouteName={'ForgotPasswordScreen'}>
             <Stack.Screen
               name="ProductDetailScreen"
               component={ProductDetailScreen}
@@ -131,6 +132,7 @@ const App: React.FC = () => {
             <Stack.Screen name="SignUp" component={SignUp} />
             <Stack.Screen name="ChooseRole" component={ChooseRole} />
             <Stack.Screen name="SignIn" component={SignIn} />
+            <Stack.Screen name="ForgotPasswordScreen" component={ForgotPasswordScreen} />
             <Stack.Screen name="Contact" component={Contact} />
             <Stack.Screen name="EditContact" component={EditContact} />
             <Stack.Screen
