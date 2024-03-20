@@ -113,12 +113,12 @@ const App: React.FC = () => {
   const queryClient = new QueryClient();
 
   return (
-    <GestureHandlerRootView style={{ flex: 1 }}>
+    <GestureHandlerRootView style={{flex: 1}}>
       <QueryClientProvider client={queryClient}>
         <NavigationContainer>
           <Stack.Navigator
-            screenOptions={{ headerShown: false }}
-            initialRouteName={'SignIn'}>
+            screenOptions={{headerShown: false}}
+            initialRouteName={'ShopSeller'}>
             <Stack.Screen
               name="ProductDetailScreen"
               component={ProductDetailScreen}
