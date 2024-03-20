@@ -32,7 +32,6 @@ const ProductDetailScreen = ({route, navigation}: any) => {
 
   const {selectedItem}: any = route.params;
 
-  // console.log('my data', selectedItem);
 
   const decreaseQuantity = () => {
     if (quantity > 1) {
