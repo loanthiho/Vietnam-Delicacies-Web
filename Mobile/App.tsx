@@ -53,8 +53,8 @@ LogBox.ignoreLogs([
   'ViewPropTypes will be removed from React Native, along with all other PropTypes',
   'Encountered two children with the same key',
   `Image source "null" doesn't exist`,
-  "new NativeEventEmitter()` was called with a non-null argument without the required `addListener` method",
-  "`new NativeEventEmitter()` was called with a non-null argument without the required `removeListeners` method."
+  'new NativeEventEmitter()` was called with a non-null argument without the required `addListener` method',
+  '`new NativeEventEmitter()` was called with a non-null argument without the required `removeListeners` method.',
 ]);
 
 const Stack = createNativeStackNavigator();
@@ -120,7 +120,11 @@ const App: React.FC = () => {
       <QueryClientProvider client={queryClient}>
         <NavigationContainer>
           <Stack.Navigator
+<<<<<<< HEAD
             screenOptions={{ headerShown: false }}
+=======
+            screenOptions={{headerShown: false}}
+>>>>>>> 6252a062177d4684d7f5fcb9037251c83465aab6
             initialRouteName={'SignIn'}>
             <Stack.Screen
               name="ProductDetailScreen"

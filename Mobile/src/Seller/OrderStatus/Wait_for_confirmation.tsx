@@ -123,13 +123,13 @@ const styles = StyleSheet.create({
   },
   itemPrice: {
     backgroundColor: '#ffa000',
-    padding: 3,
+    padding: 2,
     fontSize: 13,
     color: '#fff',
     marginTop: 15,
     marginRight: 10,
-    maxWidth: 130,
-    textAlign: 'left',
+    maxWidth: 95,
+    textAlign: 'center',
     borderRadius: 5,
   },
   itemImage: {
@@ -152,7 +152,7 @@ const styles = StyleSheet.create({
     color: 'white',
     borderRadius: 5,
     fontSize: 12,
-    padding: 5,
+    padding: 3,
     textAlign: 'center',
   },
   statusText: {
