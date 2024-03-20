@@ -506,6 +506,7 @@ const AddProduct = () => {
                     Cân nặng vướt mức cho phép
                   </Text>
                 ) : (
+                  
                   touched.weightProduct &&
                   errors.weightProduct && (
                     <Text style={styles.errorTsx}>{errors.weightProduct}</Text>
