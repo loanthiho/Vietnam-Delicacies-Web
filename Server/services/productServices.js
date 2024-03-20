@@ -149,10 +149,13 @@ const getAllProduct = async (req, res, next) => {
         include: [
             { model: User, attributes: { exclude: [['password']] } },
             { model: Category },
-            { model: File },
+            {
+                model: File,
+            },
         ],
         order: [
-            ["createdAt", "DESC"]
+            ["createdAt", "DESC"],
+            [File, "createdAt", "DESC"]
         ]
     });
     if (products) {
@@ -168,19 +171,20 @@ const getDetailProduct = async (req, res, next) => {
     await Product.findOne({
         where: { id: id },
         include: [
-            { model: Province },
             {
                 model: User,
                 attributes: { exclude: ['password'] }
             },
             { model: Category },
-            { model: File }
+            {
+                model: File,
+            },
         ],
+        order: [[File, 'createdAt', 'DESC']]
     })
         .then(result => resSuccessData(res, result, "Get details product successfully!"))
         .catch(error => resNotFound(res, error));
 }
-
 
 const removeProduct = async (req, res, next) => {
     const id = req.params.id;
