@@ -1,4 +1,4 @@
-package com.graduation_project
+package com.vnd
 
 import android.app.Application
 import com.facebook.react.PackageList

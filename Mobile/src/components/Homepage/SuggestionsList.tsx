@@ -19,7 +19,6 @@ const SuggestionsList = ({products, navigation}: any) => {
       contentContainerStyle={{paddingHorizontal: 20}}
       style={{
         padding: 10,
-        alignItems: 'center',
         flexDirection: 'column',
       }}
       renderItem={({item}) => (
