@@ -20,6 +20,7 @@ import { debounce } from 'lodash';
 import fonts from '../ultils/_fonts';
 import { getUserAccessToken } from '../api/storage';
 import { useFocusEffect } from '@react-navigation/native';
+import { showMessage } from 'react-native-flash-message';
 
 const HomePage = ({ navigation }: any) => {
   const [selectedItem, setSelectedItem] = useState('Tất cả');
@@ -30,6 +31,12 @@ const HomePage = ({ navigation }: any) => {
     filterByDomainId: '',
     searchByProductName: ''
   });
+  var domainArray = [{
+    "id": "all",
+    "name": "Tất cả",
+    "createdAt": "2024-03-10T21:53:20.000Z",
+    "updatedAt": "2024-03-10T21:53:20.000Z"
+  }]
 
 
   const [checkBox, setCheckBox] = useState<boolean>();
@@ -38,13 +45,14 @@ const HomePage = ({ navigation }: any) => {
 
   const getUserData = async () => {
     const userInfoOld = await getUserAccessToken();
-    console.log('user:', userInfoOld.user);
     if (userInfoOld.user) {
       setUserInfo(userInfoOld.user);
+      setOldUserInfo(userInfoOld);
     } else {
       setUserInfo(null);
     }
   };
+  console.log("Program render _______________________________________________________________________");
 
   useEffect(() => {
     getUserData();
@@ -86,34 +94,41 @@ const HomePage = ({ navigation }: any) => {
    * Handle debounce search product
    */
   const handleSearch = useCallback(
-    debounce(async (key: any) => {
-      try {
-        setLoading({
-          ...loading,
-          searchLoading: true
-        })
-        const response = await api.get('products', {
-          auth: false,
-          params: {
-            searchByProductName: key.searchByProductName === '' ? null : key.searchByProductName,
-            filterByDomainId: key.filterByDomainId === '' ? null : key.filterByDomainId,
+    (key: any) => {
+      const debouncedSearch = debounce(async () => {
+        try {
+          setLoading({
+            ...loading,
+            searchLoading: true
+          });
+          console.log("Implement search _______________________________________________________________________");
+          const response = await api.get('products', {
+            auth: false,
+            params: {
+              searchByProductName: key.searchByProductName === '' ? null : key.searchByProductName,
+              filterByDomainId: key.filterByDomainId === '' ? null : key.filterByDomainId,
+            }
+          });
+          if (response) {
+            setLoading({
+              ...loading,
+              searchLoading: false
+            });
+            setProducts(response?.data?.data);
           }
-        });
-        if (response) {
+        } catch (error: any) {
           setLoading({
             ...loading,
             searchLoading: false
           })
-          setProducts(response?.data?.data)
+          console.log("Search Error:", error?.message.data);
+          // Handle error here
         }
-      } catch (error: any) {
-        console.error("Error___", error.response?.data)
-      }
-    }, 500),
-    []
+      })
+      return debouncedSearch();
+    },
+    [loading]
   );
-
-
 
 
   /**
@@ -122,6 +137,7 @@ const HomePage = ({ navigation }: any) => {
   const { isLoading: productLoading, error: productIsError, refetch: refreshProductList } = useQuery({
     queryKey: ['products'],
     queryFn: async () => {
+      console.log("Product fetch _______________________________________________________________________");
       try {
         setIsSearch(false)
         const response = await api.get('products', { auth: false });
@@ -131,6 +147,7 @@ const HomePage = ({ navigation }: any) => {
         return response.data;
       } catch (error) {
         setProducts([])
+        return []
       }
     },
   });
@@ -143,28 +160,28 @@ const HomePage = ({ navigation }: any) => {
     queryFn: async () => {
       try {
         setIsSearch(false)
-        var domainArray = [{
-          "id": "all",
-          "name": "Tất cả",
-          "createdAt": "2024-03-10T21:53:20.000Z",
-          "updatedAt": "2024-03-10T21:53:20.000Z"
-        }]
         const response = await api.get('domains', { auth: false });
         if (response) {
           setDomain([...domainArray, ...response.data?.data]);
         }
+        console.log("Domain fetch _______________________________________________________________________");
         return response.data;
       } catch (error) {
-        console.error("Error:", error)
+        console.log("Error:", error?.message);
+        showMessage({
+          type: 'danger',
+          message: error?.message == "Request failed with status code 502" ? "Lỗi kết nối đến dữ liệu" : error?.message,
+        })
+        return [];
       }
     },
 
   });
 
-
   useEffect(() => {
     refreshProductList();
     refetchDomain();
+    console.log("move navigation reRun _______________________________________________________________________");
   }, [navigation]);
 
   useFocusEffect(
@@ -173,10 +190,6 @@ const HomePage = ({ navigation }: any) => {
       refetchDomain();
     }, []),
   );
-
-
-
-
 
 
   const renderDomain = ({ item }: any) => (
@@ -266,7 +279,7 @@ const HomePage = ({ navigation }: any) => {
           : (
             <>
               <FlatList
-                data={domains}
+                data={domains && domains.length > 0 ? domains : domainArray}
                 renderItem={renderDomain}
                 keyExtractor={item => item.id}
                 horizontal

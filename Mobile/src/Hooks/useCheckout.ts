@@ -27,7 +27,7 @@ const useCheckout = (navigation: any) => {
       });
     },
   });
-  return {mutation};
+  return mutation;
 };
 
 export default useCheckout;

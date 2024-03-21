@@ -2,6 +2,7 @@ import axios from 'axios';
 import { QueryClient, useQuery, useQueryClient } from '@tanstack/react-query';
 import { getUserAccessToken } from '../api/storage';
 import api from '../api/request';
+import { showMessage } from 'react-native-flash-message';
 
 export const addToCart = async (id_product: string) => {
   try {
@@ -20,9 +21,17 @@ export const addToCart = async (id_product: string) => {
 };
 
 const fetchDataShoppingcart = async () => {
-  console.log('fetching');
-  const res = await api.get('carts');
-  return res.data;
+  try {
+    const res = await api.get('carts');
+    return res.data;
+  } catch (error) {
+    console.log("Cart fetch Error:", error?.message);
+    showMessage({
+      type: 'danger',
+      message: error?.message == 'Request failed with status code 502' ? "Lỗi! Không thể kết nối đến dữ liệu" : error?.message
+    })
+    return [];
+  }
 };
 
 export const useShoppingCartData = () => {

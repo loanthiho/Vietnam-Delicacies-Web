@@ -6,6 +6,7 @@ import {
   FlatList,
   ScrollView,
   TouchableOpacity,
+  Alert,
 } from 'react-native';
 import AddressComponent from '../../components/Payment/AddressComponent';
 import OrderDetailComponent from '../../components/Payment/OrderDetails';
@@ -16,20 +17,23 @@ import fonts from '../../ultils/_fonts';
 import useCheckout from '../../Hooks/useCheckout';
 import { useQueryClient } from '@tanstack/react-query';
 import LoaderKit from 'react-native-loader-kit';
+import useCreatePaymentIntent from '../../Hooks/useCreatePaymentIntent';
+import { initPaymentSheet, presentPaymentSheet } from '@stripe/stripe-react-native';
 
 const PaymentScreen = ({ route, navigation }: any) => {
   const { selectedItems } = route.params;
   const queryClient = useQueryClient();
+  const { mutateAsync: mutatePaymentIntent, error: paymentIntentError, isPending: paymentIntentIsLoading } = useCreatePaymentIntent();
 
   const [showPaymentDetail, setShowPaymentDetail] = useState<boolean>(true);
   const [proPrepareCheckout, setProPrepareCheckout] = useState([]);
   const [userInfo, setUserInfo] = useState({});
-  const { mutation } = useCheckout(navigation);
+  const mutation = useCheckout(navigation);
   var productCartIds: any[] = [];
   const shippingFee = 30000;
 
   const [order, setOrder] = useState({
-    payment_method: 'CashOnDelivery',
+    payment_method: 'stripe',
     shipping_address: '',
     total_amount: 0,
     total_quantity: 0,
@@ -77,8 +81,75 @@ const PaymentScreen = ({ route, navigation }: any) => {
   };
 
   const handleCheckout = async () => {
+    if (order.payment_method == 'stripe') {
+      const paymentIntentData = await mutatePaymentIntent(order.total_amount);
+
+      if (!paymentIntentData?.paymentIntent) {
+        console.log('No intent received', paymentIntentData);
+        return;
+      }
+
+      console.log('current data', paymentIntentData)
+      const initResponse = await initPaymentSheet({
+        merchantDisplayName: 'VND_APP',
+        paymentIntentClientSecret: paymentIntentData.paymentIntent
+      });
+
+      if (initResponse.error) {
+        console.error("Init response:", initResponse.error);
+        Alert.alert('Lỗi Thanh toán bằng stripe', initResponse?.error.toString());
+        return;
+      }
+      const paymentResponse = await presentPaymentSheet();
+      if (paymentResponse.error) {
+        Alert.alert(`Lỗi`,
+          paymentResponse?.error?.message === "The payment flow has been canceled" ? "Giao dịch bị hủy" : paymentResponse?.error?.message);
+        return;
+      }
+    }
     mutation.mutate(order);
   }
+
+
+  // const handleCheckout = async () => {
+  //   if (order.payment_method == 'stripe') {
+  //     mutatePaymentIntent(order.total_amount);
+  //   } else {
+  //     mutation.mutate(order);
+  //   }
+  // }
+
+  // useEffect(() => {
+  //   if (!paymentIntentData?.paymentIntent) {
+  //     return;
+  //   }
+
+  //   console.log('current data', paymentIntentData)
+  //   const initResponse = await initPaymentSheet({
+  //     merchantDisplayName: 'VND_APP',
+  //     paymentIntentClientSecret: paymentIntentData.paymentIntent
+  //   });
+
+  //   if (initResponse.error) {
+  //     console.error("Init response:", initResponse.error);
+  //     Alert.alert('Lỗi Thanh toán bằng stripe', initResponse?.error.toString());
+  //     return;
+  //   }
+  //   const paymentResponse = await presentPaymentSheet();
+  //   if (paymentResponse.error) {
+  //     Alert.alert(`Lỗi`,
+  //       paymentResponse?.error?.message === "The payment flow has been canceled" ? "Giao dịch bị hủy" : paymentResponse?.error?.message);
+  //     return;
+  //   }
+
+  //   mutation.mutate(order);
+  // }, [paymentIntentData])
+
+  useEffect(() => {
+    if (paymentIntentError) {
+      Alert.alert('Lỗi khi thanh toán', paymentIntentError?.message);
+    }
+  }, [paymentIntentError])
 
   return (
     <View style={styles.container}>
@@ -134,15 +205,14 @@ const PaymentScreen = ({ route, navigation }: any) => {
           onPress={handleCheckout}
           disabled={mutation.isPending}
         >
-          <Text style={styles.textPayment}>Mua ngay</Text>
           {
-            mutation.isPending ?
+            mutation?.isPending || paymentIntentIsLoading ?
               <LoaderKit
-                style={{ width: 20, height: 20, alignSelf: 'center' }}
+                style={{ width: 35, height: 35, alignSelf: 'center' }}
                 name={'BallPulse'} // Optional: see list of animations below
                 color={'white'} // Optional: color can be: 'red', 'green',... or '#ddd', '#ffffff',...
               />
-              : null
+              : <Text style={styles.textPayment}>Thanh Toán</Text>
           }
         </TouchableOpacity>
       </View>
@@ -206,15 +276,16 @@ const styles = StyleSheet.create({
     alignItems: 'flex-start',
   },
   BtnShow: {
-    flexDirection: 'row',
+    // flexDirection: 'row',
     fontSize: 16,
     fontWeight: 'bold',
-    padding: 10,
+    padding: 5,
+    paddingHorizontal: 40,
     backgroundColor: '#2E7D32',
-    borderRadius: 5,
+    borderRadius: 50,
     justifyContent: 'center',
-    alignItems: 'center',
-    color: 'white',
+    // alignItems: 'center',
+    // color: 'white',
   },
   btn: {
     paddingTop: 10,
