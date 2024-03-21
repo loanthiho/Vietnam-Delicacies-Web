@@ -1,15 +1,12 @@
-import React, { useEffect, useState } from 'react';
-import {
-  QueryClient,
-  QueryClientProvider,
-} from '@tanstack/react-query';
+import React, {useEffect, useState} from 'react';
+import {QueryClient, QueryClientProvider} from '@tanstack/react-query';
 
 import FlashMessage from 'react-native-flash-message';
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import { LogBox } from 'react-native';
-import { StripeProvider } from '@stripe/stripe-react-native'
+import {GestureHandlerRootView} from 'react-native-gesture-handler';
+import {LogBox} from 'react-native';
+import {StripeProvider} from '@stripe/stripe-react-native';
 import Navigation from './src/navigation';
-import { STRIPE_KEY } from './src/ultils/_env';
+import {STRIPE_KEY} from './src/ultils/_env';
 
 LogBox.ignoreLogs([
   'Non-serializable values were found in the navigation state',
@@ -25,7 +22,7 @@ LogBox.ignoreLogs([
 const App = () => {
   const queryClient = new QueryClient();
   return (
-    <GestureHandlerRootView style={{ flex: 1 }}>
+    <GestureHandlerRootView style={{flex: 1}}>
       <QueryClientProvider client={queryClient}>
         <StripeProvider publishableKey={STRIPE_KEY}>
           <Navigation />

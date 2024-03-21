@@ -59,8 +59,6 @@ const ProductScreen = () => {
     }, []),
   );
 
-  // console.log('----', cartItems);
-
   if (isLoading)
     return (
       <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>

@@ -15,10 +15,9 @@ const SuggestionsList = ({products, navigation}: any) => {
       horizontal={false}
       data={products}
       numColumns={2}
-      columnWrapperStyle={{columnGap: 20}}
       contentContainerStyle={{paddingHorizontal: 20}}
       style={{
-        padding: 10,
+        alignItems: 'center',
         flexDirection: 'column',
       }}
       renderItem={({item}) => (
@@ -83,7 +82,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     borderRadius: 10,
     width: 160,
-    // marginHorizontal: 5,
+    marginHorizontal: 5,
     marginTop: 20,
     marginBottom: 20,
   },

@@ -158,8 +158,15 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   itemPrice: {
+    backgroundColor: '#ffa000',
+    padding: 2,
     fontSize: 13,
+    color: '#fff',
     marginTop: 15,
+    marginRight: 10,
+    maxWidth: 95,
+    textAlign: 'center',
+    borderRadius: 5,
   },
   itemImage: {
     width: 70,
@@ -178,24 +185,25 @@ const styles = StyleSheet.create({
     margin: 7,
   },
   cancelText: {
-    fontSize: 13,
-    color: '#2E7D32',
+    color: 'green',
+    borderRadius: 5,
+    fontSize: 12,
+
+    textAlign: 'center',
   },
   statusText: {
     justifyContent: 'center',
     alignItems: 'center',
-    margin: 7,
     backgroundColor: 'red',
     color: 'white',
-    width: 70,
-    height: 20,
     borderRadius: 5,
+    padding: 5,
+    fontSize: 12,
     textAlign: 'center',
   },
   buttonText: {
     fontSize: 13,
   },
-
 });
 
 export default Wait_for_confirmation;

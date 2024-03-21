@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import Ionicons from 'react-native-vector-icons/Ionicons';
 import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { SwipeListView } from 'react-native-swipe-list-view';
@@ -48,9 +47,6 @@ const ChatScreen = () => {
     setCartItems(updatedItems);
   };
 
-  const OnClickBack = () => {
-    navigation.navigate('Trang chủ');
-  };
 
   const handlePress = (item: any) => {
     navigation.navigate('MessegesScreen', {
