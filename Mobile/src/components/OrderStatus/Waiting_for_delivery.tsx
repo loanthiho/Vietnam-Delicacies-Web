@@ -47,14 +47,14 @@ const Wait_for_delivery = () => {
         source={{uri: item.Product?.Files?.[0]?.src}}
         style={styles.itemImage}
       />
-      <View style={styles.content}>
+      <View>
         <Text style={styles.itemText}>{item.Product?.name}</Text>
         <Text style={styles.itemPrice}>
           {item.Product?.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.')}
           đ
         </Text>
       </View>
-      <View style={styles.status}>
+      <View >
         <Text style={styles.update}>Đang chờ lấy hàng</Text>
       </View>
     </View>
@@ -92,16 +92,21 @@ const styles = StyleSheet.create({
     padding: 10,
     elevation: 5,
   },
-  content: {
-    flex: 1,
-  },
+
   itemText: {
     fontSize: 13,
     fontWeight: 'bold',
   },
   itemPrice: {
+    backgroundColor: '#ffa000',
+    padding: 2,
     fontSize: 13,
+    color: '#fff',
     marginTop: 15,
+    marginRight: 10,
+    maxWidth: 95,
+    textAlign: 'center',
+    borderRadius: 5,
   },
   itemImage: {
     width: 70,
@@ -109,10 +114,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     marginRight: 10,
   },
-  status: {
-    flexDirection: 'column',
-    alignItems: 'flex-end',
-  },
+
   update: {
     fontSize: 13,
     color: '#2E7D32',

@@ -149,53 +149,53 @@ const ProfileScreen = ({navigation}: any) => {
         </Text>
       </View>
 
-      <ScrollView style={styles.orderStatus} horizontal={true}>
-        <TouchableOpacity
-          style={styles.iconTextContainer}
-          onPress={() =>
-            navigation.navigate({
-              name: 'OrderScreen',
-            })
-          }>
-          <MaterialCommunityIcons
-            name="timer-settings-outline"
-            style={styles.iconStatus}
-          />
-          <Text style={styles.textStatus}>Chờ xác nhận</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.iconTextContainer}
-          onPress={() =>
-            navigation.navigate({
-              name: 'OrderScreen',
-            })
-          }>
-          <AntDesign name="inbox" style={styles.iconStatus} />
-          <Text style={styles.textStatus}>Chờ lấy hàng</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.iconTextContainer}
-          onPress={() =>
-            navigation.navigate({
-              name: 'OrderScreen',
-            })
-          }>
-          <MaterialCommunityIcons
-            name="truck-delivery-outline"
-            style={styles.iconStatus}
-          />
-          <Text style={styles.textStatus}>Chờ giao hàng</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.iconTextContainer}
-          onPress={() =>
-            navigation.navigate({
-              name: 'OrderScreen',
-            })
-          }>
-          <AntDesign name="staro" style={styles.iconStatus} />
-          <Text style={styles.textStatus}>Đánh giá</Text>
-        </TouchableOpacity>
+      <ScrollView  style={styles.orderStatus} horizontal={true}>
+          <TouchableOpacity
+            style={styles.iconTextContainer}
+            onPress={() =>
+              navigation.navigate({
+                name: 'OrderScreen',
+              })
+            }>
+            <MaterialCommunityIcons
+              name="timer-settings-outline"
+              style={styles.iconStatus}
+            />
+            <Text style={styles.textStatus}>Chờ xác nhận</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.iconTextContainer}
+            onPress={() =>
+              navigation.navigate({
+                name: 'OrderScreen',
+              })
+            }>
+            <AntDesign name="inbox" style={styles.iconStatus} />
+            <Text style={styles.textStatus}>Chờ lấy hàng</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.iconTextContainer}
+            onPress={() =>
+              navigation.navigate({
+                name: 'OrderScreen',
+              })
+            }>
+            <MaterialCommunityIcons
+              name="truck-delivery-outline"
+              style={styles.iconStatus}
+            />
+            <Text style={styles.textStatus}>Chờ giao hàng</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.iconTextContainer}
+            onPress={() =>
+              navigation.navigate({
+                name: 'OrderScreen',
+              })
+            }>
+            <AntDesign name="staro" style={styles.iconStatus} />
+            <Text style={styles.textStatus}>Đánh giá</Text>
+          </TouchableOpacity>
       </ScrollView>
 
       <TouchableOpacity
@@ -330,11 +330,18 @@ const styles = StyleSheet.create({
   },
   orderStatus: {
     marginTop: 15,
+    flexDirection: 'row',
     borderBottomWidth: 2,
     borderBottomColor: '#2E7D32',
-    paddingBottom: 15,
-    // height: 230,
+    flexShrink: 0,
+    flexGrow: 0,
+    paddingBottom: 5,
   },
+
+  iconTextContainer: {
+    alignItems: 'center',
+  },
+
   iconStatus: {
     marginRight: 5,
     color: '#2E7D32',
@@ -359,11 +366,6 @@ const styles = StyleSheet.create({
     color: '#2E7D32',
   },
 
-  iconTextContainer: {
-    height:0,
-    flexDirection: 'column',
-    alignItems: 'center',
-  },
   info: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -393,8 +395,7 @@ const styles = StyleSheet.create({
     padding: 10,
     paddingRight: 20,
     borderColor: 'white',
-    elevation: 2
-    ,
+    elevation: 2,
   },
   itemImage: {
     width: 80,

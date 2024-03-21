@@ -47,9 +47,6 @@ const ChatScreen = () => {
     setCartItems(updatedItems);
   };
 
-  const OnClickBack = () => {
-    navigation.navigate('Trang chủ');
-  };
 
   const handlePress = (item: any) => {
     navigation.navigate('MessegesScreen', {

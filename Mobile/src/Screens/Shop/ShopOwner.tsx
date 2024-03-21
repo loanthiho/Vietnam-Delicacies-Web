@@ -1,22 +1,36 @@
-import React, { useEffect } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Image, TextInput, FlatList } from 'react-native';
+import React, {useEffect} from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  Image,
+  TextInput,
+  FlatList,
+} from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import { useQuery } from '@tanstack/react-query';
+import {useQuery} from '@tanstack/react-query';
 import api from '../../api/request';
 
-const ShopOwnerScreen = ({ navigation, route }: { navigation: any; route: any; }) => {
-  const { selectedItem }: { selectedItem: any } = route.params || {};
-  
+const ShopOwnerScreen = ({
+  navigation,
+  route,
+}: {
+  navigation: any;
+  route: any;
+}) => {
+  const {selectedItem}: {selectedItem: any} = route.params || {};
+
   if (!selectedItem.User) {
     return <Text> Người dùng không tồn tại</Text>;
   }
-  
-  const { data, refetch: refetchProduct } = useQuery({
+
+  const {data, refetch: refetchProduct} = useQuery({
     queryKey: ['products'],
     queryFn: async () => {
       const response = await api.get('products', {
         auth: false,
-        params: { seller_id: selectedItem.seller_id },
+        params: {seller_id: selectedItem.seller_id},
       });
       console.log('res', response.data?.data);
       return response.data.data;
@@ -31,23 +45,29 @@ const ShopOwnerScreen = ({ navigation, route }: { navigation: any; route: any; }
 
     return unsubscribe;
   }, [navigation]);
-  
-  const renderProductOwner = ({ item }: { item: any }) => {
+
+  const renderProductOwner = ({item}: {item: any}) => {
     return (
-      <TouchableOpacity style={styles.productContainer} onPress={() =>
-        navigation.navigate('ProductDetailScreen', {
-          selectedItem: item,
-        })
-      }>
+      <TouchableOpacity
+        style={styles.productContainer}
+        onPress={() =>
+          navigation.navigate('ProductDetailScreen', {
+            selectedItem: item,
+          })
+        }>
         <Image
-          source={{ uri: item.Files[0].src }}
+          source={{uri: item.Files[0].src}}
           style={styles.itemPhoto}
           resizeMode="cover"
         />
-        <Text style={styles.itemText}>{item.name}</Text>
+        <Text numberOfLines={1} style={styles.itemText}>
+          {item.name}
+        </Text>
         <View style={styles.iconContainer}>
-          <Ionicons name="star" style={styles.starIcon} />
-          <Text style={styles.ratingText}>4.5</Text>
+          <View style={{flexDirection: 'row'}}>
+            <Ionicons name="star" style={styles.starIcon} />
+            <Text style={styles.ratingText}>4.5</Text>
+          </View>
           <Text style={styles.itemprice}>
             {item.price?.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.')}đ
           </Text>
@@ -71,10 +91,12 @@ const ShopOwnerScreen = ({ navigation, route }: { navigation: any; route: any; }
           />
         </TouchableOpacity>
       </View>
-      <View style={styles.search}>
-        <Ionicons name="search-outline" style={styles.searchIcon} />
-        <TextInput placeholder="Tìm kiếm..." style={styles.searchInput} />
-        <TouchableOpacity>
+      <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+        <View style={styles.search}>
+          <Ionicons name="search-outline" style={styles.searchIcon} />
+          <TextInput placeholder="Tìm kiếm..." style={styles.searchInput} />
+        </View>
+        <TouchableOpacity style={{alignSelf: 'center', alignItems: 'center'}}>
           <Ionicons name="chatbox" style={styles.chat} />
         </TouchableOpacity>
       </View>
@@ -93,7 +115,6 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 5,
     marginHorizontal: 5,
-    
   },
   productContainer: {
     marginVertical: 10,
@@ -101,7 +122,6 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     borderRadius: 10,
     marginBottom: 10,
-    justifyContent: 'space-between',
     width: 160,
     marginHorizontal: 5,
     marginTop: 20,
@@ -130,8 +150,9 @@ const styles = StyleSheet.create({
   search: {
     flexDirection: 'row',
     alignItems: 'center',
-    padding: 5,
-    borderRadius: 20,
+    padding: 4,
+    borderRadius: 10,
+    width: '85%',
     backgroundColor: '#ffffff',
   },
   searchIcon: {
@@ -147,22 +168,25 @@ const styles = StyleSheet.create({
     marginLeft: 5,
   },
   chat: {
-    fontSize: 30,
+    fontSize: 34,
     color: '#2E7D32',
     backgroundColor: 'white',
     borderRadius: 10,
-    padding: 5,
+    padding: 6,
   },
   itemPhoto: {
     width: 130,
     height: 130,
-    borderRadius: 20,
+    borderRadius: 10,
     marginLeft: 4,
+    marginTop: 5,
   },
   itemText: {
-    marginTop: 5,
+    textAlign: 'center',
+    marginTop: 8,
     fontSize: 16,
     fontWeight: 'bold',
+    marginBottom: 10,
   },
   itemprice: {
     color: '#fff',
@@ -178,11 +202,12 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   starIcon: {
-    fontSize: 20,
-    color: 'yellow',
+    fontSize: 18,
+    color: '#ffa000',
+    marginRight: 4,
   },
   ratingText: {
-    marginRight: 25,
+    fontSize: 13,
   },
 });
 

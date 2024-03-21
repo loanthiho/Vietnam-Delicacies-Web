@@ -80,9 +80,7 @@ const CartScreen = ({ route, navigation }: any) => {
       }}>GIỎ HÀNG CỦA BẠN</Text>
       <ScrollView
         contentContainerStyle={[{
-          flexDirection: 'column',
-          alignItems: 'center',
-          flex: 1, // Thêm thuộc tính này để đảm bảo nội dung căn giữa trên toàn bộ ScrollView
+          flexDirection: 'column'
         }, cartItems && cartItems?.length <= 0 ? { justifyContent: 'center' } : null]}
       >
         {isLoading ?
@@ -170,12 +168,12 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   checkoutText: {
-    fontSize: 20,
+    fontSize: 18,
     fontWeight: 'bold',
     color: '#FFA000',
   },
   money: {
-    fontSize: 20,
+    fontSize:16,
     fontWeight: 'bold',
     color: '#FFA000',
   },

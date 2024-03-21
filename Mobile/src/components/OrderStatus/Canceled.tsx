@@ -1,26 +1,23 @@
-
-import React, { useState, useEffect } from 'react';
+import React, {useState, useEffect} from 'react';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import {
-  View,
-  Text,
-  Image,
-  FlatList,
-  StyleSheet,
-  Pressable,
-} from 'react-native';
-import { TouchableOpacity } from 'react-native-gesture-handler';
+import {View, Text, Image, FlatList, StyleSheet, Pressable} from 'react-native';
+import {TouchableOpacity} from 'react-native-gesture-handler';
 import LoaderKit from 'react-native-loader-kit';
-import { useQuery } from '@tanstack/react-query';
+import {useQuery} from '@tanstack/react-query';
 import api from '../../api/request';
-import { useNavigation } from '@react-navigation/native';
+import {useNavigation} from '@react-navigation/native';
 
 const Canceled = () => {
   const navigation = useNavigation<any>();
-  const { data, isLoading, refetch: refetchOrder, isRefetching } = useQuery({
+  const {
+    data,
+    isLoading,
+    refetch: refetchOrder,
+    isRefetching,
+  } = useQuery({
     queryKey: ['get_order_DA_HUY'],
     queryFn: async () => {
-      const res = await api.get('orders', { params: { status: "DA_HUY" } });
+      const res = await api.get('orders', {params: {status: 'DA_HUY'}});
       if (res) {
         return res.data?.data;
       }
@@ -29,20 +26,25 @@ const Canceled = () => {
 
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
-      refetchOrder()
+      refetchOrder();
       console.log('wait delivery Screen is focused!');
     });
 
     return unsubscribe;
   }, [navigation]);
 
-
-  const renderItem = ({ item }: any) => (
+  const renderItem = ({item}: any) => (
     <View key={item.id} style={styles.itemContainer}>
-      <Image source={{ uri: item.Product?.Files?.[0]?.src }} style={styles.itemImage} />
+      <Image
+        source={{uri: item.Product?.Files?.[0]?.src}}
+        style={styles.itemImage}
+      />
       <View style={styles.content}>
         <Text style={styles.itemText}>{item.Product?.name}</Text>
-        <Text style={styles.itemPrice}>{item.Product?.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.')}đ</Text>
+        <Text style={styles.itemPrice}>
+          {item.Product?.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.')}
+          đ
+        </Text>
       </View>
       <View style={styles.status}>
         {/* <TouchableOpacity style={styles.cancel}>
@@ -57,20 +59,19 @@ const Canceled = () => {
 
   return (
     <View style={styles.container}>
-      {
-        isLoading ?
-          (
-            <LoaderKit
-              style={{ width: 35, height: 35, alignSelf: 'center' }}
-              name={'BallPulse'}
-              color={'green'}
-            />
-          )
-          :
-          data && data.length > 0 ?
-            < FlatList data={data} renderItem={renderItem} />
-            : <Text style={{ alignSelf: 'center', marginTop: 10 }}>Không có đơn hủy nào cả nào cả!</Text>
-      }
+      {isLoading ? (
+        <LoaderKit
+          style={{width: 35, height: 35, alignSelf: 'center'}}
+          name={'BallPulse'}
+          color={'green'}
+        />
+      ) : data && data.length > 0 ? (
+        <FlatList data={data} renderItem={renderItem} />
+      ) : (
+        <Text style={{alignSelf: 'center', marginTop: 10}}>
+          Không có đơn hủy nào cả nào cả!
+        </Text>
+      )}
     </View>
   );
 };
@@ -96,8 +97,15 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   itemPrice: {
+    backgroundColor: '#ffa000',
+    padding: 2,
     fontSize: 13,
+    color: '#fff',
     marginTop: 15,
+    marginRight: 10,
+    maxWidth: 95,
+    textAlign: 'center',
+    borderRadius: 5,
   },
   itemImage: {
     width: 70,
@@ -138,8 +146,6 @@ const styles = StyleSheet.create({
   buttonText: {
     fontSize: 13,
   },
-
 });
 
 export default Canceled;
-

@@ -58,11 +58,6 @@ const Waiting_confirmation = () => {
       <View style={styles.status}>
         <View style={{ flexDirection: 'row' }}>
           <Text style={styles.update}> Đang vận chuyển </Text>
-          <LoaderKit
-            style={{ width: 35, height: 20, alignSelf: 'center' }}
-            name={'BallPulse'}
-            color={'green'}
-          />
         </View>
         <TouchableOpacity
           disabled={mutation.isPending ? true : false}
@@ -131,8 +126,15 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   itemPrice: {
+    backgroundColor: '#ffa000',
+    padding: 2,
     fontSize: 13,
+    color: '#fff',
     marginTop: 15,
+    marginRight: 10,
+    maxWidth: 95,
+    textAlign: 'center',
+    borderRadius: 5,
   },
   itemImage: {
     width: 70,
@@ -150,12 +152,12 @@ const styles = StyleSheet.create({
     color: 'white',
     borderRadius: 5,
     textAlign: 'center',
-    padding: 10
+    padding: 10,
   },
   update: {
     fontSize: 13,
     color: '#2E7D32',
-    margin: 7,
+    marginBottom: 7,
   },
 });
 

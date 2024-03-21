@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react';
-import { View, Text, Image, TouchableOpacity, StyleSheet } from 'react-native';
-import Swipeable from 'react-native-gesture-handler/Swipeable';
+import React, {useEffect, useState} from 'react';
+import {View, Text, Image, TouchableOpacity, StyleSheet} from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import {SwipeListView} from 'react-native-swipe-list-view';
 
 const CartItem = ({
   item,
@@ -10,85 +10,88 @@ const CartItem = ({
   changeSelectedItem,
   removeItem,
 }: any) => {
-
-
   const toggleCheckbox = () => changeSelectedItem(!selected);
   const defaultImagePath = require('../../assets/no_image.jpg');
-  const formatPrice = (price: { toString: () => string }) => {
+  const formatPrice = (price: {toString: () => string}) => {
     return price?.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
   };
 
   return (
-    <Swipeable
-      renderRightActions={() => (
+    <SwipeListView
+      data={[item]}
+      renderItem={({item}) => (
+        <View style={styles.itemContainer}>
+          <TouchableOpacity onPress={toggleCheckbox}>
+            {selected ? (
+              <MaterialCommunityIcons
+                name="checkbox-marked"
+                style={styles.checkboxButton}
+              />
+            ) : (
+              <MaterialCommunityIcons
+                name="checkbox-blank-outline"
+                style={styles.checkboxButton}
+              />
+            )}
+          </TouchableOpacity>
+
+          <View style={styles.item}>
+            <Image
+              source={{
+                uri: item.Product?.Files[0]?.src,
+              }}
+              style={styles.itemImage}
+            />
+            <View style={styles.groupCartQuantity}>
+              <View style={styles.groupCart}>
+                <Text style={styles.itemText}>{item.Product?.name}</Text>
+                <Text style={styles.itemPrice}>
+                  {formatPrice(item.Product?.price)}đ
+                </Text>
+              </View>
+
+              <View
+                style={{
+                  flex: 2,
+                  flexDirection: 'column',
+                  backgroundColor: 'white',
+                  height: '100%',
+                  justifyContent: 'flex-end',
+                  alignItems: 'flex-end',
+                }}>
+                <View style={styles.quantityContainer}>
+                  <TouchableOpacity
+                    onPress={async () => await changeQuantity(item.id, -1)}
+                    style={[styles.button, {backgroundColor: '#FFA000'}]}>
+                    <Text style={styles.buttonText}>-</Text>
+                  </TouchableOpacity>
+                  <Text style={styles.quantity}>{item?.quantity}</Text>
+                  <TouchableOpacity
+                    onPress={async () => await changeQuantity(item.id, 1)}
+                    style={[styles.button, {backgroundColor: '#FFA000'}]}>
+                    <Text style={styles.buttonText}>+</Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+            </View>
+          </View>
+        </View>
+      )}
+      renderHiddenItem={({item}) => (
         <TouchableOpacity
           style={styles.deleteButton}
           onPress={() => removeItem(item.id)}>
           <Text style={styles.deleteButtonText}>Xoá</Text>
         </TouchableOpacity>
       )}
-    >
-      <View style={styles.itemContainer}>
-        <TouchableOpacity onPress={toggleCheckbox}>
-          {selected ? (
-            <MaterialCommunityIcons
-              name="checkbox-marked"
-              style={styles.checkboxButton}
-            />
-          ) : (
-            <MaterialCommunityIcons
-              name="checkbox-blank-outline"
-              style={styles.checkboxButton}
-            />
-          )}
-        </TouchableOpacity>
-
-        <View style={styles.item}>
-          <Image
-            source={{
-              uri: item.Product?.Files[0]?.src,
-            }}
-            style={styles.itemImage}
-          />
-          <View style={styles.groupCartQuantity}>
-            <View style={styles.groupCart}>
-              <Text style={styles.itemText}>{item.Product?.name}</Text>
-              <Text style={styles.itemPrice}>{formatPrice(item.Product?.price)}đ</Text>
-            </View>
-
-            <View style={{
-              flex: 2,
-              flexDirection: 'column',
-              backgroundColor: 'white',
-              height: '100%',
-              justifyContent: 'flex-end',
-              alignItems: 'flex-end'
-            }}>
-              <View style={styles.quantityContainer}>
-                <TouchableOpacity
-                  onPress={async () => await changeQuantity(item.id, -1)}
-                  style={[styles.button, { backgroundColor: '#FFA000' }]}>
-                  <Text style={styles.buttonText}>-</Text>
-                </TouchableOpacity>
-                <Text style={styles.quantity}>{item?.quantity}</Text>
-                <TouchableOpacity
-                  onPress={async () => await changeQuantity(item.id, 1)}
-                  style={[styles.button, { backgroundColor: '#FFA000' }]}>
-                  <Text style={styles.buttonText}>+</Text>
-                </TouchableOpacity>
-              </View>
-            </View>
-          </View>
-        </View>
-      </View>
-    </Swipeable>
+      rightOpenValue={-55} // Width of the right panel when swiped
+    />
   );
 };
 
 const styles = StyleSheet.create({
   itemContainer: {
     width: '100%',
-    // justifyContent: 'center',
     alignItems: 'center',
     flexDirection: 'row',
   },
@@ -104,7 +107,7 @@ const styles = StyleSheet.create({
   groupCart: {
     height: '100%',
     flexDirection: 'column',
-    justifyContent: 'space-between'
+    justifyContent: 'space-between',
   },
 
   groupCartQuantity: {
@@ -116,7 +119,6 @@ const styles = StyleSheet.create({
   },
 
   itemText: {
-    maxWidth: 150,
     borderRadius: 10,
     color: '#FFA000',
     overflow: 'hidden',
@@ -129,7 +131,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#2E7D32',
     alignSelf: 'flex-start',
     padding: 5,
-    fontSize: 14,
+    fontSize: 13,
   },
   button: {
     width: 26,
@@ -144,24 +146,25 @@ const styles = StyleSheet.create({
     color: 'white',
   },
   deleteButton: {
-    backgroundColor: 'red',
+    textAlign: 'right',
     justifyContent: 'center',
-    alignSelf: 'center',
-    borderRadius: 10,
-    height: 100,
-    padding: 20,
-    marginTop: 20,
+    marginRight: 5,
   },
   deleteButtonText: {
-    color: 'white',
-    fontWeight: 'bold',
-    width: 'auto',
-    height: 20,
+    color: '#fff',
+    marginTop: 18,
+    paddingLeft: 18,
+    paddingRight: 18,
+    paddingTop: 39,
+    paddingBottom: 39,
+    backgroundColor: 'red',
+    alignContent: 'center',
+    alignSelf: 'flex-end',
+    borderRadius: 10,
   },
   item: {
     marginTop: 15,
     flexDirection: 'row',
-    gap: 10,
     backgroundColor: 'white',
     borderRadius: 10,
     width: '90%',
@@ -169,7 +172,7 @@ const styles = StyleSheet.create({
   },
   quantityContainer: {
     flexDirection: 'row',
-    columnGap: 10
+    columnGap: 5,
   },
   quantity: {
     fontSize: 12,
