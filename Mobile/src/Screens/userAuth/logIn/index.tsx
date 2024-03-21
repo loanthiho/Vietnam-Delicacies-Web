@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import * as yup from 'yup';
 import signupSchema from './validation';
 import LoaderKit from 'react-native-loader-kit';
@@ -15,18 +15,18 @@ import {
   ScrollView,
 } from 'react-native';
 import useLogin from '../../../Hooks/useLogin';
-import {showMessage} from 'react-native-flash-message';
-import {setUserAccessToken} from '../../../api/storage';
+import { showMessage } from 'react-native-flash-message';
+import { setUserAccessToken } from '../../../api/storage';
 
-const SignIn: React.FC = ({navigation, route}: any) => {
-  const {mutation, errorMess} = useLogin();
+const SignIn: React.FC = ({ navigation, route }: any) => {
+  const { mutation, errorMess } = useLogin();
   const [userCredentials, setUserCredentials] = useState({
     name: '',
     email: '',
     password: '',
     role: '',
   });
-  const [errors, setErrors] = useState<{[key: string]: string}>({});
+  const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const checkMess = async () => {
     if (mutation.isSuccess) {
       showMessage({
@@ -36,7 +36,7 @@ const SignIn: React.FC = ({navigation, route}: any) => {
     }
     if (mutation.isError) {
       showMessage({
-        message: errorMess,
+        message: errorMess ? errorMess : "Không thể kết nối!",
         type: 'danger',
       });
     }
@@ -45,8 +45,8 @@ const SignIn: React.FC = ({navigation, route}: any) => {
     checkMess();
     if (mutation.isSuccess) {
       const func = async () => {
-        const {token, user} = mutation.data.data;
-        await setUserAccessToken({token, user, isBuyer: false});
+        const { token, user } = mutation.data.data;
+        await setUserAccessToken({ token, user, isBuyer: false });
         // Nếu không, điều hướng tới màn hình chính
         if (user && user.role === 'seller') {
           return navigation.navigate('ShopSeller');
@@ -86,13 +86,13 @@ const SignIn: React.FC = ({navigation, route}: any) => {
 
   const handleSubmit = async () => {
     try {
-      await signupSchema.validate(userCredentials, {abortEarly: false});
+      await signupSchema.validate(userCredentials, { abortEarly: false });
       if (errors?.email === '' && errors?.password === '') {
         try {
           mutation.mutate(userCredentials);
           if (mutation.isSuccess) {
-            const {token, user} = mutation.data.data;
-            await setUserAccessToken({token, user});
+            const { token, user } = mutation.data.data;
+            await setUserAccessToken({ token, user });
           }
         } catch (error) {
           console.error('Error when login:', error);
@@ -111,7 +111,7 @@ const SignIn: React.FC = ({navigation, route}: any) => {
   };
   return (
     <ScrollView>
-      <View style={{flex: 1}}>
+      <View style={{ flex: 1 }}>
         <View style={styles.container}>
           <View>
             <View>
@@ -156,7 +156,7 @@ const SignIn: React.FC = ({navigation, route}: any) => {
               backgroundColor: '#FFA000',
             }}>
             <View
-              style={{flex: 1, flexDirection: 'row', justifyContent: 'center'}}>
+              style={{ flex: 1, flexDirection: 'row', justifyContent: 'center' }}>
               <Text
                 style={{
                   color: 'white',
@@ -175,7 +175,7 @@ const SignIn: React.FC = ({navigation, route}: any) => {
                 }}>
                 {mutation.isPending ? (
                   <LoaderKit
-                    style={{width: 20, height: 20}}
+                    style={{ width: 20, height: 20 }}
                     name={'BallPulse'}
                     color={'white'}
                   />
@@ -183,19 +183,19 @@ const SignIn: React.FC = ({navigation, route}: any) => {
               </View>
             </View>
           </TouchableOpacity>
-          <TouchableOpacity   onPress={() => navigation.navigate('ForgotPasswordScreen')}>
+          <TouchableOpacity onPress={() => navigation.navigate('ForgotPasswordScreen')}>
             <Text
               style={{
                 color: 'black',
                 fontSize: 15,
                 textAlign: 'right',
-                marginBottom:10
+                marginBottom: 10
               }}>
               Bạn quên mật khẩu ư?
             </Text>
           </TouchableOpacity>
 
-          <View style={{flexDirection: 'row'}}>
+          <View style={{ flexDirection: 'row' }}>
             <Text
               style={{
                 width: '45%',
@@ -203,7 +203,7 @@ const SignIn: React.FC = ({navigation, route}: any) => {
                 borderColor: 'black',
                 borderBottomRightRadius: 50,
               }}></Text>
-            <Text style={{color: 'black', fontWeight: '600'}}>OR</Text>
+            <Text style={{ color: 'black', fontWeight: '600' }}>OR</Text>
             <Text
               style={{
                 width: '45%',
@@ -225,13 +225,13 @@ const SignIn: React.FC = ({navigation, route}: any) => {
                 padding: 15,
               }}>
               <Image
-                style={{width: 45, height: 45, borderRadius: 50}}
+                style={{ width: 45, height: 45, borderRadius: 50 }}
                 source={require('../../../assets/img_login_sigup/facebook.jpeg')}></Image>
             </TouchableOpacity>
 
-            <TouchableOpacity style={{padding: 15}}>
+            <TouchableOpacity style={{ padding: 15 }}>
               <Image
-                style={{width: 45, height: 45, borderRadius: 50}}
+                style={{ width: 45, height: 45, borderRadius: 50 }}
                 source={require('../../../assets/img_login_sigup/Google__G__logo.svg.png')}></Image>
             </TouchableOpacity>
           </View>
@@ -241,9 +241,9 @@ const SignIn: React.FC = ({navigation, route}: any) => {
               justifyContent: 'center',
               margin: 10,
             }}>
-            <Text style={{color: '#012345'}}>Bạn chưa có tài khoản?</Text>
+            <Text style={{ color: '#012345' }}>Bạn chưa có tài khoản?</Text>
             <TouchableOpacity onPress={() => navigation.navigate('SignUp')}>
-              <Text style={{color: '#FFA000'}}> Đăng ký</Text>
+              <Text style={{ color: '#FFA000' }}> Đăng ký</Text>
             </TouchableOpacity>
           </View>
         </View>

@@ -1,0 +1,2 @@
+export let STRIPE_KEY =
+  'pk_test_51OwGUn2LYl4iBKPG2Y0ONdfZcaHMekCVSmQeuVpSGKtGf3Bjh5xiSnB02XaOYxvmiLFyqi4DNoNr2Xu2LQpBGlbC00fUaGmvS8';

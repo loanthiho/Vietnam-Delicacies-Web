@@ -34,6 +34,12 @@ const HomePage = ({navigation}: any) => {
     filterByDomainId: '',
     searchByProductName: '',
   });
+  var domainArray = [{
+    "id": "all",
+    "name": "Tất cả",
+    "createdAt": "2024-03-10T21:53:20.000Z",
+    "updatedAt": "2024-03-10T21:53:20.000Z"
+  }]
 
   React.useEffect(() => {
     initialize(
@@ -47,13 +53,14 @@ const HomePage = ({navigation}: any) => {
 
   const getUserData = async () => {
     const userInfoOld = await getUserAccessToken();
-    console.log('user:', userInfoOld.user);
     if (userInfoOld.user) {
       setUserInfo(userInfoOld.user);
+      setOldUserInfo(userInfoOld);
     } else {
       setUserInfo(null);
     }
   };
+  console.log("Program render _______________________________________________________________________");
 
   useEffect(() => {
     getUserData();
@@ -93,34 +100,42 @@ const HomePage = ({navigation}: any) => {
    * Handle debounce search product
    */
   const handleSearch = useCallback(
-    debounce(async (key: any) => {
-      try {
-        setLoading({
-          ...loading,
-          searchLoading: true,
-        });
-        const response = await api.get('products', {
-          auth: false,
-          params: {
-            searchByProductName:
-              key.searchByProductName === '' ? null : key.searchByProductName,
-            filterByDomainId:
-              key.filterByDomainId === '' ? null : key.filterByDomainId,
-          },
-        });
-        if (response) {
+    (key: any) => {
+      const debouncedSearch = debounce(async () => {
+        try {
           setLoading({
             ...loading,
-            searchLoading: false,
+            searchLoading: true
           });
-          setProducts(response?.data?.data);
+          console.log("Implement search _______________________________________________________________________");
+          const response = await api.get('products', {
+            auth: false,
+            params: {
+              searchByProductName: key.searchByProductName === '' ? null : key.searchByProductName,
+              filterByDomainId: key.filterByDomainId === '' ? null : key.filterByDomainId,
+            }
+          });
+          if (response) {
+            setLoading({
+              ...loading,
+              searchLoading: false
+            });
+            setProducts(response?.data?.data);
+          }
+        } catch (error: any) {
+          setLoading({
+            ...loading,
+            searchLoading: false
+          })
+          console.log("Search Error:", error?.message.data);
+          // Handle error here
         }
-      } catch (error: any) {
-        console.error('Error___', error.response?.data);
-      }
-    }, 500),
-    [],
+      })
+      return debouncedSearch();
+    },
+    [loading]
   );
+
 
   /**
    * Fetch the first data products.
@@ -132,6 +147,7 @@ const HomePage = ({navigation}: any) => {
   } = useQuery({
     queryKey: ['products'],
     queryFn: async () => {
+      console.log("Product fetch _______________________________________________________________________");
       try {
         setIsSearch(false);
         const response = await api.get('products', {auth: false});
@@ -171,9 +187,15 @@ const HomePage = ({navigation}: any) => {
         if (response) {
           setDomain([...domainArray, ...response.data?.data]);
         }
+        console.log("Domain fetch _______________________________________________________________________");
         return response.data;
       } catch (error) {
-        console.error('Error:', error);
+        console.log("Error:", error?.message);
+        showMessage({
+          type: 'danger',
+          message: error?.message == "Request failed with status code 502" ? "Lỗi kết nối đến dữ liệu" : error?.message,
+        })
+        return [];
       }
     },
   });
@@ -181,6 +203,7 @@ const HomePage = ({navigation}: any) => {
   useEffect(() => {
     refreshProductList();
     refetchDomain();
+    console.log("move navigation reRun _______________________________________________________________________");
   }, [navigation]);
 
   useFocusEffect(
@@ -251,12 +274,36 @@ const HomePage = ({navigation}: any) => {
           alignItems: 'center',
           height: 70,
         }}>
-        {/**
-         *  @domains this is to fetch the domains.
-         *  @renderItem The component to render the domains
-         *
-         *  @domain_isLoading to check the domain is fetching!
-         */}
+        {
+          /**
+           *  @domains this is to fetch the domains.
+           *  @renderItem The component to render the domains
+           * 
+           *  @domain_isLoading to check the domain is fetching!
+           */
+        }
+
+        {domainLoading
+          ?
+          (
+            <>
+              <LoaderKit
+                style={{ width: 50, height: 50, flexDirection: 'row', justifyContent: 'center', alignSelf: 'center' }}
+                name={'BallPulse'} // Optional: see list of animations below
+                color={'green'} // Optional: color can be: 'red', 'green',... or '#ddd', '#ffffff',...
+              />
+            </>
+          )
+          : (
+            <>
+              <FlatList
+                data={domains && domains.length > 0 ? domains : domainArray}
+                renderItem={renderDomain}
+                keyExtractor={item => item.id}
+                horizontal
+              />
+            </>
+          )}
 
         {domainLoading ? (
           <>

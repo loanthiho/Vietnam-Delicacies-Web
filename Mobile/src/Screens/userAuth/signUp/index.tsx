@@ -64,6 +64,9 @@ const SignUp: React.FC = ({ navigation }: any) => {
     }
     setIsEE(false)
   }, [isLoading]);
+
+
+
   const handleSubmit = async () => {
     try {
       setIsloading(true)
