@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   View,
   Text,
@@ -9,9 +9,10 @@ import {
 } from 'react-native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import { LogOut, getUserAccessToken } from '../api/storage';
+import {LogOut, getUserAccessToken} from '../api/storage';
+import {SwipeListView} from 'react-native-swipe-list-view';
 
-const ProfileScreen = ({ navigation }: any) => {
+const ProfileScreen = ({navigation}: any) => {
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
   const [userInfo, setUserInfo] = useState<any>();
   const [oldUserInfo, setOldUserInfo] = useState<any>();
@@ -36,20 +37,91 @@ const ProfileScreen = ({ navigation }: any) => {
     return unsubscribe;
   }, [navigation]);
 
+  const dataHistiry = [
+    {
+      id: 1,
+      name: 'Văn Đi shop',
+      messenger: 'Giá hiện tại là bao nhiều vậy shop',
+      image: require('../assets/huong.jpg'),
+    },
+    {
+      id: 2,
+      name: 'Chấm chéo Tây Bắc',
+      messenger: 'Chị check tin nhắn em với ạ',
+      image: require('../assets/huong.jpg'),
+    },
+    {
+      id: 3,
+      name: 'Chấm chéo Tây Bắc',
+      messenger: 'Chị check tin nhắn em với ạ',
+      image: require('../assets/huong.jpg'),
+    },
+    {
+      id: 4,
+      name: 'Chấm chéo Tây Bắc',
+      messenger: 'Chị check tin nhắn em với ạ',
+      image: require('../assets/huong.jpg'),
+    },
+    {
+      id: 5,
+      name: 'Chấm chéo Tây Bắc',
+      messenger: 'Chị check tin nhắn em với ạ',
+      image: require('../assets/huong.jpg'),
+    },
+  ];
+
+  const deleteItem = (itemId: number) => {
+    const updatedItems = itemsHistory.filter(item => item.id !== itemId);
+    setItemsHistory(updatedItems);
+  };
+
+  const [itemsHistory, setItemsHistory] = useState(dataHistiry);
+
+  const renderItemHistory = ({item}: any) => (
+    <TouchableOpacity
+      style={styles.itemContainer}
+      onPress={() => handlePress(item)}>
+      <Image
+        source={typeof item.image === 'string' ? {uri: item.image} : item.image}
+        style={styles.itemImage}
+      />
+      <View style={styles.content}>
+        <Text numberOfLines={1} style={styles.itemText}>
+          {item.name}
+        </Text>
+        <Text numberOfLines={1} style={styles.messenger}>
+          {item.messenger}
+        </Text>
+      </View>
+    </TouchableOpacity>
+  );
+  const renderHiddenItem = ({item}: any) => (
+    <View>
+      <TouchableOpacity
+        style={[styles.backRightBtn]}
+        onPress={() => deleteItem(item.id)}>
+        <Text style={styles.backTextWhite}>Xóa</Text>
+      </TouchableOpacity>
+    </View>
+  );
+
   return (
     <View style={styles.container}>
-      <Text style={{
-        fontSize: 20,
-        fontWeight: 'bold',
-        color: '#2E7D32',
-        paddingBottom: 10
-      }}>THÔNG TIN CÁ NHÂN</Text>
+      <Text
+        style={{
+          fontSize: 20,
+          fontWeight: 'bold',
+          color: '#2E7D32',
+          paddingBottom: 10,
+        }}>
+        THÔNG TIN CÁ NHÂN
+      </Text>
       <View style={styles.profileContainer}>
         <TouchableOpacity style={styles.profileImageContainer}>
           <Image
             source={
               userInfo?.avatar
-                ? { uri: userInfo.avatar }
+                ? {uri: userInfo.avatar}
                 : require('../assets/huong.jpg')
             }
             style={styles.profileImage}
@@ -64,7 +136,7 @@ const ProfileScreen = ({ navigation }: any) => {
           onPress={() =>
             navigation.navigate({
               name: 'EditProfileScreen',
-              params: { userInfo, setUserInfo, oldUserInfo },
+              params: {userInfo, setUserInfo, oldUserInfo},
             })
           }>
           <AntDesign name="edit" style={styles.IconEdit} />
@@ -170,6 +242,18 @@ const ProfileScreen = ({ navigation }: any) => {
           </View>
         </TouchableOpacity>
       ) : null}
+
+      <Text style={{fontSize: 16, fontWeight: 'bold', color: '#2E7D32'}}>
+        Lịch sử đơn hàng
+      </Text>
+
+      <SwipeListView
+        data={itemsHistory}
+        renderItem={renderItemHistory}
+        renderHiddenItem={renderHiddenItem}
+        rightOpenValue={-60}
+      />
+
       <TouchableOpacity onPress={() => LogOut(navigation)}>
         <Text style={styles.logoutButton}>Đăng xuất</Text>
       </TouchableOpacity>
@@ -248,7 +332,8 @@ const styles = StyleSheet.create({
     marginTop: 15,
     borderBottomWidth: 2,
     borderBottomColor: '#2E7D32',
-    maxHeight: 55,
+    paddingBottom: 15,
+    // height: 230,
   },
   iconStatus: {
     marginRight: 5,
@@ -275,13 +360,14 @@ const styles = StyleSheet.create({
   },
 
   iconTextContainer: {
+    height:0,
     flexDirection: 'column',
     alignItems: 'center',
   },
   info: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingVertical: 5,
+    paddingVertical: 4,
     margin: 3,
   },
   logoutButton: {
@@ -294,6 +380,78 @@ const styles = StyleSheet.create({
     color: '#fff',
     textAlign: 'center',
     margin: 10,
+  },
+
+  itemContainer: {
+    flex: 3,
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'white',
+    borderRadius: 10,
+    marginHorizontal: 5,
+    marginTop: 10,
+    padding: 10,
+    paddingRight: 20,
+    borderColor: 'white',
+    elevation: 2
+    ,
+  },
+  itemImage: {
+    width: 80,
+    height: 80,
+    marginRight: 10,
+    borderRadius: 10,
+  },
+
+  content: {
+    alignSelf: 'center',
+    gap: 10,
+  },
+  itemText: {
+    marginRight: 50,
+    fontSize: 16,
+    borderRadius: 10,
+    color: '#FFA000',
+  },
+  messenger: {
+    marginRight: 40,
+    fontSize: 14,
+    borderRadius: 5,
+    color: '#000',
+  },
+
+  arrowLeft: {
+    fontSize: 20,
+  },
+
+  title: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+  },
+
+  Subtitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#2E7D32',
+  },
+
+  backTextWhite: {
+    color: '#fff',
+    marginTop: 10,
+    paddingLeft: 18,
+    paddingRight: 18,
+    paddingTop: 40,
+    paddingBottom: 40,
+    backgroundColor: 'red',
+    alignContent: 'center',
+    alignSelf: 'flex-end',
+    borderRadius: 10,
+  },
+
+  backRightBtn: {
+    textAlign: 'right',
+    justifyContent: 'center',
   },
 });
 
