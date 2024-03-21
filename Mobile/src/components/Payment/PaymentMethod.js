@@ -13,19 +13,19 @@ const PaymentMethods = ({ order, setOrder }) => {
         style={[styles.paymentMethodButton, order.payment_method === 'CashOnDelivery' && styles.selectedPaymentMethod]}
         onPress={() => ChangeMethod('CashOnDelivery')}>
         <View style={styles.paymentMethodContent}>
-          <FontAwesome5 name="money-bill" size={24} color="#2E7D32" />
+          <FontAwesome5 name="money-bill" size={30} color="#2E7D32" />
           <Text style={[styles.paymentMethodText, order.payment_method === 'CashOnDelivery' && styles.selectedPaymentText]}>Thanh toán khi nhận hàng</Text>
         </View>
       </TouchableOpacity>
       <TouchableOpacity
-        style={[styles.paymentMethodButton, order.payment_method === 'ZaloPay' && styles.selectedPaymentMethod]}
-        onPress={() => ChangeMethod('ZaloPay')}>
+        style={[styles.paymentMethodButton, order.payment_method === 'stripe' && styles.selectedPaymentMethod]}
+        onPress={() => ChangeMethod('stripe')}>
         <View style={styles.paymentMethodContent}>
           <Image
-            source={require('../../assets/Logo_ZaloPay.png')}
-            style={styles.zalopay}
+            source={require('../../assets/stripe.jpg')}
+            style={styles.stripe}
           />
-          <Text style={[styles.paymentMethodText, order.payment_method === 'ZaloPay' && styles.selectedPaymentText]}>ZaloPay</Text>
+          <Text style={[styles.paymentMethodText, order.payment_method === 'stripe' && styles.selectedPaymentText]}>Thanh toán online</Text>
         </View>
       </TouchableOpacity>
     </View>
@@ -35,19 +35,14 @@ const PaymentMethods = ({ order, setOrder }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-
+    flexDirection: 'column',
+    rowGap: 20
   },
   paymentMethodButton: {
-    flex: 1,
     padding: 15,
     borderWidth: 1,
     borderColor: '#CCCCCC',
     borderRadius: 10,
-    marginBottom: 10,
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginHorizontal: 5,
-
   },
   selectedPaymentMethod: {
     backgroundColor: '#FFA000',
@@ -57,7 +52,7 @@ const styles = StyleSheet.create({
   },
   paymentMethodContent: {
     flexDirection: 'row',
-    alignItems: 'center',
+    alignItems: 'center'
   },
   paymentMethodText: {
     fontWeight: 'bold',
@@ -65,9 +60,8 @@ const styles = StyleSheet.create({
     fontSize: 17,
     marginLeft: 10,
   },
-  zalopay: {
-    width: 27,
-    height: 27,
+  stripe: {
+    width: 45, height: 45, borderRadius: 5
   },
 });
 

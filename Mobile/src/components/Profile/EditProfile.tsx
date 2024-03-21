@@ -53,7 +53,7 @@ const EditProfileScreen = ({ navigation, route }: any) => {
       setIsEditing(false);
     },
     onError: (error, variable) => {
-      console.error("error update", error.response?.data)
+      console.error("error update", error)
       showMessage({
         type: 'danger',
         message: 'Lỗi cập nhật!'

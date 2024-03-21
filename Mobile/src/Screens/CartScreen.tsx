@@ -78,14 +78,7 @@ const CartScreen = ({ route, navigation }: any) => {
         fontWeight: 'bold',
         color: '#2E7D32',
       }}>GIỎ HÀNG CỦA BẠN</Text>
-
-      {/* {errorMessage && !selected.some(item => item) ? (
-        <Text style={styles.setErrorMessage}>
-          Vui lòng chọn ít nhất một sản phẩm để thanh toán
-        </Text>
-      ) : null} */}
       <ScrollView
-        // style={{ flexDirection: 'column', backgroundColor: 'red' }}
         contentContainerStyle={[{
           flexDirection: 'column',
           alignItems: 'center',
@@ -117,7 +110,7 @@ const CartScreen = ({ route, navigation }: any) => {
           )
           : null
         }
-        {!isLoading && !cartItems.length ? (
+        {!isLoading && cartItems && !cartItems.length ? (
           <Text style={{ textAlign: 'center', alignSelf: "center" }}> Không có sản phẩm nào!</Text>
         ) : null}
       </ScrollView>
@@ -133,7 +126,7 @@ const CartScreen = ({ route, navigation }: any) => {
           </View>
 
           <TouchableOpacity
-            disabled={data?.data.length == 0 ? true : false}
+            disabled={data && data?.data?.length == 0 ? true : false}
             onPress={() => {
               const selectedItems = cartItems.filter(
                 (item: any, index: number) => selected[index],
@@ -149,7 +142,7 @@ const CartScreen = ({ route, navigation }: any) => {
                 })
               }
             }}>
-            <Text style={[styles.checkoutButtonText, data?.data.length == 0 ? { opacity: 0.3 } : null]}>Thanh toán</Text>
+            <Text style={[styles.checkoutButtonText, data && data?.data && data?.data?.length == 0 ? { opacity: 0.3 } : null]}>Thanh toán</Text>
           </TouchableOpacity>
         </View>
       </View>

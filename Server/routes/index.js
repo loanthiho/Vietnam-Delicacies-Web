@@ -9,6 +9,7 @@ const uploadRoutes = require('./uploadRoutes');
 const fileRoutes = require('./fileRoutes');
 const cartRoutes = require('./cartRoutes');
 const orderRoutes = require('./orderRoutes');
+const stripePaymentRoutes = require('./stripePaymentRoutes');
 function runRouters(app) {
     app.use('/products', productRoutes);
     app.use('/categories', categoryRoutes);
@@ -20,6 +21,8 @@ function runRouters(app) {
     app.use('/files', fileRoutes);
     app.use('/carts', cartRoutes);
     app.use('/orders', orderRoutes);
+    app.use('/payments', stripePaymentRoutes);
+
 
 }
 
