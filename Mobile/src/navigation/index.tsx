@@ -46,7 +46,7 @@ const Navigation = () => {
         <NavigationContainer>
             <Stack.Navigator
                 screenOptions={{ headerShown: false }}
-                initialRouteName={'SignIn'}
+                initialRouteName={'ShopSeller'}
             >
                 {/* | Customer screen ________________________________________________________________ */}
                 <Stack.Screen name="Main" component={BottomTab} />

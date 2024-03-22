@@ -100,12 +100,15 @@ const ShopOwnerScreen = ({
           <Ionicons name="chatbox" style={styles.chat} />
         </TouchableOpacity>
       </View>
-      <FlatList
-        data={data}
-        numColumns={2}
-        renderItem={renderProductOwner}
-        keyExtractor={(_item, index) => index.toString()}
-      />
+
+      <View style={{flex: 1, alignItems: 'center', marginVertical: 10}}>
+        <FlatList
+          data={data}
+          numColumns={2}
+          renderItem={renderProductOwner}
+          keyExtractor={(_item, index) => index.toString()}
+        />
+      </View>
     </View>
   );
 };
@@ -117,11 +120,9 @@ const styles = StyleSheet.create({
     marginHorizontal: 5,
   },
   productContainer: {
-    marginVertical: 10,
     padding: 10,
     backgroundColor: 'white',
     borderRadius: 10,
-    marginBottom: 10,
     width: 160,
     marginHorizontal: 5,
     marginTop: 20,
