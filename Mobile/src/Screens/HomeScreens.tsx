@@ -304,31 +304,6 @@ const HomePage = ({navigation}: any) => {
               />
             </>
           )}
-
-        {domainLoading ? (
-          <>
-            <LoaderKit
-              style={{
-                width: 50,
-                height: 50,
-                flexDirection: 'row',
-                justifyContent: 'center',
-                alignSelf: 'center',
-              }}
-              name={'BallPulse'} // Optional: see list of animations below
-              color={'green'} // Optional: color can be: 'red', 'green',... or '#ddd', '#ffffff',...
-            />
-          </>
-        ) : (
-          <>
-            <FlatList
-              data={domains}
-              renderItem={renderDomain}
-              keyExtractor={item => item.id}
-              horizontal
-            />
-          </>
-        )}
       </View>
       <ScrollView style={{flex: 1}}>
         <Banner />
