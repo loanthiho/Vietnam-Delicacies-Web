@@ -1,4 +1,4 @@
-const { Op } = require('sequelize');
+const { Op, where } = require('sequelize');
 const { Chat, User, Message } = require('../models');
 const { resBadRequest, resSuccess, resSuccessData, resInternalError } = require('../utils/response');
 const createNewRoomChat = async (req, res, next) => {
@@ -11,7 +11,19 @@ const createNewRoomChat = async (req, res, next) => {
     if (!sender_id || !receiver_id) {
         return resBadRequest(res, "Missing receiver_id or sender_id");
     };
-    const fetchRoomChat = await Chat.findAll({ where: { sender_id: sender_id, receiver_id: receiver_id } });
+    const fetchRoomChat = await Chat.findAll({
+        where: {
+            sender_id: sender_id,
+            receiver_id: receiver_id
+        }, where: {
+            [Op.or]: [
+                { sender_id: current_user_id },
+                { receiver_id: current_user_id }
+            ],
+        },
+        include: [{ model: Message }, { model: User }],
+        order: [[Message, "date", "DESC"]]
+    });
     if (fetchRoomChat && fetchRoomChat.length > 0) {
         return resSuccessData(res, fetchRoomChat, "This room have already created!");
     }
@@ -27,7 +39,18 @@ const createNewRoomChat = async (req, res, next) => {
         const createRoomChat = await Chat.create({ sender_id, receiver_id });
         // const createRoom = await Chat.create({ sender_id: receiver_id, receiver_id: sender_id });
         if (createRoomChat) {
-            return resSuccessData(res, createRoomChat, "Create room chat successfully!")
+            const chatRoom = await Chat.findAll({
+                where: {
+                    [Op.or]: [
+                        { sender_id: createRoomChat.sender_id },
+                        { receiver_id: createRoomChat.receiver_id }
+                    ],
+                },
+                include: [{ model: Message }, { model: User }],
+                order: [[Message, "date", "DESC"]]
+            });
+            // return resSuccessData(res, chatRoom);
+            return resSuccessData(res, chatRoom, "Create room chat successfully!")
         }
     } catch (error) {
         return resInternalError(res, error);
@@ -104,14 +127,24 @@ const removeRoomChat = async (req, res, next) => {
         return resBadRequest(res, "Missing chat id!");
     }
     const isValidRoom = await Chat.findByPk(chat_id);
-    if (!isValidRoom) {
-        return resBadRequest(res, "There is no chat room with this Id!")
+    const isValidUser = await Chat.findOne({
+        where: {
+            [Op.or]: [
+                { sender_id: user_id },
+                { receiver_id: user_id }
+            ],
+        }
+    });
+    if (!isValidRoom || !isValidUser) {
+        return resBadRequest(res, "no room or no user id match!")
     }
-    console.log("delete room:", isValidRoom.id);
+    const removeRoomChat = await Chat.destroy({ where: {} })
+    // console.log("delete room:", isValidRoom.id);
 }
 module.exports = {
     createNewRoomChat,
     chatting,
     getAllChatRoom,
-    getMessInChatRoom
+    getMessInChatRoom,
+    removeRoomChat
 }
