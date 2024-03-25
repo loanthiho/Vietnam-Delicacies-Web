@@ -36,6 +36,7 @@ import Help from '../Support/Help';
 import AppInf from '../Support/AppInf';
 import Notification from '../Seller/Notifications/Notification';
 import MessageSeller from '../Seller/Notifications/MessageSeller';
+import ChatBox from "../Screens/Chat/ChatBox";
 // End seller import stack screen_______________________________________________
 
 
@@ -46,7 +47,7 @@ const Navigation = () => {
         <NavigationContainer>
             <Stack.Navigator
                 screenOptions={{ headerShown: false }}
-                initialRouteName={'ShopSeller'}
+                initialRouteName={'SignIn'}
             >
                 {/* | Customer screen ________________________________________________________________ */}
                 <Stack.Screen name="Main" component={BottomTab} />
@@ -81,6 +82,7 @@ const Navigation = () => {
                 <Stack.Screen name="AccSeller" component={AccSeller} />
                 <Stack.Screen name="Notification" component={Notification} />
                 <Stack.Screen name="MessageSeller" component={MessageSeller} />
+                <Stack.Screen name="ChatBox" component={ChatBox} />
                 {/* | End Seller screen _________________________________________________________________ */}
 
             </Stack.Navigator>

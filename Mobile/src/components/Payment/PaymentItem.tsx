@@ -24,7 +24,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     borderRadius: 10,
     marginHorizontal: 5,
-    marginTop: 10,
+    // marginTop: 10,
     padding: 10,
     flex: 1,
     maxHeight: 85,
@@ -46,13 +46,13 @@ const styles = StyleSheet.create({
     marginRight: 5,
   },
   itemText: {
-    fontSize: 18,
+    // fontSize: 18,
     color: '#FFA000',
     margin: 5,
     fontWeight: 'bold',
   },
   itemPrice: {
-    fontSize: 18,
+    // fontSize: 16,
     margin: 10,
     color: '#000000'
   },

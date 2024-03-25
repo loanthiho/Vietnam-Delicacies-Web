@@ -36,7 +36,9 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     flexDirection: 'column',
-    rowGap: 20
+    rowGap: 10,
+    paddingLeft:6,
+    paddingRight:6
   },
   paymentMethodButton: {
     padding: 15,
@@ -57,7 +59,6 @@ const styles = StyleSheet.create({
   paymentMethodText: {
     fontWeight: 'bold',
     color: '#333333',
-    fontSize: 17,
     marginLeft: 10,
   },
   stripe: {

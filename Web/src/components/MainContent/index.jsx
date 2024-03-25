@@ -1,13 +1,13 @@
 import { useState } from "react";
 import styles from "./style.module.css";
 import { useQuery } from "@tanstack/react-query";
-// import outstandingproducts from "../../../public/OutstandingProducts/products.json";
-// import newproducts from "../../../public/NewProducts/products.json";
+import Notification from "../../Notification";
+import { toast } from "react-toastify";
 
 const Index = () => {
   const [showOutstandingproducts, setShowOutstandingproducts] = useState(false);
   const [shownewProducts, setShownewProducts] = useState(false);
-
+  const notify = () => toast("Bạn cần tải App VnD để có thể mua sản phẩm");
   const fetchtAPI = async () => {
     const response = await fetch(
       "http://nodejs-app-env-1.eba-q2t7wpq3.ap-southeast-2.elasticbeanstalk.com/products"
@@ -23,8 +23,6 @@ const Index = () => {
   if (isPending) return "Đang tải...";
   if (error) return "Lỗi tải dữ liệu";
 
-  console.log("data", data.data.Files?.[0]?.src);
-
   const toggleShowOutstandingproducts = () => {
     setShowOutstandingproducts(!showOutstandingproducts);
   };
@@ -33,8 +31,10 @@ const Index = () => {
     setShownewProducts(!shownewProducts);
   };
 
-  const showNotification = () => {
-    alert("Bạn cần tải app này để mua sản phẩm");
+  const isProductOlderThanTenDays = (createdAt) => {
+    const tenDaysAgo = new Date();
+    tenDaysAgo.setDate(tenDaysAgo.getDate() - 10);
+    return new Date(createdAt) < tenDaysAgo;
   };
 
   return (
@@ -45,12 +45,12 @@ const Index = () => {
           <i className="fa-solid fa-bowl-food"></i>
         </div>
       </div>
-
+      <Notification />
       <div className={styles.product}>
         {data?.data
           .slice(0, showOutstandingproducts ? data.length : 6)
           .map((product, index) => (
-            <div key={index} className={styles.card} onClick={showNotification}>
+            <div key={index} className={styles.card} onClick={notify}>
               <img src={product.Files?.[0]?.src} alt="" />
               <div className={styles.name_product}>{product.name}</div>
               <div className={styles.price_product}>
@@ -99,15 +99,24 @@ const Index = () => {
           <i className="fa-solid fa-burger"></i>
         </div>
       </div>
-      {/* 
+
       <div className={styles.product}>
-        {newproducts
-          .slice(0, shownewProducts ? newproducts.length : 6)
+        {data?.data
+          .filter(
+            (product) =>
+              !isProductOlderThanTenDays(product.createdAt && product.updatedAt)
+          )
+          .slice(0, shownewProducts ? data.length : 6)
           .map((product, index) => (
-            <div key={index} className={styles.card} onClick={showNotification}>
-              <img src={product.imageUrl} alt="" />
+            <div key={index} className={styles.card} onClick={notify}>
+              <img src={product.Files?.[0]?.src} />
               <div className={styles.name_product}>{product.name}</div>
-              <div className={styles.price_product}>{product.price}</div>
+              <div className={styles.price_product}>
+                {product.price
+                  ?.toString()
+                  .replace(/\B(?=(\d{3})+(?!\d))/g, ".")}
+                đ
+              </div>
             </div>
           ))}
       </div>
@@ -116,7 +125,7 @@ const Index = () => {
         <button onClick={toggleshowNewproduct} className={styles.highlight_btn}>
           XEM THÊM
         </button>
-      )} */}
+      )}
     </div>
   );
 };
