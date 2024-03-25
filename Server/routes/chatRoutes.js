@@ -1,0 +1,12 @@
+const express = require('express');
+const router = express.Router();
+const chatCtl = require('../controllers/chatCtl');
+const { checkAuth } = require('../middleware/check-auth');
+
+router.post('/chat', checkAuth, chatCtl.chat);
+router.post('/:receiver_id', checkAuth, chatCtl.createRoom);
+
+router.get('/get-message/:chat_id', checkAuth, chatCtl.getMessage);
+router.get('/', chatCtl.getChatRoom);
+
+module.exports = router;

@@ -12,6 +12,27 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
 
+      User.hasMany(models.Chat, {
+        foreignKey: {
+          name: 'sender_id',
+          type: DataTypes.UUID
+        }
+      });
+
+      User.hasMany(models.Chat, {
+        foreignKey: {
+          name: 'receiver_id',
+          type: DataTypes.UUID
+        }
+      });
+
+      User.hasMany(models.Message, {
+        foreignKey: {
+          type: DataTypes.UUID,
+          name: 'sender_id'
+        }
+      })
+
       // Một người bán có thể bán nhiều sản phẩm.
       // Mỗi Product chỉ được bán ra bởi một người.
       User.hasMany(models.Product, {
