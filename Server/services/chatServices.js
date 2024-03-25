@@ -1,3 +1,4 @@
+const { Op } = require('sequelize');
 const { Chat, User, Message } = require('../models');
 const { resBadRequest, resSuccess, resSuccessData, resInternalError } = require('../utils/response');
 const createNewRoomChat = async (req, res, next) => {
@@ -61,8 +62,23 @@ const chatting = async (req, res, next) => {
 }
 
 const getAllChatRoom = async (req, res, next) => {
-    const chatRoom = await Chat.findAll();
-    return resSuccessData(res, chatRoom);
+    try {
+        const current_user_id = req.userData.id;
+        const chatRoom = await Chat.findAll({
+            where: {
+                [Op.or]: [
+                    { sender_id: current_user_id },
+                    { receiver_id: current_user_id }
+                ],
+            },
+            include: [{ model: Message }, { model: User }],
+            order: [[Message, "date", "DESC"]]
+        });
+        return resSuccessData(res, chatRoom);
+    } catch (error) {
+        // return resInternalError(res, error);
+        console.log(error)
+    }
 }
 
 const getMessInChatRoom = async (req, res, next) => {
