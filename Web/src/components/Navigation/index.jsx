@@ -57,7 +57,7 @@ const Nav = () => {
                   currentPage === "/processedFood" ? styles.active : ""
                 }
               >
-                <Link to="/processedFood">THỰC PHẨM QUA CHẾ BIẾN</Link>
+                <Link to="/processedFood">ĐỒ UỐNG TRUYỀN THỐNG</Link>
               </li>
             </ul>
           </li>

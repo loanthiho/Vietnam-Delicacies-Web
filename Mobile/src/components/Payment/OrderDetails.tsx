@@ -62,7 +62,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   totalAmount: {
-    fontSize: 20,
+    fontSize: 16,
     fontWeight: 'bold',
     color: '#FFA000',
   },

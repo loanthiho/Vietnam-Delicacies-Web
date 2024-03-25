@@ -10,12 +10,15 @@ import {
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {LogOut, getUserAccessToken} from '../api/storage';
+import {useMutation, useQuery} from '@tanstack/react-query';
+import api from '../api/request';
 import {SwipeListView} from 'react-native-swipe-list-view';
 
 const ProfileScreen = ({navigation}: any) => {
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
   const [userInfo, setUserInfo] = useState<any>();
   const [oldUserInfo, setOldUserInfo] = useState<any>();
+  const [cartItems, setCartItems] = useState<any[]>([]);
 
   const getUserData = async () => {
     const userInfoOld = await getUserAccessToken();
@@ -37,60 +40,62 @@ const ProfileScreen = ({navigation}: any) => {
     return unsubscribe;
   }, [navigation]);
 
-  const dataHistiry = [
-    {
-      id: 1,
-      name: 'Văn Đi shop',
-      messenger: 'Giá hiện tại là bao nhiều vậy shop',
-      image: require('../assets/huong.jpg'),
+  const {
+    data,
+    isLoading,
+    refetch: refetchOrder,
+  } = useQuery({
+    queryKey: ['get_order_CHO_DANH_GIA'],
+    queryFn: async () => {
+      const res = await api.get('orders', {params: {status: 'CHO_DANH_GIA'}});
+      if (res) {
+        return res.data?.data;
+      }
     },
-    {
-      id: 2,
-      name: 'Chấm chéo Tây Bắc',
-      messenger: 'Chị check tin nhắn em với ạ',
-      image: require('../assets/huong.jpg'),
-    },
-    {
-      id: 3,
-      name: 'Chấm chéo Tây Bắc',
-      messenger: 'Chị check tin nhắn em với ạ',
-      image: require('../assets/huong.jpg'),
-    },
-    {
-      id: 4,
-      name: 'Chấm chéo Tây Bắc',
-      messenger: 'Chị check tin nhắn em với ạ',
-      image: require('../assets/huong.jpg'),
-    },
-    {
-      id: 5,
-      name: 'Chấm chéo Tây Bắc',
-      messenger: 'Chị check tin nhắn em với ạ',
-      image: require('../assets/huong.jpg'),
-    },
-  ];
+  });
 
-  const deleteItem = (itemId: number) => {
-    const updatedItems = itemsHistory.filter(item => item.id !== itemId);
-    setItemsHistory(updatedItems);
+  const {
+    isPending: removePending,
+    error,
+    isSuccess,
+    mutate: removeOrder,
+  } = useMutation({
+    mutationKey: ['remove_received_order'],
+    mutationFn: async (id: string) =>
+      (await api.delete(`orders/${id}`)).data?.data,
+  });
+
+  const deleteItem = async (itemId: number) => {
+    const updatedCartItems = cartItems.filter(item => item.id !== itemId);
+    removeOrder(itemId);
+    setCartItems(updatedCartItems);
+    refetchOrder();
   };
 
-  const [itemsHistory, setItemsHistory] = useState(dataHistiry);
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('focus', () => {
+      refetchOrder();
+      console.log('wait delivery Screen is focused!');
+    });
+
+    return unsubscribe;
+  }, [navigation]);
+
+  console.log('Dtaa', data);
 
   const renderItemHistory = ({item}: any) => (
-    <TouchableOpacity
-      style={styles.itemContainer}
-      onPress={() => handlePress(item)}>
+    <TouchableOpacity key={item.id} style={styles.itemContainer}>
       <Image
-        source={typeof item.image === 'string' ? {uri: item.image} : item.image}
+        source={{uri: item.Product?.Files?.[0]?.src}}
         style={styles.itemImage}
       />
       <View style={styles.content}>
         <Text numberOfLines={1} style={styles.itemText}>
-          {item.name}
+          {item.Product?.name}
         </Text>
         <Text numberOfLines={1} style={styles.messenger}>
-          {item.messenger}
+          {item.Product?.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.')}
+          đ
         </Text>
       </View>
     </TouchableOpacity>
@@ -98,6 +103,7 @@ const ProfileScreen = ({navigation}: any) => {
   const renderHiddenItem = ({item}: any) => (
     <View>
       <TouchableOpacity
+        disabled={removePending}
         style={[styles.backRightBtn]}
         onPress={() => deleteItem(item.id)}>
         <Text style={styles.backTextWhite}>Xóa</Text>
@@ -149,53 +155,53 @@ const ProfileScreen = ({navigation}: any) => {
         </Text>
       </View>
 
-      <ScrollView  style={styles.orderStatus} horizontal={true}>
-          <TouchableOpacity
-            style={styles.iconTextContainer}
-            onPress={() =>
-              navigation.navigate({
-                name: 'OrderScreen',
-              })
-            }>
-            <MaterialCommunityIcons
-              name="timer-settings-outline"
-              style={styles.iconStatus}
-            />
-            <Text style={styles.textStatus}>Chờ xác nhận</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.iconTextContainer}
-            onPress={() =>
-              navigation.navigate({
-                name: 'OrderScreen',
-              })
-            }>
-            <AntDesign name="inbox" style={styles.iconStatus} />
-            <Text style={styles.textStatus}>Chờ lấy hàng</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.iconTextContainer}
-            onPress={() =>
-              navigation.navigate({
-                name: 'OrderScreen',
-              })
-            }>
-            <MaterialCommunityIcons
-              name="truck-delivery-outline"
-              style={styles.iconStatus}
-            />
-            <Text style={styles.textStatus}>Chờ giao hàng</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.iconTextContainer}
-            onPress={() =>
-              navigation.navigate({
-                name: 'OrderScreen',
-              })
-            }>
-            <AntDesign name="staro" style={styles.iconStatus} />
-            <Text style={styles.textStatus}>Đánh giá</Text>
-          </TouchableOpacity>
+      <ScrollView style={styles.orderStatus} horizontal={true}>
+        <TouchableOpacity
+          style={styles.iconTextContainer}
+          onPress={() =>
+            navigation.navigate({
+              name: 'OrderScreen',
+            })
+          }>
+          <MaterialCommunityIcons
+            name="timer-settings-outline"
+            style={styles.iconStatus}
+          />
+          <Text style={styles.textStatus}>Chờ xác nhận</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.iconTextContainer}
+          onPress={() =>
+            navigation.navigate({
+              name: 'OrderScreen',
+            })
+          }>
+          <AntDesign name="inbox" style={styles.iconStatus} />
+          <Text style={styles.textStatus}>Chờ lấy hàng</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.iconTextContainer}
+          onPress={() =>
+            navigation.navigate({
+              name: 'OrderScreen',
+            })
+          }>
+          <MaterialCommunityIcons
+            name="truck-delivery-outline"
+            style={styles.iconStatus}
+          />
+          <Text style={styles.textStatus}>Chờ giao hàng</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.iconTextContainer}
+          onPress={() =>
+            navigation.navigate({
+              name: 'OrderScreen',
+            })
+          }>
+          <AntDesign name="staro" style={styles.iconStatus} />
+          <Text style={styles.textStatus}>Đánh giá</Text>
+        </TouchableOpacity>
       </ScrollView>
 
       <TouchableOpacity
@@ -248,7 +254,7 @@ const ProfileScreen = ({navigation}: any) => {
       </Text>
 
       <SwipeListView
-        data={itemsHistory}
+        data={data}
         renderItem={renderItemHistory}
         renderHiddenItem={renderHiddenItem}
         rightOpenValue={-60}
