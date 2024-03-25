@@ -11,6 +11,8 @@ Router.get('/:id', userCtl.getOneById);
 Router.patch('/:id', userCtl.update);
 
 Router.get('/by-email/:email', userCtl.getOneByEmail);
+Router.post('/forgot-password', userCtl.fogotPassword);
+Router.post('/change-password', userCtl.changePass);
 // Router.patch('/:id',userCtl.update);
 // Router.delete('/:id',userCtl.remove);
 

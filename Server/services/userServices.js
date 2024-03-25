@@ -3,6 +3,7 @@ const jwt = require('jsonwebtoken');
 const bcryptjs = require('bcryptjs');
 const { resSuccessData, resBadRequest, resInternalError, resNotFound } = require('../utils/response');
 const { where } = require('sequelize');
+const { sendMail, mailOptions } = require('./mailer');
 
 const getAllUser = async (req, res, next) => {
     const rUser = await User.findAll();
@@ -19,7 +20,7 @@ const getUserByEmail = async (req, res, next) => {
     if (result) {
         return resSuccessData(res, result, "Get usser by email successfully")
     }
-    resNotFound(res, "Email haven't use yet!")
+    resNotFound(res, "User not found");
 }
 const createCart = async (res, user_id, dataRes) => {
     const newCart = await Cart.create({ user_id });
@@ -39,7 +40,7 @@ const userSignUp = async (req, res, next) => {
     if (user && user.password && user.name && user.email) {
         user.password = await bcryptjs.hash(req.body.password, 10)
     } else {
-        resBadRequest(res, "Invalid user credentials")
+        resBadRequest(res, "Thông tin không chính xác")
     }
 
     const userDb = await User.findOne({ where: { email: req.body.email } });
@@ -51,7 +52,7 @@ const userSignUp = async (req, res, next) => {
             createCart(res, id, resultCreateUser);
         }
         else {
-            resInternalError(res, "Failed create user")
+            resInternalError(res, "Đăng ký không thành công")
         }
     } else {
         resBadRequest(res, "This email ready exists!");
@@ -132,7 +133,6 @@ const getUserById = async (req, res, next) => {
     } catch (error) {
         resInternalError(res, error)
     }
-
 }
 
 const updateUser = async (req, res, next) => {
@@ -167,11 +167,68 @@ const updateUser = async (req, res, next) => {
 
 }
 
+const userForgotPassword = async (req, res, next) => {
+    const receiverEmail = req.body.email;
+    try {
+        const mailOptions = {
+            from: {
+                name: "VnD App",
+                address: process.env.USER
+            }, // sender address
+            to: [receiverEmail], // list of receivers
+            subject: "Your password", // Subject line
+            text: "Hello world?", // plain text body
+            html: "<p>This is your password</p>", // html body,
+        }
+        await sendMail(res, mailOptions);
+    } catch (error) {
+        return resInternalError(res, error);
+    }
+}
+
+const changePassword = async (req, res, next) => {
+    const receiverEmail = req.body.email;
+    const newPassword = req.body.newPassword;
+    const mailOptions = {
+        from: {
+            name: "VnD",
+            address: process.env.USER
+        }, // sender address
+        to: [receiverEmail], // list of receivers
+        subject: "Ứng dụng Vnd", // Subject line
+        // text: "Hello world?", // plain text body
+        html: `<p>Đây là mật khẩu mới của bạn không chia sẽ cho bất kỳ ai</p> <br/> ${receiverEmail} <br/> ${newPassword} `, // html body,
+    }
+    if (receiverEmail && receiverEmail !== null && receiverEmail !== "") {
+        const user = await User.findOne({ where: { email: receiverEmail } });
+        if (user && user.id) {
+            if (newPassword) {
+                try {
+                    const newPasswordUpdateHash = await bcryptjs.hash(newPassword, 10);
+                    if (newPasswordUpdateHash) {
+                        const userUpdate = await User.update({ password: newPasswordUpdateHash }, { where: { id: user.id } });
+                        if (userUpdate) {
+                            return await sendMail(res, mailOptions);
+                        }
+                        return resInternalError(res, "Cập nhật mật khẩu mới bị lỗi!");
+                    }
+                } catch (error) {
+                    return resInternalError(res, "Băm mật khẩu lỗi!");
+                }
+            }
+            return resBadRequest(res, "Vui lòng không thiếu mật khẩu mới!");
+        }
+        return resNotFound(res, "Không thể tìm thấy người dùng!")
+    }
+    return resNotFound(res, "Vui lòng điền email để xác nhận thông tin!")
+}
 module.exports = {
     getAllUser,
     userSignUp,
     userSignIn,
     getUserByEmail,
     getUserById,
-    updateUser
+    updateUser,
+    userForgotPassword,
+    changePassword
 };
