@@ -1,3 +1,4 @@
+const { Op } = require('sequelize');
 const { Chat, User, Message } = require('../models');
 const { resBadRequest, resSuccess, resSuccessData, resInternalError } = require('../utils/response');
 const createNewRoomChat = async (req, res, next) => {
@@ -12,7 +13,7 @@ const createNewRoomChat = async (req, res, next) => {
     };
     const fetchRoomChat = await Chat.findAll({ where: { sender_id: sender_id, receiver_id: receiver_id } });
     if (fetchRoomChat && fetchRoomChat.length > 0) {
-        return resSuccess(res, "This room have already created!");
+        return resSuccessData(res, fetchRoomChat, "This room have already created!");
     }
     /**
      * Check is valid user in database.
@@ -61,8 +62,23 @@ const chatting = async (req, res, next) => {
 }
 
 const getAllChatRoom = async (req, res, next) => {
-    const chatRoom = await Chat.findAll();
-    return resSuccessData(res, chatRoom);
+    try {
+        const current_user_id = req.userData.id;
+        const chatRoom = await Chat.findAll({
+            where: {
+                [Op.or]: [
+                    { sender_id: current_user_id },
+                    { receiver_id: current_user_id }
+                ],
+            },
+            include: [{ model: Message }, { model: User }],
+            order: [[Message, "date", "DESC"]]
+        });
+        return resSuccessData(res, chatRoom);
+    } catch (error) {
+        // return resInternalError(res, error);
+        console.log(error)
+    }
 }
 
 const getMessInChatRoom = async (req, res, next) => {
@@ -81,6 +97,18 @@ const getMessInChatRoom = async (req, res, next) => {
     return resSuccessData(res, messagesInRoom, "Get all messages successfully!");
 };
 
+const removeRoomChat = async (req, res, next) => {
+    const chat_id = req.params.id;
+    const user_id = req.userData.id;
+    if (!chat_id) {
+        return resBadRequest(res, "Missing chat id!");
+    }
+    const isValidRoom = await Chat.findByPk(chat_id);
+    if (!isValidRoom) {
+        return resBadRequest(res, "There is no chat room with this Id!")
+    }
+    console.log("delete room:", isValidRoom.id);
+}
 module.exports = {
     createNewRoomChat,
     chatting,

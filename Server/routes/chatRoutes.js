@@ -7,6 +7,8 @@ router.post('/chat', checkAuth, chatCtl.chat);
 router.post('/:receiver_id', checkAuth, chatCtl.createRoom);
 
 router.get('/get-message/:chat_id', checkAuth, chatCtl.getMessage);
-router.get('/', chatCtl.getChatRoom);
+router.get('/get-rooms', checkAuth, chatCtl.getChatRoom);
+router.delete('/remove-room/:id', checkAuth, chatCtl.removeRoom);
+
 
 module.exports = router;
