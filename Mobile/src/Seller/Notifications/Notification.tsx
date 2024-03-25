@@ -28,19 +28,6 @@ const Notification = () => {
       image: require('../../assets/huong.jpg'),
     },
 
-    {
-      id: 4,
-      name: 'Đặc sản Quảng Bình',
-      messenger: 'Chị check tin nhắn em với ạ',
-      image: require('../../assets/huong.jpg'),
-    },
-
-    {
-      id: 5,
-      name: 'Ana Shop',
-      messenger: 'Chị check tin nhắn em với ạ',
-      image: require('../../assets/huong.jpg'),
-    },
   ];
 
   const deleteItem = (itemId: number) => {
