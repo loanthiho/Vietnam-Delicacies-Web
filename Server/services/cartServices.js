@@ -25,7 +25,7 @@ const getAllProductCart = async (req, res, next) => {
         if (rCart) {
             const rProductCart = await ProductCart.findAll({
                 where: { ...q, cart_id: rCart.id },
-                include: [{ model: Product, include: [File] }]
+                include: [{ model: Product, include: [File], order: [[File, 'createdAt', 'DESC']] }],
             });
             if (rProductCart) {
                 resSuccessData(res, rProductCart)
@@ -38,20 +38,6 @@ const getAllProductCart = async (req, res, next) => {
         resInternalError(res, undefined)
     }
 }
-// .then(result_cart => {
-//     var cart_id = result_cart[0].id;
-//     ProductCart.findAll({
-//         where: { cart_id: cart_id },
-//         include: [{ model: Product, include: [File] }]
-//     })
-//         .then(result_product_cart => resSuccessData(res, result_product_cart, "product cart"))
-//         .catch(err_pro_cart => resNotFound(res, err_pro_cart))
-// })
-// .catch(err => resNotFound(res, err = { serverError: err, error: "User didn't create cart! Or User NOT FOUND" }));
-// } catch (err) {
-//     resInternalError(res, error = { err, msg: "Error request to database!" });
-// }
-
 const addToCart = async (req, res, next) => {
     const user_id = req.userData.id;
     const idProduct = req.params.id;
@@ -61,7 +47,7 @@ const addToCart = async (req, res, next) => {
     // INITIAL DATA to insert into Product cart table ->> shopping cart
     const data_add_to_cart = {
         product_id: idProduct,
-        quantity: quantity | 1,
+        quantity: quantity || 1,
         status: status
     }
     // CHECK quantity is true typeof data

@@ -10,4 +10,5 @@ router.post('/', checkAuth, orderCtl.create);
 router.get('/', checkAuth, orderCtl.getAll);
 router.get('/seller', checkAuth, orderCtl.sellerGetAll);
 router.patch('/:id', checkAuth, orderCtl.updateStatus);
+router.delete('/:id', checkAuth, orderCtl.removeOrder);
 module.exports = router;

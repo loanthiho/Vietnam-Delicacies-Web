@@ -191,8 +191,8 @@ const getAllOrder = async (req, res, next) => {
             const orderDetails = await OrderDetail.findAll({
                 where: { ...q, order_id: orderIds },
                 include: [
-                    { model: Product, include: [File] }
-                ]
+                    { model: Product, include: [File], order: [['createdAt', 'DESC'], [File, 'createdAt', 'DESC']] }
+                ],
             })
             if (!orderDetails) {
                 return resNotFound(res, "Can not get all the order detail!")
@@ -204,7 +204,7 @@ const getAllOrder = async (req, res, next) => {
     else if (req.userData.role === 'seller') {
         const orderDetails = await OrderDetail.findAll({
             where: { seller_id: userId, ...q },
-            include: [{ model: Product, include: [File] }]
+            include: [{ model: Product, include: [File], order: [[File, 'createdAt', 'DESC']] }],
         });
         if (!orderDetails) {
             return resNotFound(res, "Order detail not found!")
@@ -237,6 +237,24 @@ const sellerGetAllOrder = async (req, res, next) => {
 }
 
 
+const removeOrderDetail = async (req, res, next) => {
+    const order_detail_id = req.params.id;
+    try {
+        const orderdetails = await OrderDetail.findByPk(order_detail_id);
+        if (orderdetails) {
+            const resRemove = await OrderDetail.destroy({ where: { id: order_detail_id } });
+            if (resRemove) {
+                return resSuccessData(res, resRemove, "Remove order successfull");
+            }
+        }
+        return resNotFound(res, "Order detail not found!");
+    }
+    catch (error) {
+        return resNotFound(res, error);
+    }
+}
+
+
 const updateOrderStatus = async (req, res, next) => {
     const order_detail_id = req.params.id;
     const { status } = req.query;
@@ -259,5 +277,6 @@ module.exports = {
     getAllOrder,
     sellerGetAllOrder,
     commonGetAllOrder,
-    updateOrderStatus
+    updateOrderStatus,
+    removeOrderDetail
 }

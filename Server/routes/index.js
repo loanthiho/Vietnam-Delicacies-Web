@@ -10,6 +10,7 @@ const fileRoutes = require('./fileRoutes');
 const cartRoutes = require('./cartRoutes');
 const orderRoutes = require('./orderRoutes');
 const stripePaymentRoutes = require('./stripePaymentRoutes');
+const chatRoutes = require('./chatRoutes');
 function runRouters(app) {
     app.use('/products', productRoutes);
     app.use('/categories', categoryRoutes);
@@ -22,6 +23,7 @@ function runRouters(app) {
     app.use('/carts', cartRoutes);
     app.use('/orders', orderRoutes);
     app.use('/payments', stripePaymentRoutes);
+    app.use('/chats', chatRoutes);
 
 
 }
