@@ -194,47 +194,6 @@ const SignIn: React.FC = ({ navigation, route }: any) => {
               Bạn quên mật khẩu ư?
             </Text>
           </TouchableOpacity>
-
-          <View style={{ flexDirection: 'row' }}>
-            <Text
-              style={{
-                width: '45%',
-                borderBottomWidth: 1,
-                borderColor: 'black',
-                borderBottomRightRadius: 50,
-              }}></Text>
-            <Text style={{ color: 'black', fontWeight: '600' }}>OR</Text>
-            <Text
-              style={{
-                width: '45%',
-                borderBottomWidth: 1,
-                borderColor: 'black',
-                borderBottomLeftRadius: 50,
-              }}></Text>
-          </View>
-
-          <View
-            style={{
-              flexDirection: 'row',
-              gap: 20,
-              marginTop: 10,
-              marginBottom: 10,
-            }}>
-            <TouchableOpacity
-              style={{
-                padding: 15,
-              }}>
-              <Image
-                style={{ width: 45, height: 45, borderRadius: 50 }}
-                source={require('../../../assets/img_login_sigup/facebook.jpeg')}></Image>
-            </TouchableOpacity>
-
-            <TouchableOpacity style={{ padding: 15 }}>
-              <Image
-                style={{ width: 45, height: 45, borderRadius: 50 }}
-                source={require('../../../assets/img_login_sigup/Google__G__logo.svg.png')}></Image>
-            </TouchableOpacity>
-          </View>
           <View
             style={{
               flexDirection: 'row',
