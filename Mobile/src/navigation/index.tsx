@@ -11,6 +11,7 @@ import AddressComponent from '../components/Payment/AddressComponent';
 import SignUp from '../Screens/userAuth/signUp';
 import ChooseRole from '../Screens/userAuth/signUp/ChooseRule';
 import ForgotPasswordScreen from '../Hooks/forgotPassword';
+import NewPasswordScreen from "../Hooks/NewPasswordScreen";
 import SignIn from '../Screens/userAuth/logIn';
 import SuccessfulPayment from '../components/Payment/SuccessfulPayment';
 import AccSetup from '../AccConversion/AccSetup';
@@ -37,6 +38,7 @@ import AppInf from '../Support/AppInf';
 import Notification from '../Seller/Notifications/Notification';
 import MessageSeller from '../Seller/Notifications/MessageSeller';
 import ChatBox from "../Screens/Chat/ChatBox";
+
 // End seller import stack screen_______________________________________________
 
 
@@ -55,6 +57,7 @@ const Navigation = () => {
                 <Stack.Screen name="SignUp" component={SignUp} />
                 <Stack.Screen name="ChooseRole" component={ChooseRole} />
                 <Stack.Screen name="ForgotPasswordScreen" component={ForgotPasswordScreen} />
+                <Stack.Screen name="NewPassword" component={NewPasswordScreen} />
                 <Stack.Screen name="ProductDetailScreen" component={ProductDetailScreen} />
                 <Stack.Screen name="PaymentScreen" component={Payment} />
                 <Stack.Screen name="ShopOwnerScreen" component={ShopOwnerScreen} />
