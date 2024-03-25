@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -7,20 +7,20 @@ import {
   TouchableOpacity,
   ScrollView,
 } from 'react-native';
-import {addToCart} from '../../Hooks/addToCart';
+import { addToCart } from '../../Hooks/addToCart';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import {getUserAccessToken} from '../../api/storage';
-import {useQueryClient} from '@tanstack/react-query';
+import { getUserAccessToken } from '../../api/storage';
+import { useQueryClient } from '@tanstack/react-query';
 
-const ProductDetailScreen = ({route, navigation}: any) => {
+const ProductDetailScreen = ({ route, navigation }: any) => {
   const [quantity, setQuantity] = useState(1);
   const queryClient = useQueryClient();
 
   const addToCartHandler = async (product_id: any) => {
     console.log('id Product add to cart', product_id);
     await addToCart(product_id);
-    queryClient.invalidateQueries({queryKey: ['shoppingCart']});
-    navigation.navigate('Giỏ hàng', {id: product_id});
+    queryClient.invalidateQueries({ queryKey: ['shoppingCart'] });
+    navigation.navigate('Giỏ hàng', { id: product_id });
   };
   if (!route.params || !route.params.selectedItem) {
     return (
@@ -30,7 +30,7 @@ const ProductDetailScreen = ({route, navigation}: any) => {
     );
   }
 
-  const {selectedItem}: any = route.params;
+  const { selectedItem }: any = route.params;
 
 
   const decreaseQuantity = () => {
@@ -48,8 +48,8 @@ const ProductDetailScreen = ({route, navigation}: any) => {
   };
 
   return (
-    <View style={{flex: 1}}>
-     <View style={styles.row}>
+    <View style={{ flex: 1 }}>
+      <View style={styles.row}>
         <TouchableOpacity onPress={() => navigation.goBack()}>
           <Ionicons name="arrow-back-outline" style={styles.arrowLeft} />
         </TouchableOpacity>
@@ -59,7 +59,7 @@ const ProductDetailScreen = ({route, navigation}: any) => {
       <ScrollView>
         <View style={styles.container}>
           <Image
-            source={{uri: selectedItem?.Files[0]?.src}}
+            source={{ uri: selectedItem?.Files[0]?.src }}
             style={styles.image}
           />
           <Text style={styles.text}>{selectedItem.name}</Text>
@@ -74,14 +74,14 @@ const ProductDetailScreen = ({route, navigation}: any) => {
           <View style={styles.GroupPrice}>
             <View style={styles.itemPriceContainer}>
               <Text style={styles.itemPriceText}>
-              <Text>{formatPrice(selectedItem.price)}đ</Text>
+                <Text>{formatPrice(selectedItem.price)}đ</Text>
               </Text>
             </View>
 
             <View style={styles.quantityContainer}>
               <TouchableOpacity
                 onPress={decreaseQuantity}
-                style={[styles.button, {backgroundColor: '#FFA000'}]}>
+                style={[styles.button, { backgroundColor: '#FFA000' }]}>
                 <Text style={styles.buttonText}>-</Text>
               </TouchableOpacity>
 
@@ -89,7 +89,7 @@ const ProductDetailScreen = ({route, navigation}: any) => {
 
               <TouchableOpacity
                 onPress={increaseQuantity}
-                style={[styles.button, {backgroundColor: '#FFA000'}]}>
+                style={[styles.button, { backgroundColor: '#FFA000' }]}>
                 <Text style={styles.buttonText}>+</Text>
               </TouchableOpacity>
             </View>
@@ -128,18 +128,18 @@ const styles = StyleSheet.create({
   row: {
     flexDirection: 'row',
     alignItems: 'center',
-    padding:10,
+    padding: 10,
   },
   textNavigation: {
     fontSize: 18,
     fontWeight: 'bold',
     marginRight: 10,
     color: '#2E7D32',
-    paddingLeft:10,
+    paddingLeft: 10,
   },
   arrowLeft: {
     fontSize: 24,
-    paddingLeft:10,
+    paddingLeft: 10,
   },
   text: {
     fontSize: 18,
@@ -219,7 +219,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
     color: '#FFA000',
-    paddingTop:10,
+    paddingTop: 10,
   },
   cartContainer: {
     backgroundColor: '#2E7D32',

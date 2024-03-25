@@ -13,7 +13,7 @@ const createNewRoomChat = async (req, res, next) => {
     };
     const fetchRoomChat = await Chat.findAll({ where: { sender_id: sender_id, receiver_id: receiver_id } });
     if (fetchRoomChat && fetchRoomChat.length > 0) {
-        return resSuccess(res, "This room have already created!");
+        return resSuccessData(res, fetchRoomChat, "This room have already created!");
     }
     /**
      * Check is valid user in database.
@@ -97,6 +97,18 @@ const getMessInChatRoom = async (req, res, next) => {
     return resSuccessData(res, messagesInRoom, "Get all messages successfully!");
 };
 
+const removeRoomChat = async (req, res, next) => {
+    const chat_id = req.params.id;
+    const user_id = req.userData.id;
+    if (!chat_id) {
+        return resBadRequest(res, "Missing chat id!");
+    }
+    const isValidRoom = await Chat.findByPk(chat_id);
+    if (!isValidRoom) {
+        return resBadRequest(res, "There is no chat room with this Id!")
+    }
+    console.log("delete room:", isValidRoom.id);
+}
 module.exports = {
     createNewRoomChat,
     chatting,

@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, { useEffect } from 'react';
 import {
   View,
   Text,
@@ -9,30 +9,33 @@ import {
   FlatList,
 } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import {useQuery} from '@tanstack/react-query';
+import LoaderKit from 'react-native-loader-kit';
+
+import { useMutation, useQuery } from '@tanstack/react-query';
 import api from '../../api/request';
 
-const ShopOwnerScreen = ({
-  navigation,
-  route,
-}: {
-  navigation: any;
-  route: any;
-}) => {
-  const {selectedItem}: {selectedItem: any} = route.params || {};
+const ShopOwnerScreen = ({ navigation, route, }: { navigation: any; route: any; }) => {
+  const { selectedItem }: { selectedItem: any } = route.params || {};
 
   if (!selectedItem.User) {
-    return <Text> Người dùng không tồn tại</Text>;
+    return <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', rowGap: 10 }}>
+      <Text style={{ color: 'green', fontSize: 20 }}> Người dùng không tồn tại</Text>
+      <TouchableOpacity
+        style={{ padding: 10, borderColor: 'green', borderWidth: 1, borderRadius: 20 }}
+        onPress={() => navigation.goBack()}
+      >
+        <Text style={{ color: 'green' }}>Quay lại</Text>
+      </TouchableOpacity>
+    </View>;
   }
-
-  const {data, refetch: refetchProduct} = useQuery({
+  const seller_id = selectedItem.User.id;
+  const { data, refetch: refetchProduct, isLoading } = useQuery({
     queryKey: ['products'],
     queryFn: async () => {
       const response = await api.get('products', {
         auth: false,
-        params: {seller_id: selectedItem.seller_id},
+        params: { seller_id: selectedItem.seller_id },
       });
-      console.log('res', response.data?.data);
       return response.data.data;
     },
   });
@@ -46,7 +49,7 @@ const ShopOwnerScreen = ({
     return unsubscribe;
   }, [navigation]);
 
-  const renderProductOwner = ({item}: {item: any}) => {
+  const renderProductOwner = ({ item }: { item: any }) => {
     return (
       <TouchableOpacity
         style={styles.productContainer}
@@ -56,7 +59,7 @@ const ShopOwnerScreen = ({
           })
         }>
         <Image
-          source={{uri: item.Files[0].src}}
+          source={{ uri: item.Files[0].src }}
           style={styles.itemPhoto}
           resizeMode="cover"
         />
@@ -64,7 +67,7 @@ const ShopOwnerScreen = ({
           {item.name}
         </Text>
         <View style={styles.iconContainer}>
-          <View style={{flexDirection: 'row'}}>
+          <View style={{ flexDirection: 'row' }}>
             <Ionicons name="star" style={styles.starIcon} />
             <Text style={styles.ratingText}>4.5</Text>
           </View>
@@ -75,6 +78,27 @@ const ShopOwnerScreen = ({
       </TouchableOpacity>
     );
   };
+
+  const mutation = useMutation({
+    mutationKey: ['createNewChat'],
+    mutationFn: async (seller_id: string) => {
+      console.log("create chat room with seller id", seller_id);
+      try {
+        const createNewChat = await api.post(`chats/${seller_id}`);
+        console.log("response create chat", createNewChat.data);
+        return createNewChat.data.data
+      } catch (error) {
+        console.log("Lỗi khi cố gắng chat với người dùng này")
+      }
+    },
+    onSuccess: (data, variable) => {
+      navigation.navigate('MessegesScreen', { dataRoomChat: data })
+    }
+  })
+  const chat = async () => {
+    console.log("create new chat!");
+    mutation.mutate(seller_id);
+  }
 
   return (
     <View style={styles.container}>
@@ -91,23 +115,55 @@ const ShopOwnerScreen = ({
           />
         </TouchableOpacity>
       </View>
-      <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+      <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
         <View style={styles.search}>
           <Ionicons name="search-outline" style={styles.searchIcon} />
           <TextInput placeholder="Tìm kiếm..." style={styles.searchInput} />
         </View>
-        <TouchableOpacity style={{alignSelf: 'center', alignItems: 'center'}}>
-          <Ionicons name="chatbox" style={styles.chat} />
+        <TouchableOpacity
+          onPress={() => chat()}
+          style={{ alignSelf: 'center', alignItems: 'center' }}
+        >
+          {mutation.isPending ? (
+            <>
+              <LoaderKit
+                style={{
+                  width: 50,
+                  height: 50,
+                  flexDirection: 'row',
+                  justifyContent: 'center',
+                  alignSelf: 'center',
+                }}
+                name={'BallPulse'} // Optional: see list of animations below
+                color={'green'} // Optional: color can be: 'red', 'green',... or '#ddd', '#ffffff',...
+              />
+            </>
+          ) : <Ionicons name="chatbox" style={styles.chat} />}
+
         </TouchableOpacity>
       </View>
 
-      <View style={{flex: 1, alignItems: 'center', marginVertical: 10}}>
-        <FlatList
-          data={data}
-          numColumns={2}
-          renderItem={renderProductOwner}
-          keyExtractor={(_item, index) => index.toString()}
-        />
+      <View style={{ flex: 1, alignItems: 'center', marginVertical: 10 }}>
+        {isLoading ? (
+          <LoaderKit
+            style={{
+              width: 50,
+              height: 50,
+              flexDirection: 'row',
+              justifyContent: 'center',
+              alignSelf: 'center',
+            }}
+            name={'BallPulse'} // Optional: see list of animations below
+            color={'green'} // Optional: color can be: 'red', 'green',... or '#ddd', '#ffffff',...
+          />
+        ) : (
+          < FlatList
+            data={data}
+            numColumns={2}
+            renderItem={renderProductOwner}
+            keyExtractor={(_item, index) => index.toString()}
+          />
+        )}
       </View>
     </View>
   );
