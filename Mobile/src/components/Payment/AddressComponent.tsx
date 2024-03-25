@@ -64,7 +64,8 @@ const AddressComponent = ({ navigation, userInfo, setUserInfo }: any) => {
 
 const styles = StyleSheet.create({
   addressContainer: {
-    paddingBottom: 20,
+    // paddingBottom: 20,
+    marginTop:10,
   },
   title: {
     fontSize: 15,
@@ -79,7 +80,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#CCCCCC',
     borderRadius: 10,
-    marginBottom: 10,
+    // marginBottom: 10,
     padding: 10,
     width: '100%',
   },

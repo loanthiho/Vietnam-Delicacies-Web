@@ -1,15 +1,13 @@
 import Component from "./components";
-// import AboutUs from "./page/AboutUs";
-// import Contact from "./page/Contact";
+import AboutUs from "./page/AboutUs";
+import Contact from "./page/Contact";
 import ModalHeader from "../src/components/ModalHeader";
 import Navigation from "../src/components/Navigation";
 import Footer from "../src/components/Footer";
-// import Dryfood from "./categoryProduct/dryfood";
-// import Vegetable from "../src/categoryProduct/Vegetable";
-// import ProcessedFood from "../src/categoryProduct/ProcessedFood";
+import Dryfood from "./categoryProduct/dryfood";
+import Vegetable from "../src/categoryProduct/Vegetable";
+import ProcessedFood from "../src/categoryProduct/ProcessedFood";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-
-// import ReactQery from "./components/DemoReactqr/Index.jsx";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import "./App.css";
 
@@ -23,13 +21,12 @@ function App() {
             <Navigation></Navigation>
           </section>
           <Routes>
-            {/* <Route exact path="/" element={<ReactQery />} /> */}
             <Route exact path="/" element={<Component />} />
-            {/* <Route exact path="/about" element={<AboutUs />} />
+            <Route exact path="/about" element={<AboutUs />} />
             <Route exact path="/contact" element={<Contact />} />
             <Route exact path="/Dryfood" element={<Dryfood />} />
             <Route exact path="/Vegetable" element={<Vegetable />} />
-            <Route exact path="/ProcessedFood" element={<ProcessedFood />} /> */}
+            <Route exact path="/ProcessedFood" element={<ProcessedFood />} />
           </Routes>
           <Footer></Footer>
         </Router>

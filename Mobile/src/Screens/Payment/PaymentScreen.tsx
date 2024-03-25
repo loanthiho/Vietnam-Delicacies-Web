@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   View,
   Text,
@@ -15,15 +15,22 @@ import PaymentMethods from '../../components/Payment/PaymentMethod';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import fonts from '../../ultils/_fonts';
 import useCheckout from '../../Hooks/useCheckout';
-import { useQueryClient } from '@tanstack/react-query';
+import {useQueryClient} from '@tanstack/react-query';
 import LoaderKit from 'react-native-loader-kit';
 import useCreatePaymentIntent from '../../Hooks/useCreatePaymentIntent';
-import { initPaymentSheet, presentPaymentSheet } from '@stripe/stripe-react-native';
+import {
+  initPaymentSheet,
+  presentPaymentSheet,
+} from '@stripe/stripe-react-native';
 
-const PaymentScreen = ({ route, navigation }: any) => {
-  const { selectedItems } = route.params;
+const PaymentScreen = ({route, navigation}: any) => {
+  const {selectedItems} = route.params;
   const queryClient = useQueryClient();
-  const { mutateAsync: mutatePaymentIntent, error: paymentIntentError, isPending: paymentIntentIsLoading } = useCreatePaymentIntent();
+  const {
+    mutateAsync: mutatePaymentIntent,
+    error: paymentIntentError,
+    isPending: paymentIntentIsLoading,
+  } = useCreatePaymentIntent();
 
   const [showPaymentDetail, setShowPaymentDetail] = useState<boolean>(true);
   const [proPrepareCheckout, setProPrepareCheckout] = useState([]);
@@ -37,7 +44,7 @@ const PaymentScreen = ({ route, navigation }: any) => {
     shipping_address: '',
     total_amount: 0,
     total_quantity: 0,
-    product_cart_ids: []
+    product_cart_ids: [],
   });
 
   useEffect(() => {
@@ -47,15 +54,18 @@ const PaymentScreen = ({ route, navigation }: any) => {
     /**
      * Caculate total price!
      */
-    const totalPrice = proPrepareCheckout?.reduce((acc: number, currentItem: any) => {
-      productCartIds.push(currentItem?.id);
-      return acc + currentItem.Product.price * currentItem.quantity;
-    }, 0);
+    const totalPrice = proPrepareCheckout?.reduce(
+      (acc: number, currentItem: any) => {
+        productCartIds.push(currentItem?.id);
+        return acc + currentItem.Product.price * currentItem.quantity;
+      },
+      0,
+    );
     /**
      * Caculate total quantity
      */
     const totalQuantity = proPrepareCheckout?.reduce(
-      (acc: any, currentItem: { quantity: any }) => {
+      (acc: any, currentItem: {quantity: any}) => {
         return acc + currentItem.quantity;
       },
       0,
@@ -71,11 +81,11 @@ const PaymentScreen = ({ route, navigation }: any) => {
       shipping_address: userInfo?.detail_address,
       total_quantity: totalQuantity,
       total_amount: totalAmount,
-      product_cart_ids: productCartIds
-    })
+      product_cart_ids: productCartIds,
+    });
   }, [userInfo]);
 
-  console.log("\n__\n________\norder__", order)
+  console.log('\n__\n________\norder__', order);
   const togglePaymentDetail = () => {
     setShowPaymentDetail(!showPaymentDetail);
   };
@@ -89,27 +99,34 @@ const PaymentScreen = ({ route, navigation }: any) => {
         return;
       }
 
-      console.log('current data', paymentIntentData)
+      console.log('current data', paymentIntentData);
       const initResponse = await initPaymentSheet({
         merchantDisplayName: 'VND_APP',
-        paymentIntentClientSecret: paymentIntentData.paymentIntent
+        paymentIntentClientSecret: paymentIntentData.paymentIntent,
       });
 
       if (initResponse.error) {
-        console.error("Init response:", initResponse.error);
-        Alert.alert('Lỗi Thanh toán bằng stripe', initResponse?.error.toString());
+        console.error('Init response:', initResponse.error);
+        Alert.alert(
+          'Lỗi Thanh toán bằng stripe',
+          initResponse?.error.toString(),
+        );
         return;
       }
       const paymentResponse = await presentPaymentSheet();
       if (paymentResponse.error) {
-        Alert.alert(`Lỗi`,
-          paymentResponse?.error?.message === "The payment flow has been canceled" ? "Giao dịch bị hủy" : paymentResponse?.error?.message);
+        Alert.alert(
+          `Lỗi`,
+          paymentResponse?.error?.message ===
+            'The payment flow has been canceled'
+            ? 'Giao dịch bị hủy'
+            : paymentResponse?.error?.message,
+        );
         return;
       }
     }
     mutation.mutate(order);
-  }
-
+  };
 
   // const handleCheckout = async () => {
   //   if (order.payment_method == 'stripe') {
@@ -149,7 +166,7 @@ const PaymentScreen = ({ route, navigation }: any) => {
     if (paymentIntentError) {
       Alert.alert('Lỗi khi thanh toán', paymentIntentError?.message);
     }
-  }, [paymentIntentError])
+  }, [paymentIntentError]);
 
   return (
     <View style={styles.container}>
@@ -161,16 +178,16 @@ const PaymentScreen = ({ route, navigation }: any) => {
       </View>
       <ScrollView>
         <View style={styles.addressContainer}>
-          <AddressComponent navigation={navigation} userInfo={userInfo} setUserInfo={setUserInfo} />
+          <AddressComponent
+            navigation={navigation}
+            userInfo={userInfo}
+            setUserInfo={setUserInfo}
+          />
         </View>
         <Text style={styles.title}>Chi tiết đơn hàng</Text>
         <FlatList
           data={selectedItems}
-          renderItem={({ item }) => (
-            <PaymentItemComponent
-              item={item}
-            />
-          )}
+          renderItem={({item}) => <PaymentItemComponent item={item} />}
           keyExtractor={item => item.key}
           contentContainerStyle={styles.flatListContainer}
         />
@@ -189,31 +206,33 @@ const PaymentScreen = ({ route, navigation }: any) => {
       <View style={styles.agreementContainer}>
         <Ionicons name="document-text-sharp" size={24} color="#FFA000" />
         <Text style={styles.agreementText}>
-          Nhấn <Text style={styles.btnText}>Mua ngay</Text>  đồng nghĩa với việc
-          bạn đồng ý {'\n'}tuân thủ Điều khoản VnD
+          Nhấn <Text style={styles.btnText}>Mua ngay</Text> đồng nghĩa với việc
+          bạn đồng ý tuân thủ Điều khoản VnD
         </Text>
       </View>
       <View style={styles.btn}>
         <View style={styles.totalPriceContainer}>
           <Text style={styles.BtnTotal}>Tổng giá:</Text>
           <Text style={styles.numAlltotal}>
-            {(order.total_amount)?.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.')}đ
+            {order.total_amount
+              ?.toString()
+              .replace(/\B(?=(\d{3})+(?!\d))/g, '.')}
+            đ
           </Text>
         </View>
         <TouchableOpacity
           style={styles.BtnShow}
           onPress={handleCheckout}
-          disabled={mutation.isPending}
-        >
-          {
-            mutation?.isPending || paymentIntentIsLoading ?
-              <LoaderKit
-                style={{ width: 35, height: 35, alignSelf: 'center' }}
-                name={'BallPulse'} // Optional: see list of animations below
-                color={'white'} // Optional: color can be: 'red', 'green',... or '#ddd', '#ffffff',...
-              />
-              : <Text style={styles.textPayment}>Thanh Toán</Text>
-          }
+          disabled={mutation.isPending}>
+          {mutation?.isPending || paymentIntentIsLoading ? (
+            <LoaderKit
+              style={{width: 35, height: 35, alignSelf: 'center'}}
+              name={'BallPulse'} // Optional: see list of animations below
+              color={'white'} // Optional: color can be: 'red', 'green',... or '#ddd', '#ffffff',...
+            />
+          ) : (
+            <Text style={styles.textPayment}>Thanh Toán</Text>
+          )}
         </TouchableOpacity>
       </View>
     </View>
@@ -230,22 +249,23 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   arrowLeft: {
-    fontSize: 30,
+    fontSize: 25,
   },
   Texttitle: {
+    fontWeight: 'bold',
     paddingLeft: 10,
     fontSize: fonts.$18,
     color: '#FFA000',
   },
   addressContainer: {
     // marginBottom: -30,
-
   },
   title: {
+    marginTop: 20,
     fontSize: 15,
     fontWeight: 'bold',
     color: '#2E7D32',
-    padding: 10,
+    paddingBottom: 10,
   },
   flatListContainer: {
     marginBottom: 10,
@@ -266,10 +286,13 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     columnGap: 10,
-    padding: 10
+    paddingTop: 10,
+    paddingBottom: 10,
   },
   agreementText: {
     color: '#333',
+    fontSize: 13,
+    paddingRight: 35,
   },
   totalPriceContainer: {
     flexDirection: 'column',
@@ -288,14 +311,14 @@ const styles = StyleSheet.create({
     // color: 'white',
   },
   btn: {
-    paddingTop: 10,
+    padding: 8,
     flexDirection: 'row',
     justifyContent: 'space-between',
   },
   btnText: {
     fontWeight: 'bold',
     color: '#2E7D32',
-    fontSize: 15,
+    fontSize: 12,
   },
   textPayment: {
     fontWeight: 'bold',
