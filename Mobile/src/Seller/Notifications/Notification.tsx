@@ -29,7 +29,7 @@ const Notification = () => {
         return [];
       }
     },
-    refetchInterval: 2000,
+    refetchInterval: 5000,
   });
 
   console.log('dataa', data);
@@ -67,15 +67,15 @@ const Notification = () => {
       onPress={() => handlePress(item)}>
       <Image
         source={
-          item.Receiver?.avatar
-            ? {uri: item.Receiver?.avatar}
+          item.Sender?.avatar
+            ? {uri: item.Sender?.avatar}
             : {uri: './none-image.jpg'}
         }
         style={styles.itemImage}
       />
       <View style={styles.content}>
         <Text numberOfLines={1} style={styles.itemText}>
-          {item.Receiver?.name}
+          {item.Sender?.name}
         </Text>
         <Text numberOfLines={1} style={styles.messenger}>
           {item.Messages[0]?.message}

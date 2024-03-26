@@ -4,9 +4,10 @@ import {ScrollView} from 'react-native';
 import Message from './Message';
 import {useQuery} from '@tanstack/react-query';
 import api from '../../api/request';
+import {getUserAccessToken} from '../../api/storage';
 
 const MessagesList = ({onSwipeToReply, dataRoomChat}: any) => {
-  const user = useRef(0);
+  const [user, setUser] = useState();
   const scrollView = useRef();
   const [messages, setMessage] = useState([]);
   const {
@@ -33,6 +34,20 @@ const MessagesList = ({onSwipeToReply, dataRoomChat}: any) => {
     },
     refetchInterval: 5000,
   });
+
+  const fetchUser = async () => {
+    const {user} = await getUserAccessToken();
+
+    if (user) {
+      console.log('current usser', user);
+      setUser(user);
+    }
+  };
+  useEffect(() => {
+    fetchUser();
+    refreshProductList();
+  }, [data]);
+
   useEffect(() => {
     refreshProductList();
   }, [data]);
@@ -49,7 +64,7 @@ const MessagesList = ({onSwipeToReply, dataRoomChat}: any) => {
         messages.map((message, index) => (
           <Message
             key={index}
-            isLeft={message?.sender_id == user.current}
+            isLeft={message?.sender_id !== user?.id}
             message={message?.message}
             onSwipe={onSwipeToReply}
           />
