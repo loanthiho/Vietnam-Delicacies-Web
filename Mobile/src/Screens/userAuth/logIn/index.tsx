@@ -191,7 +191,7 @@ const SignIn: React.FC = ({ navigation, route }: any) => {
                 textAlign: 'right',
                 marginBottom: 10
               }}>
-              Bạn quên mật khẩu ư?
+              Bạn <Text style={{ color: '#FFA000' }}>quên</Text> mật khẩu?
             </Text>
           </TouchableOpacity>
           <View

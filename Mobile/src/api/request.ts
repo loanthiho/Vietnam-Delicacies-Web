@@ -16,7 +16,7 @@ const buildAxios = async (auth: boolean = true) => {
   }
   return axios.create({
     // baseURL: `http://nodejs-app-env-1.eba-q2t7wpq3.ap-southeast-2.elasticbeanstalk.com/`,
-    baseURL: `https://67cd-2401-d800-d675-a9f8-7084-a324-2a07-b3ec.ngrok-free.app/`,
+    baseURL: `https://3bc0-113-176-99-140.ngrok-free.app/`,
     headers,
   });
 };
