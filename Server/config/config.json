@@ -5,7 +5,10 @@
     "database": "bsvszhr5oyagog0yonta",
     "host": "bsvszhr5oyagog0yonta-mysql.services.clever-cloud.com",
     "dialect": "mysql",
-    "port": 3306
+    "port": 3306,
+    "pool": {
+      "max": 2
+    }
   },
   "test": {
     "username": "root",

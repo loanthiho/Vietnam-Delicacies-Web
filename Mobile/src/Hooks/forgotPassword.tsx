@@ -1,17 +1,38 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { useMutation } from '@tanstack/react-query';
+import api from '../api/request';
+import LoaderKit from 'react-native-loader-kit';
+import { showMessage } from 'react-native-flash-message';
 
 const ForgotPasswordScreen = () => {
   const [email, setEmail] = useState('');
-  const navigation = useNavigation(); 
+  const navigation = useNavigation();
 
-  const handleResetPassword = () => {
+  const mutation = useMutation({
+    mutationKey: ['findEmail'],
+    mutationFn: async () => {
+      const res = await api.get(`users/by-email/${email}`, { auth: false });
+      return res.data.data;
+    },
+    onSuccess: (data, variable) => {
+      return navigation.navigate({ name: 'NewPassword', params: { data } });
+    },
+    onError(error, variables, context) {
+      console.log("error", error.message)
+      return showMessage({
+        type: 'warning',
+        message: error.message
+      })
+    },
+  })
+  const handleResetPassword = async () => {
     if (email.trim() === '') {
       Alert.alert('Vui lòng nhập địa chỉ email');
       return;
     }
-    return navigation.navigate('NewPassword'); 
+    mutation.mutate();
   };
 
   return (
@@ -22,14 +43,25 @@ const ForgotPasswordScreen = () => {
       <Text style={styles.textForgot}>Tìm tài khoản </Text>
       <TextInput
         style={styles.input}
-        placeholder="Nhập email của bạn "
+        placeholder="Nhập email của bạn"
         onChangeText={text => setEmail(text)}
         value={email}
         keyboardType="email-address"
         autoCapitalize="none"
       />
-      <TouchableOpacity style={styles.button} onPress={handleResetPassword}>
-        <Text style={styles.buttonText}>Tìm kiếm</Text>
+      <TouchableOpacity style={styles.button}
+        onPress={handleResetPassword}
+        disabled={mutation.isPending}
+      >
+        {mutation.isPending ? (
+          <LoaderKit
+            style={{ width: 35, height: 35, alignSelf: 'center' }}
+            name={'BallPulse'}
+            color={'white'}
+          />
+        ) : <Text style={styles.buttonText}>Tìm kiếm</Text>
+        }
+
       </TouchableOpacity>
     </View>
   );
