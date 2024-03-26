@@ -9,6 +9,7 @@ router.post('/:receiver_id', checkAuth, chatCtl.createRoom);
 router.get('/get-message/:chat_id', checkAuth, chatCtl.getMessage);
 router.get('/get-rooms', checkAuth, chatCtl.getChatRoom);
 router.delete('/remove-room/:id', checkAuth, chatCtl.removeRoom);
+router.get('/seller-get-room/:id', checkAuth, chatCtl.sellerGetRoom);
 
 
 module.exports = router;
