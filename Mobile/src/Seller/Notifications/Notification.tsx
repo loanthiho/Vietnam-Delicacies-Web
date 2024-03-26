@@ -29,7 +29,7 @@ const Notification = () => {
         return [];
       }
     },
-    refetchInterval: 5000,
+    refetchInterval: 3000,
   });
 
   console.log('dataa', data);

@@ -4,7 +4,7 @@ import Contact from "./page/Contact";
 import ModalHeader from "../src/components/ModalHeader";
 import Navigation from "../src/components/Navigation";
 import Footer from "../src/components/Footer";
-import Dryfood from "./categoryProduct/dryfood";
+import Dryfood from "./categoryProduct/Dryfood";
 import Vegetable from "../src/categoryProduct/Vegetable";
 import ProcessedFood from "../src/categoryProduct/ProcessedFood";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
