@@ -20,7 +20,6 @@ module.exports = (sequelize, DataTypes) => {
       Message.belongsTo(models.Chat, {
         foreignKey: {
           name: 'chat_id',
-          type: DataTypes.UUID
         }
       });
     }

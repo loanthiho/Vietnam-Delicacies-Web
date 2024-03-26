@@ -20,7 +20,7 @@ const getUserByEmail = async (req, res, next) => {
     if (result) {
         return resSuccessData(res, result, "Get usser by email successfully")
     }
-    resNotFound(res, "User not found");
+    return resNotFound(res, "User not found");
 }
 const createCart = async (res, user_id, dataRes) => {
     const newCart = await Cart.create({ user_id });
