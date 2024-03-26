@@ -13,9 +13,6 @@ const createNewRoomChat = async (req, res, next) => {
     };
     const fetchRoomChat = await Chat.findAll({
         where: {
-            sender_id: sender_id,
-            receiver_id: receiver_id
-        }, where: {
             [Op.or]: [
                 { sender_id: current_user_id },
                 { receiver_id: current_user_id }
@@ -123,6 +120,7 @@ const getMessInChatRoom = async (req, res, next) => {
 const removeRoomChat = async (req, res, next) => {
     const chat_id = req.params.id;
     const user_id = req.userData.id;
+    var isSuccess = true;
     if (!chat_id) {
         return resBadRequest(res, "Missing chat id!");
     }
@@ -138,8 +136,25 @@ const removeRoomChat = async (req, res, next) => {
     if (!isValidRoom || !isValidUser) {
         return resBadRequest(res, "no room or no user id match!")
     }
-    const removeRoomChat = await Chat.destroy({ where: {} })
-    // console.log("delete room:", isValidRoom.id);
+    const messagesInRoom = await Message.findAll({ where: { chat_id: chat_id } });
+    for (const message of messagesInRoom) {
+        try {
+            await Message.destroy({ where: { id: message.id } });
+        } catch (error) {
+            isSuccess = false;
+            return resInternalError(res, "Delete messages error", error);
+        }
+    }
+    if (isSuccess) {
+        try {
+            const removeRoomChat = await Chat.destroy({ where: { id: chat_id } });
+            if (removeRoomChat) {
+                return resSuccess(rs, "Remove room chat successfull");
+            }
+        } catch (error) {
+            return resInternalError(res, "Error remove room chat!")
+        }
+    }
 }
 module.exports = {
     createNewRoomChat,
