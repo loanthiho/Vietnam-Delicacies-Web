@@ -10,7 +10,7 @@ import React, {useState, useEffect} from 'react';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import Voice from '@react-native-voice/voice';
 import LoaderKit from 'react-native-loader-kit';
-const ChatInput = () => {
+const ChatInput = ({changeDataChat, chatDataMessage, mutation}: any) => {
   const [results, setResults] = useState([]);
   const [message, setMessage] = useState('');
   const [isRecognizing, setIsRecognizing] = useState(false);
@@ -23,10 +23,10 @@ const ChatInput = () => {
     };
   }, []);
 
-  const onSpeechResults = e => {
+  const onSpeechResults = (e: any) => {
     console.log(e);
     setResults(e.value);
-    setMessage(e.value.join(' '));
+     changeDataChat(e.value.join(' '));
     setIsRecognizing(false);
   };
 
@@ -55,13 +55,15 @@ const ChatInput = () => {
             multiline
             placeholder="Nhập tin..."
             style={styles.input}
-            value={message}
-            onChangeText={text => setMessage(text)}
+            value={chatDataMessage}
+            onChangeText={text => changeDataChat(text)}
           />
         </View>
 
-        <TouchableOpacity style={styles.sendButton}>
-          {isRecognizing ? (
+        <TouchableOpacity
+          onPress={() => mutation.mutate()}
+          style={styles.sendButton}>
+          {isRecognizing || mutation.ispending ? (
             <TouchableOpacity onPress={cancelRecoding}>
               <LoaderKit
                 style={{width: 20, height: 20}}
@@ -69,7 +71,7 @@ const ChatInput = () => {
                 color={'#fff'}
               />
             </TouchableOpacity>
-          ) : message ? (
+          ) : chatDataMessage ? (
             <Ionicons name="send-outline" size={23} color={'#fff'} />
           ) : (
             <Ionicons

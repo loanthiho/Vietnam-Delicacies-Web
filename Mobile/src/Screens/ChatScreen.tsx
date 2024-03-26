@@ -1,32 +1,34 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
-import { useFocusEffect, useNavigation } from '@react-navigation/native';
-import { SwipeListView } from 'react-native-swipe-list-view';
-import { useQuery } from '@tanstack/react-query';
+import React, {useState, useEffect} from 'react';
+import {View, Text, Image, StyleSheet, TouchableOpacity} from 'react-native';
+import {useFocusEffect, useNavigation} from '@react-navigation/native';
+import {SwipeListView} from 'react-native-swipe-list-view';
+import {useQuery} from '@tanstack/react-query';
 import api from '../api/request';
 import LoaderKit from 'react-native-loader-kit';
-
 
 const ChatScreen = () => {
   const navigation = useNavigation<any>();
   const [cartItems, setCartItems] = useState([]);
 
-  const { data, isLoading, refetch: refreshProductList } = useQuery({
+  const {
+    data,
+    isLoading,
+    refetch: refreshProductList,
+  } = useQuery({
     queryKey: ['fetchRooms'],
     queryFn: async () => {
-      console.log("fetching...")
       try {
         const resFetchRoom = await api.get('chats/get-rooms');
         if (resFetchRoom) {
-          setCartItems(resFetchRoom.data.data)
-          return resFetchRoom.data.data
+          setCartItems(resFetchRoom.data.data);
+          return resFetchRoom.data.data;
         }
       } catch (error) {
         console.log(error.response);
-        return []
+        return [];
       }
     },
-    refetchInterval: 3000
+    refetchInterval: 2000,
   });
 
   useEffect(() => {
@@ -35,17 +37,13 @@ const ChatScreen = () => {
 
   useFocusEffect(
     React.useCallback(() => {
-      console.log("data =>", data)
       refreshProductList();
     }, []),
   );
 
-
   const handlePress = (item: any) => {
     navigation.navigate('MessegesScreen', {
-      itemId: item.id,
-      itemName: item.name,
-      itemImage: item.image,
+      dataRoomChat: item,
     });
     console.log('first data before send', item);
     console.log(typeof item.image);
@@ -57,35 +55,39 @@ const ChatScreen = () => {
 
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
-      refreshProductList()
+      refreshProductList();
       console.log('Cart Screen focus!');
     });
     return unsubscribe;
   }, [navigation]);
 
-
-  const renderItem = ({ item }: any) => {
-    console.log("item 1 ", item);
-    // return <Text> {item.User.name}</Text>
-    return <TouchableOpacity
-      style={styles.itemContainer}
-      onPress={() => handlePress(item)}>
-      <Image
-        source={item.User?.avatar ? { uri: item.User?.avatar } : { uri: './none-image.jpg' }}
-        style={styles.itemImage}
-      />
-      <View style={styles.content}>
-        <Text numberOfLines={1} style={styles.itemText}>
-          {item.User?.name}
-        </Text>
-        <Text numberOfLines={1} style={styles.messenger}>
-          {item.Messages[0]?.message}
-        </Text>
-      </View>
-    </TouchableOpacity>
+  const renderItem = ({item}: any) => {
+    console.log('item 1 ', item);
+    return (
+      <TouchableOpacity
+        style={styles.itemContainer}
+        onPress={() => handlePress(item)}>
+        <Image
+          source={
+            item.User?.avatar
+              ? {uri: item.User?.avatar}
+              : {uri: './none-image.jpg'}
+          }
+          style={styles.itemImage}
+        />
+        <View style={styles.content}>
+          <Text numberOfLines={1} style={styles.itemText}>
+            {item.User?.name}
+          </Text>
+          <Text numberOfLines={1} style={styles.messenger}>
+            {item.Messages[0]?.message}
+          </Text>
+        </View>
+      </TouchableOpacity>
+    );
   };
 
-  const renderHiddenItem = ({ item }: any) => (
+  const renderHiddenItem = ({item}: any) => (
     <View>
       <TouchableOpacity
         style={[styles.backRightBtn]}
@@ -95,31 +97,31 @@ const ChatScreen = () => {
     </View>
   );
   if (isLoading) {
-    return <Text> Is loading room chat ...</Text>;
+    return (
+      <Text style={{alignSelf: 'center', justifyContent: 'center'}}>
+        Đang tải ...
+      </Text>
+    );
   }
   return (
     <View style={styles.container}>
       <View style={styles.title}>
         <Text style={styles.Subtitle}>TIN NHẮN</Text>
       </View>
-      {
-        isLoading ?
-          (
-            <LoaderKit
-              style={{ width: 35, height: 35 }}
-              name={'BallPulse'}
-              color={'green'}
-            />
-          ) : (
-            <SwipeListView
-              data={cartItems}
-              renderItem={renderItem}
-              renderHiddenItem={renderHiddenItem}
-              rightOpenValue={-60}
-            />
-          )
-      }
-
+      {isLoading ? (
+        <LoaderKit
+          style={{width: 35, height: 35}}
+          name={'BallPulse'}
+          color={'green'}
+        />
+      ) : (
+        <SwipeListView
+          data={cartItems}
+          renderItem={renderItem}
+          renderHiddenItem={renderHiddenItem}
+          rightOpenValue={-60}
+        />
+      )}
     </View>
   );
 };

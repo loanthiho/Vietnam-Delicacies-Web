@@ -18,14 +18,14 @@ const ChatHeader = ({itemName, itemImage, onlineStatus}) => {
       </TouchableOpacity>
       <View style={styles.profileOptions}>
         <TouchableOpacity style={styles.profile}>
-          {/* <Image style={styles.image} source={{uri: itemImage}} /> */}
-          <Image style={styles.image} source={itemImage} />
+          <Image style={styles.image} source={{uri: itemImage}} />
+          {/* <Image style={styles.image} source={itemImage} /> */}
           <View style={styles.usernameAndOnlineStatus}>
             <Text style={styles.username}>{itemName}</Text>
             <Text style={styles.onlineStatus}>{onlineStatus}</Text>
           </View>
         </TouchableOpacity>
-        <View style={styles.options}>
+        {/* <View style={styles.options}>
           <TouchableOpacity
             style={{paddingHorizontal: 5, flexDirection: 'row', gap: 10}}>
             <Icon name="call-outline" size={26} color={'#fff'}></Icon>
@@ -34,7 +34,7 @@ const ChatHeader = ({itemName, itemImage, onlineStatus}) => {
               size={26}
               color={'#fff'}></Icon>
           </TouchableOpacity>
-        </View>
+        </View> */}
       </View>
     </View>
   );

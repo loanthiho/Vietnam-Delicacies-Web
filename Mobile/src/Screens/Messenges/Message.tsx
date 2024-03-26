@@ -6,11 +6,16 @@ import {
   State,
 } from 'react-native-gesture-handler';
 
-
-const Message = ({time, isLeft, message, onSwipe}) => {
+const Message = ({
+  isLeft,
+  message,
+  onSwipe,
+}: {
+  isLeft: any;
+  message: any;
+  onSwipe: any;
+}) => {
   const startingPosition = 0;
-
-
   const isOnLeft = (type: string) => {
     if (isLeft && type === 'messageContainer') {
       return {
@@ -33,8 +38,6 @@ const Message = ({time, isLeft, message, onSwipe}) => {
     }
   };
 
-
-
   return (
     <FlingGestureHandler
       direction={isLeft ? Directions.RIGHT : Directions.LEFT}
@@ -48,9 +51,9 @@ const Message = ({time, isLeft, message, onSwipe}) => {
           <View style={styles.messageView}>
             <Text style={[styles.message, isOnLeft('message')]}>{message}</Text>
           </View>
-          <View style={styles.timeView}>
+          {/* <View style={styles.timeView}>
             <Text style={[styles.time, isOnLeft('time')]}>{time}</Text>
-          </View>
+          </View> */}
         </View>
       </View>
     </FlingGestureHandler>
