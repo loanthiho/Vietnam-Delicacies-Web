@@ -10,7 +10,7 @@ const AccSetup = () => {
   const data = [
     {
       id: 1,
-      name: 'Tài Khoản cá nhân',
+      name: 'Tài Khoản mua hàng',
       messenger: 'Người có nhu câu mua hàng',
       image: require('../assets/huong.jpg'),
     },
