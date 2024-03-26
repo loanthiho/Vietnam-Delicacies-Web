@@ -39,8 +39,8 @@ const MessengesScreen = ({route}: any) => {
   return (
     <View style={{flex: 1}}>
       <ChatHeader
-        itemName={dataRoomChat.User.name}
-        itemImage={dataRoomChat.User.avatar}
+        itemName={dataRoomChat.Sender.name}
+        itemImage={dataRoomChat.Sender.avatar}
         onlineStatus={'Online'}
       />
       <MessageList dataRoomChat={dataRoomChat} />

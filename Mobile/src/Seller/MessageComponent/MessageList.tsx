@@ -50,7 +50,7 @@ const MessagesList = ({onSwipeToReply, dataRoomChat}: any) => {
         messages.map((message, index) => (
           <Message
             key={index}
-            isLeft={message?.sender_id !== user.current}
+            isLeft={message?.sender_id == user.current}
             message={message?.message}
             onSwipe={onSwipeToReply}
           />

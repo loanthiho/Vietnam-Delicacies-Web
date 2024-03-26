@@ -27,11 +27,7 @@ const Message = ({
       return {
         color: '#000',
       };
-    } else if (isLeft && type === 'time') {
-      return {
-        color: 'darkgray',
-      };
-    } else {
+    }  else {
       return {
         borderTopRightRadius: 0,
       };
@@ -51,9 +47,6 @@ const Message = ({
           <View style={styles.messageView}>
             <Text style={[styles.message, isOnLeft('message')]}>{message}</Text>
           </View>
-          {/* <View style={styles.timeView}>
-            <Text style={[styles.time, isOnLeft('time')]}>{time}</Text>
-          </View> */}
         </View>
       </View>
     </FlingGestureHandler>

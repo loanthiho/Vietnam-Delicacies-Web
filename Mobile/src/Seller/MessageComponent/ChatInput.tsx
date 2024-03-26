@@ -63,7 +63,7 @@ const ChatInput = ({changeDataChat, chatDataMessage, mutation}: any) => {
         <TouchableOpacity
           onPress={() => mutation.mutate()}
           style={styles.sendButton}>
-          {isRecognizing || mutation.ispending ? (
+          {isRecognizing || mutation.isPending ? (
             <TouchableOpacity onPress={cancelRecoding}>
               <LoaderKit
                 style={{width: 20, height: 20}}

@@ -29,11 +29,7 @@ const Message = ({
       return {
         color: '#000',
       };
-    } else if (isLeft && type === 'time') {
-      return {
-        color: 'darkgray',
-      };
-    } else {
+    }  else {
       return {
         borderTopRightRadius: 0,
       };

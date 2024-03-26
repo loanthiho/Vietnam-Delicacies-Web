@@ -16,7 +16,7 @@ const Notification = () => {
     isLoading,
     refetch: refreshProductList,
   } = useQuery({
-    queryKey: ['fetchRooms'],
+    queryKey: ['fetch'],
     queryFn: async () => {
       try {
         const resFetchRoom = await api.get('chats/get-rooms');
@@ -32,17 +32,17 @@ const Notification = () => {
     refetchInterval: 2000,
   });
 
-  console.log("dataa", data)
+  console.log('dataa', data);
 
-    useEffect(() => {
+  useEffect(() => {
+    refreshProductList();
+  }, [navigation]);
+
+  useFocusEffect(
+    React.useCallback(() => {
       refreshProductList();
-    }, [navigation]);
-
-    useFocusEffect(
-      React.useCallback(() => {
-        refreshProductList();
-      }, []),
-    );
+    }, []),
+  );
 
   const deleteItem = (itemId: number) => {
     const updatedItems = cartItems.filter(item => item.id !== itemId);
@@ -67,15 +67,15 @@ const Notification = () => {
       onPress={() => handlePress(item)}>
       <Image
         source={
-          item.User?.avatar
-            ? {uri: item.User?.avatar}
+          item.Receiver?.avatar
+            ? {uri: item.Receiver?.avatar}
             : {uri: './none-image.jpg'}
         }
         style={styles.itemImage}
       />
       <View style={styles.content}>
         <Text numberOfLines={1} style={styles.itemText}>
-          {item.User?.name}
+          {item.Receiver?.name}
         </Text>
         <Text numberOfLines={1} style={styles.messenger}>
           {item.Messages[0]?.message}
@@ -94,13 +94,13 @@ const Notification = () => {
     </View>
   );
 
-    if (isLoading) {
-      return (
-        <Text style={{alignSelf: 'center', justifyContent: 'center'}}>
-          Đang tải ...
-        </Text>
-      );
-    }
+  if (isLoading) {
+    return (
+      <Text style={{alignSelf: 'center', justifyContent: 'center'}}>
+        Đang tải ...
+      </Text>
+    );
+  }
 
   return (
     <View style={styles.container}>

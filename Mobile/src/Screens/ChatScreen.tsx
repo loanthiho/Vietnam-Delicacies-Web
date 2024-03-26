@@ -69,15 +69,15 @@ const ChatScreen = () => {
         onPress={() => handlePress(item)}>
         <Image
           source={
-            item.User?.avatar
-              ? {uri: item.User?.avatar}
+            item.Receiver?.avatar
+              ? {uri: item.Receiver?.avatar}
               : {uri: './none-image.jpg'}
           }
           style={styles.itemImage}
         />
         <View style={styles.content}>
           <Text numberOfLines={1} style={styles.itemText}>
-            {item.User?.name}
+            {item.Receiver?.name}
           </Text>
           <Text numberOfLines={1} style={styles.messenger}>
             {item.Messages[0]?.message}
