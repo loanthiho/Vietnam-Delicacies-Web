@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   View,
   Text,
@@ -10,20 +10,20 @@ import {
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import { getUserAccessToken } from '../api/storage';
+import {getUserAccessToken} from '../api/storage';
 import LoaderKit from 'react-native-loader-kit';
 
-import { useQuery } from '@tanstack/react-query';
+import {useQuery} from '@tanstack/react-query';
 import api from '../api/request';
 
-const ShopSeller = ({ navigation }: any) => {
+const ShopSeller = ({navigation}: any) => {
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
   const [userInfo, setUserInfo] = useState<any>();
   const [stats, setStats] = useState({
     sold: 0,
     products: 0,
-    orderCanceled: 0
-  })
+    orderCanceled: 0,
+  });
 
   const getUserData = async () => {
     const userInfoOld = await getUserAccessToken();
@@ -35,28 +35,35 @@ const ShopSeller = ({ navigation }: any) => {
     }
   };
 
-  const { data, isLoading, refetch } = useQuery({
+  const {data, isLoading, refetch} = useQuery({
     queryKey: ['fectDataOrderDetail'],
     queryFn: async () => {
       const res = await api.get('orders');
       return res.data?.data;
-    }
+    },
   });
 
-
-  const { data: productData, isLoading: productLoading, refetch: productRefetch } = useQuery({
+  const {
+    data: productData,
+    isLoading: productLoading,
+    refetch: productRefetch,
+  } = useQuery({
     queryKey: ['fetchDataProduct'],
     queryFn: async () => {
-      const { user } = await getUserAccessToken();
-      const res = await api.get('products', { params: { seller_id: user.id } });
+      const {user} = await getUserAccessToken();
+      const res = await api.get('products', {params: {seller_id: user.id}});
       return res.data?.data;
-    }
+    },
   });
 
   useEffect(() => {
     if (data && data.length > 0) {
-      const soldArr = data.filter((item: any) => item.status == 'CHO_DANH_GIA').map((item: any) => item.quantity);
-      const orderCanceledArr = data.filter((item: any) => item.status == 'DA_HUY').map((item: any) => item.quantity);
+      const soldArr = data
+        .filter((item: any) => item.status == 'CHO_DANH_GIA')
+        .map((item: any) => item.quantity);
+      const orderCanceledArr = data
+        .filter((item: any) => item.status == 'DA_HUY')
+        .map((item: any) => item.quantity);
       var qtySold = 0;
       var qtyOrderCanceled = 0;
       for (const qty of soldArr) {
@@ -68,8 +75,8 @@ const ShopSeller = ({ navigation }: any) => {
       setStats({
         sold: qtySold,
         products: productData?.length,
-        orderCanceled: qtyOrderCanceled
-      })
+        orderCanceled: qtyOrderCanceled,
+      });
     }
   }, [data, productData]);
 
@@ -102,9 +109,7 @@ const ShopSeller = ({ navigation }: any) => {
               fontWeight: 'bold',
               fontSize: 10,
               color: '#ffa000',
-            }}>
-            1
-          </Text>
+            }}></Text>
           <Ionicons
             onPress={() => navigation.navigate('Notification')}
             name="notifications-outline"
@@ -127,7 +132,7 @@ const ShopSeller = ({ navigation }: any) => {
           <Text style={styles.phoneNumber}>(84+){userInfo?.phone_number}</Text>
         </View>
         <TouchableOpacity onPress={() => navigation.navigate('ProductScreen')}>
-          <Text style={{color: '#ffa000'}}>Xem cửa hàng</Text>
+          <Text style={{color: '#2E7D32'}}>Xem cửa hàng</Text>
         </TouchableOpacity>
       </View>
       {/**
@@ -325,7 +330,7 @@ const styles = StyleSheet.create({
     color: 'white',
     fontWeight: 'bold',
     paddingRight: 8,
-    textAlign: 'center'
+    textAlign: 'center',
   },
 
   statisticTitle: {
@@ -416,7 +421,7 @@ const styles = StyleSheet.create({
   },
   IconNoti: {
     fontSize: 26,
-    color: '#2E7D32',
+    color: '#ffa000',
   },
 });
 
