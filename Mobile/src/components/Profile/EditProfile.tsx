@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import {
   View,
   Text,
@@ -11,15 +11,14 @@ import {
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import { LogOut, setUserAccessToken } from '../../api/storage';
-import { useMutation } from '@tanstack/react-query';
+import {LogOut, setUserAccessToken} from '../../api/storage';
+import {useMutation} from '@tanstack/react-query';
 import api from '../../api/request';
 import LoaderKit from 'react-native-loader-kit';
-import { showMessage } from 'react-native-flash-message';
+import {showMessage} from 'react-native-flash-message';
 
-
-const EditProfileScreen = ({ navigation, route }: any) => {
-  const { userInfo, oldUserInfo, setUserInfo } = route.params;
+const EditProfileScreen = ({navigation, route}: any) => {
+  const {userInfo, oldUserInfo, setUserInfo} = route.params;
   const [name, setName] = useState(route.params?.userInfo.name || '');
   const [email, setEmail] = useState(route.params?.userInfo.email || '');
   const [detail_address, setAddress] = useState(
@@ -33,34 +32,36 @@ const EditProfileScreen = ({ navigation, route }: any) => {
 
   const mutation = useMutation({
     mutationKey: ['updateUserInfo'],
-    mutationFn: async (data) => {
-      const res = await api.patch(`users/${oldUserInfo.user?.id}`, { data: data });
+    mutationFn: async data => {
+      const res = await api.patch(`users/${oldUserInfo.user?.id}`, {
+        data: data,
+      });
       return res.data?.data;
     },
     onSuccess: async (data, variable) => {
       showMessage({
         type: 'success',
-        message: 'Cập nhật thành công!'
+        message: 'Cập nhật thành công!',
       });
-      await setUserAccessToken({ token: oldUserInfo?.token, user: data });
+      await setUserAccessToken({token: oldUserInfo?.token, user: data});
       setUserInfo({
         ...userInfo,
         name: data?.name,
         detail_address: data?.detail_address,
         phone_number: data?.phone_number,
-        avatar: data?.avatar
+        avatar: data?.avatar,
       });
       setIsEditing(false);
     },
     onError: (error, variable) => {
-      console.error("error update", error)
+      console.error('error update', error);
       showMessage({
         type: 'danger',
-        message: 'Lỗi cập nhật!'
+        message: 'Lỗi cập nhật!',
       });
       setIsEditing(true);
-    }
-  })
+    },
+  });
 
   const handleSave = async () => {
     // Kiểm tra nếu tên chứa ký tự @
@@ -106,23 +107,30 @@ const EditProfileScreen = ({ navigation, route }: any) => {
     const dataUpdate = {
       name: name,
       detail_address: detail_address,
-      phone_number: phone_number
-    }
-    console.log("data update", dataUpdate)
+      phone_number: phone_number,
+    };
+    console.log('data update', dataUpdate);
     mutation.mutate(dataUpdate);
     setIsEditing(false);
-
   };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.textNavigation}>Chỉnh sửa thông tin</Text>
-      <TouchableOpacity onPress={() => navigation.goBack()}>
-        <Ionicons name="arrow-back-outline" style={styles.arrowLeft} />
-      </TouchableOpacity>
+      <View
+        style={{
+          flexDirection: 'row',
+          alignSelf: 'flex-start',
+          gap: 10,
+          marginBottom: 50,
+        }}>
+        <TouchableOpacity onPress={() => navigation.goBack()}>
+          <Ionicons name="arrow-back-outline" style={styles.arrowLeft} />
+        </TouchableOpacity>
+        <Text style={styles.textNavigation}>Chỉnh sửa thông tin</Text>
+      </View>
       <TouchableOpacity style={styles.profileImageContainer}>
         <Image
-          source={avatar ? { uri: avatar } : require('../../assets/huong.jpg')}
+          source={avatar ? {uri: avatar} : require('../../assets/huong.jpg')}
           style={styles.profileImage}
         />
       </TouchableOpacity>
@@ -131,9 +139,9 @@ const EditProfileScreen = ({ navigation, route }: any) => {
           <AntDesign name="user" style={styles.icon} />
           <TextInput
             placeholder="Tên"
-            style={[styles.input, !isEditing ? { opacity: 0.5 } : null]}
+            style={[styles.input, !isEditing ? {opacity: 0.5} : null]}
             value={name}
-            onChangeText={(text) => {
+            onChangeText={text => {
               if (isEditing) setName(text);
             }}
             editable={isEditing}
@@ -143,9 +151,9 @@ const EditProfileScreen = ({ navigation, route }: any) => {
           <MaterialCommunityIcons name="email" style={styles.icon} />
           <TextInput
             placeholder="Email"
-            style={[styles.input, { opacity: 0.5 }]}
+            style={[styles.input, {opacity: 0.5}]}
             value={email}
-            onChangeText={(text) => {
+            onChangeText={text => {
               if (isEditing) setEmail(text);
             }}
             editable={false}
@@ -155,9 +163,9 @@ const EditProfileScreen = ({ navigation, route }: any) => {
           <MaterialCommunityIcons name="map-marker" style={styles.icon} />
           <TextInput
             placeholder="Địa chỉ"
-            style={[styles.input, !isEditing ? { opacity: 0.5 } : null]}
+            style={[styles.input, !isEditing ? {opacity: 0.5} : null]}
             value={detail_address}
-            onChangeText={(text) => {
+            onChangeText={text => {
               if (isEditing) setAddress(text);
             }}
             editable={isEditing}
@@ -167,9 +175,9 @@ const EditProfileScreen = ({ navigation, route }: any) => {
           <AntDesign name="phone" style={styles.icon} />
           <TextInput
             placeholder="Số điện thoại"
-            style={[styles.input, !isEditing ? { opacity: 0.5 } : null]}
+            style={[styles.input, !isEditing ? {opacity: 0.5} : null]}
             value={phone_number}
-            onChangeText={(number) => {
+            onChangeText={number => {
               if (isEditing) setPhoneNumber(number);
             }}
             keyboardType="numeric"
@@ -181,19 +189,17 @@ const EditProfileScreen = ({ navigation, route }: any) => {
           <TouchableOpacity
             disabled={mutation.isPending}
             onPress={isEditing ? handleSave : () => setIsEditing(true)}>
-            {mutation.isPending ?
-              (
-                <LoaderKit
-                  style={{ width: 35, height: 35 }}
-                  name={'BallPulse'}
-                  color={'green'}
-                />
-              )
-              :
+            {mutation.isPending ? (
+              <LoaderKit
+                style={{width: 35, height: 35}}
+                name={'BallPulse'}
+                color={'green'}
+              />
+            ) : (
               <Text style={styles.saveButtonText}>
                 {isEditing ? 'Lưu' : 'Chỉnh sửa'}
-              </Text>}
-
+              </Text>
+            )}
           </TouchableOpacity>
         </View>
       </View>
@@ -203,23 +209,19 @@ const EditProfileScreen = ({ navigation, route }: any) => {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     padding: 20,
     alignItems: 'center',
     justifyContent: 'center',
   },
   textNavigation: {
     fontSize: 15,
-    bottom: 60,
     fontWeight: 'bold',
     color: '#2E7D32',
-    marginRight: '40%',
   },
   arrowLeft: {
     fontSize: 22,
-    bottom: 80,
-    right: 150,
-    marginRight: 'auto',
+    alignSelf: 'flex-end',
+    alignContent: 'flex-end',
   },
   profileImageContainer: {
     marginBottom: 20,

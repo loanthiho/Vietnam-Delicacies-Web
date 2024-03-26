@@ -1,47 +1,48 @@
 import React, {useState, useEffect} from 'react';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import {View, Text, Image, StyleSheet, TouchableOpacity} from 'react-native';
-import {useNavigation} from '@react-navigation/native';
+import {useFocusEffect, useNavigation} from '@react-navigation/native';
 import {SwipeListView} from 'react-native-swipe-list-view';
+import {useQuery} from '@tanstack/react-query';
+import api from '../../api/request';
+import LoaderKit from 'react-native-loader-kit';
 
 const Notification = () => {
   const navigation = useNavigation<any>();
+  const [cartItems, setCartItems] = useState([]);
 
-  const data = [
-    {
-      id: 1,
-      name: 'Văn Đi shop',
-      messenger: 'Giá hiện tại là bao nhiều vậy shop',
-      image: require('../../assets/huong.jpg'),
+  const {
+    data,
+    isLoading,
+    refetch: refreshProductList,
+  } = useQuery({
+    queryKey: ['fetch'],
+    queryFn: async () => {
+      try {
+        const resFetchRoom = await api.get('chats/get-rooms');
+        if (resFetchRoom) {
+          setCartItems(resFetchRoom.data.data);
+          return resFetchRoom.data.data;
+        }
+      } catch (error) {
+        console.log(error.response);
+        return [];
+      }
     },
-    {
-      id: 2,
-      name: 'Chấm chéo Tây Bắc',
-      messenger: 'Chị check tin nhắn em với ạ',
-      image: require('../../assets/huong.jpg'),
-    },
+    refetchInterval: 2000,
+  });
 
-    {
-      id: 3,
-      name: 'A Thi Shop',
-      messenger: 'Chị check tin nhắn em với',
-      image: require('../../assets/huong.jpg'),
-    },
+  console.log('dataa', data);
 
-    {
-      id: 4,
-      name: 'Đặc sản Quảng Bình',
-      messenger: 'Chị check tin nhắn em với ạ',
-      image: require('../../assets/huong.jpg'),
-    },
+  useEffect(() => {
+    refreshProductList();
+  }, [navigation]);
 
-    {
-      id: 5,
-      name: 'Ana Shop',
-      messenger: 'Chị check tin nhắn em với ạ',
-      image: require('../../assets/huong.jpg'),
-    },
-  ];
+  useFocusEffect(
+    React.useCallback(() => {
+      refreshProductList();
+    }, []),
+  );
 
   const deleteItem = (itemId: number) => {
     const updatedItems = cartItems.filter(item => item.id !== itemId);
@@ -54,29 +55,30 @@ const Notification = () => {
 
   const handlePress = (item: any) => {
     navigation.navigate('MessageSeller', {
-      itemId: item.id,
-      itemName: item.name,
-      itemImage: item.image,
+      dataRoomChat: item,
     });
     console.log('first data before send', item);
     console.log(typeof item.image);
   };
-  const [cartItems, setCartItems] = useState(data);
 
   const renderItem = ({item}: any) => (
     <TouchableOpacity
       style={styles.itemContainer}
       onPress={() => handlePress(item)}>
       <Image
-        source={typeof item.image === 'string' ? {uri: item.image} : item.image}
+        source={
+          item.Receiver?.avatar
+            ? {uri: item.Receiver?.avatar}
+            : {uri: './none-image.jpg'}
+        }
         style={styles.itemImage}
       />
       <View style={styles.content}>
         <Text numberOfLines={1} style={styles.itemText}>
-          {item.name}
+          {item.Receiver?.name}
         </Text>
         <Text numberOfLines={1} style={styles.messenger}>
-          {item.messenger}
+          {item.Messages[0]?.message}
         </Text>
       </View>
     </TouchableOpacity>
@@ -91,6 +93,14 @@ const Notification = () => {
       </TouchableOpacity>
     </View>
   );
+
+  if (isLoading) {
+    return (
+      <Text style={{alignSelf: 'center', justifyContent: 'center'}}>
+        Đang tải ...
+      </Text>
+    );
+  }
 
   return (
     <View style={styles.container}>

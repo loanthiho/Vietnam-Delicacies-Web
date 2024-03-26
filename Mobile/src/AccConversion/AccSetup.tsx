@@ -63,9 +63,9 @@ const AccSetup = () => {
 
       <View style={{paddingHorizontal: 10, paddingTop: 20}}>
         <Text style={styles.titleChose}>Chọn loại tài khoản</Text>
-        <Text>
+        <Text style={{textAlign: 'justify'}}>
           Thông tin này giúp chúng tôi đem đén cho bạn những quyền lợi đặc biệt
-          theo từng loại tài khoản và tối ưu trải nghiệm của bạn
+          theo từng loại tài khoản và tối ưu trải nghiệm của bạn.
         </Text>
       </View>
       <SwipeListView data={cartItems} renderItem={renderItem} />
