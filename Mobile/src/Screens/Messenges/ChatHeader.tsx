@@ -1,9 +1,9 @@
-import { StyleSheet, Text, View, TouchableOpacity, Image } from 'react-native';
+import {StyleSheet, Text, View, TouchableOpacity, Image} from 'react-native';
 import React from 'react';
 import Icon from 'react-native-vector-icons/Ionicons';
-import { useNavigation } from '@react-navigation/native';
+import {useNavigation} from '@react-navigation/native';
 
-const ChatHeader = ({ itemName, itemImage, onlineStatus }) => {
+const ChatHeader = ({itemName, itemImage, onlineStatus}) => {
   const navigation = useNavigation<any>();
   return (
     <View style={styles.container}>
@@ -18,8 +18,8 @@ const ChatHeader = ({ itemName, itemImage, onlineStatus }) => {
       </TouchableOpacity>
       <View style={styles.profileOptions}>
         <TouchableOpacity style={styles.profile}>
-          {/* <Image style={styles.image} source={{uri: itemImage}} /> */}
-          <Image style={styles.image} source={itemImage} />
+          <Image style={styles.image} source={{uri: itemImage}} />
+          {/* <Image style={styles.image} source={itemImage} /> */}
           <View style={styles.usernameAndOnlineStatus}>
             <Text style={styles.username}>{itemName}</Text>
             <Text style={styles.onlineStatus}>{onlineStatus}</Text>

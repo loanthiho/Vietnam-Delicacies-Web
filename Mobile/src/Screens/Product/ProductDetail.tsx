@@ -9,8 +9,7 @@ import {
 } from 'react-native';
 import { addToCart } from '../../Hooks/addToCart';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import { getUserAccessToken } from '../../api/storage';
-import { useQueryClient } from '@tanstack/react-query';
+import {useQueryClient} from '@tanstack/react-query';
 
 const ProductDetailScreen = ({ route, navigation }: any) => {
   const [quantity, setQuantity] = useState(1);
@@ -18,9 +17,10 @@ const ProductDetailScreen = ({ route, navigation }: any) => {
 
   const addToCartHandler = async (product_id: any) => {
     console.log('id Product add to cart', product_id);
-    await addToCart(product_id);
-    queryClient.invalidateQueries({ queryKey: ['shoppingCart'] });
-    navigation.navigate('Giỏ hàng', { id: product_id });
+    console.log('quantity', quantity);
+    await addToCart(product_id, quantity);
+    queryClient.invalidateQueries({queryKey: ['shoppingCart']});
+    navigation.navigate('Giỏ hàng', {id: product_id});
   };
   if (!route.params || !route.params.selectedItem) {
     return (
@@ -31,7 +31,6 @@ const ProductDetailScreen = ({ route, navigation }: any) => {
   }
 
   const { selectedItem }: any = route.params;
-
 
   const decreaseQuantity = () => {
     if (quantity > 1) {
