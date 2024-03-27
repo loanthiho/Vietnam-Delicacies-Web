@@ -50,7 +50,7 @@ const createNewRoomChat = async (req, res, next) => {
                         { receiver_id: current_user_id }
                     ],
                 },
-                include: [{ model: Message }, { model: User }],
+                include: [{ model: Message }, { model: User, as: 'Receiver' }, { model: User, as: "Sender" }],
                 order: [[Message, "date", "DESC"]],
             });
             // return resSuccessData(res, chatRoom);
