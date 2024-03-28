@@ -25,7 +25,7 @@ const NewPasswordScreen = ({ route, navigation }: any) => {
       return navigation.navigate('SignIn');
     },
     onError: (error, variable) => {
-      console.log("error when update password", error.response?.data);
+      console.error("error when update password", error.response?.data);
       return showMessage({
         type: "danger",
         message: error.response.data.message

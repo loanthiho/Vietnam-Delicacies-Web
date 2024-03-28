@@ -199,7 +199,7 @@ const SignUp: React.FC = ({ navigation }: any) => {
               }}></Text>
           </View>
 
-          <View
+          {/* <View
             style={{
               flexDirection: 'row',
               gap: 20,
@@ -220,7 +220,7 @@ const SignUp: React.FC = ({ navigation }: any) => {
                 style={{ width: 45, height: 45, borderRadius: 50 }}
                 source={require('../../../assets/img_login_sigup/Google__G__logo.svg.png')}></Image>
             </TouchableOpacity>
-          </View>
+          </View> */}
           <View
             style={{
               flexDirection: 'row',

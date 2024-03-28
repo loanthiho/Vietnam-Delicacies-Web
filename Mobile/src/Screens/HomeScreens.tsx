@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useState} from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -14,14 +14,14 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import Banner from '../components/Homepage/Banner';
 import FeaturedProductsList from '../components/Homepage/FeaturedProductsList';
 import SuggestionsList from '../components/Homepage/SuggestionsList';
-import {useQuery} from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import api from '../api/request';
-import {debounce} from 'lodash';
+import { debounce } from 'lodash';
 import fonts from '../ultils/_fonts';
-import {getUserAccessToken} from '../api/storage';
-import {useFocusEffect} from '@react-navigation/native';
+import { getUserAccessToken } from '../api/storage';
+import { useFocusEffect } from '@react-navigation/native';
 
-const HomePage = ({navigation}: any) => {
+const HomePage = ({ navigation }: any) => {
   const [selectedItem, setSelectedItem] = useState('Tất cả');
   const [products, setProducts] = useState([]);
   const [domains, setDomain] = useState<any[]>([]);
@@ -148,7 +148,7 @@ const HomePage = ({navigation}: any) => {
       );
       try {
         setIsSearch(false);
-        const response = await api.get('products', {auth: false});
+        const response = await api.get('products', { auth: false });
         if (response) {
           setProducts(
             response.data?.data.length === 0 ? [] : response.data?.data,
@@ -181,7 +181,7 @@ const HomePage = ({navigation}: any) => {
             updatedAt: '2024-03-10T21:53:20.000Z',
           },
         ];
-        const response = await api.get('domains', {auth: false});
+        const response = await api.get('domains', { auth: false });
         if (response) {
           setDomain([...domainArray, ...response.data?.data]);
         }
@@ -218,19 +218,19 @@ const HomePage = ({navigation}: any) => {
     }, []),
   );
 
-  const renderDomain = ({item}: any) => (
+  const renderDomain = ({ item }: any) => (
     <>
       <TouchableOpacity
         key={item?.id}
         style={[
           styles.itemOption,
-          {backgroundColor: selectedItem === item?.id ? '#2E7D32' : 'white'},
+          { backgroundColor: selectedItem === item?.id ? '#2E7D32' : 'white' },
         ]}
         onPress={() => {
           setSelectedItem(item.id);
           actionFind('filterByDomainId', item.id);
         }}>
-        <Text style={{color: selectedItem === item?.id ? 'white' : 'black'}}>
+        <Text style={{ color: selectedItem === item?.id ? 'white' : 'black' }}>
           {item?.name}
         </Text>
       </TouchableOpacity>
@@ -240,7 +240,7 @@ const HomePage = ({navigation}: any) => {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <View style={{flexDirection: 'row', alignItems: 'center'}}>
+        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
           <Text style={styles.textheader}>Đặc sản</Text>
           <Text style={styles.textViet}>Việt</Text>
         </View>
@@ -249,16 +249,17 @@ const HomePage = ({navigation}: any) => {
           onPress={() =>
             navigation.navigate({
               name: 'EditProfileScreen',
-              params: {userInfo, oldUserInfo, setUserInfo: setUserInfo},
+              params: { userInfo, oldUserInfo, setUserInfo: setUserInfo },
             })
           }>
           <Image
-            source={require('../assets/huong.jpg')}
+            // require()
+            source={userInfo?.avatar ? { uri: userInfo?.avatar } : require('../assets/huong.jpg')}
             style={styles.profileImage}
           />
         </TouchableOpacity>
       </View>
-      <Text style={{color: '#000'}}>Đặt món đặc sản bạn yêu thích </Text>
+      <Text style={{ color: '#000' }}>Đặt món đặc sản bạn yêu thích </Text>
       <View style={styles.search}>
         <Ionicons name="search-outline" style={styles.searchIcon} />
         <TextInput
@@ -311,7 +312,7 @@ const HomePage = ({navigation}: any) => {
           </>
         )}
       </View>
-      <ScrollView style={{flex: 1}}>
+      <ScrollView style={{ flex: 1 }}>
         <Banner />
         {productLoading || loading.searchLoading ? (
           <>
@@ -379,7 +380,7 @@ const HomePage = ({navigation}: any) => {
                 ) : null}
                 <Text
                   onPress={() => console.log('isSearch:', isSearch)}
-                  style={{fontSize: 18, fontWeight: 'bold', color: 'black'}}>
+                  style={{ fontSize: 18, fontWeight: 'bold', color: 'black' }}>
                   Sản phẩm đề xuất
                 </Text>
                 <SuggestionsList products={products} navigation={navigation} />
@@ -404,7 +405,7 @@ const HomePage = ({navigation}: any) => {
           alignItems: 'center',
         }}>
         <Image
-          style={{height: 50, width: 50}}
+          style={{ height: 50, width: 50 }}
           source={require('../assets/chat.png')}
         />
       </TouchableOpacity>

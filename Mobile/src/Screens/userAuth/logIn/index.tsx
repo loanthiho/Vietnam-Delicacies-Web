@@ -16,7 +16,8 @@ import {
 } from 'react-native';
 import useLogin from '../../../Hooks/useLogin';
 import { showMessage } from 'react-native-flash-message';
-import { setUserAccessToken } from '../../../api/storage';
+import { getUserAccessToken, setUserAccessToken } from '../../../api/storage';
+import { useQuery } from '@tanstack/react-query';
 
 const SignIn: React.FC = ({ navigation, route }: any) => {
   const { mutation, errorMess } = useLogin();
@@ -109,6 +110,45 @@ const SignIn: React.FC = ({ navigation, route }: any) => {
       }
     }
   };
+
+  const checkAuth = async () => {
+    const { user, token } = await getUserAccessToken();
+    if (token) {
+      if (user?.role == 'seller') {
+        navigation.navigate('ShopSeller')
+      }
+      else {
+        navigation.navigate('Main')
+      }
+      return token;
+    }
+    return user
+  };
+  const checkAuthen = useQuery({
+    queryKey: ['checkAuthen'],
+    queryFn: async () => await checkAuth(),
+  })
+
+
+
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('focus', () => {
+      checkAuthen.refetch();
+      console.log('wait delivery Screen is focused!');
+    });
+
+    return unsubscribe;
+  }, [navigation]);
+
+  if (checkAuthen.isLoading) {
+    return (
+      <LoaderKit
+        style={{ width: 20, height: 20 }}
+        name={'BallPulse'}
+        color={'white'}
+      />
+    )
+  }
   return (
     <ScrollView>
       <View style={{ flex: 1 }}>
@@ -183,7 +223,7 @@ const SignIn: React.FC = ({ navigation, route }: any) => {
               </View>
             </View>
           </TouchableOpacity>
-          <TouchableOpacity onPress={() => navigation.navigate('ForgotPasswordScreen')}>
+          {/* <TouchableOpacity onPress={() => navigation.navigate('ForgotPasswordScreen')}>
             <Text
               style={{
                 color: 'black',
@@ -193,7 +233,7 @@ const SignIn: React.FC = ({ navigation, route }: any) => {
               }}>
               Bạn <Text style={{ color: '#FFA000' }}>quên</Text> mật khẩu?
             </Text>
-          </TouchableOpacity>
+          </TouchableOpacity> */}
           <View
             style={{
               flexDirection: 'row',
