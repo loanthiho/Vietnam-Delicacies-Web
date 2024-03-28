@@ -162,6 +162,7 @@ const styles = StyleSheet.create({
   },
   messenger: {
     marginRight: 40,
+    paddingRight: 10,
     fontSize: 14,
     borderRadius: 5,
     color: '#000',

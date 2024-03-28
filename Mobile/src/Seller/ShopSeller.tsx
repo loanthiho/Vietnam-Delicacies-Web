@@ -52,6 +52,10 @@ const ShopSeller = ({navigation}: any) => {
     queryFn: async () => {
       const {user} = await getUserAccessToken();
       const res = await api.get('products', {params: {seller_id: user.id}});
+      setStats({
+        ...stats,
+        products: res.data.data.length,
+      });
       return res.data?.data;
     },
   });
@@ -73,8 +77,8 @@ const ShopSeller = ({navigation}: any) => {
         qtyOrderCanceled += qty;
       }
       setStats({
+        ...stats,
         sold: qtySold,
-        products: productData?.length,
         orderCanceled: qtyOrderCanceled,
       });
     }
@@ -197,7 +201,7 @@ const ShopSeller = ({navigation}: any) => {
         |End navigate to order status
         */}
       <View>
-        <Text style={styles.titleStatistical}>Thống kê</Text>
+        <Text style={styles.titleStatistical}>Thống kê sản phẩm</Text>
         <View style={{flexDirection: 'row', justifyContent: 'space-around'}}>
           <View style={{alignItems: 'center'}}>
             <Text style={styles.statisticsNumber}>{stats.sold}</Text>
@@ -205,7 +209,7 @@ const ShopSeller = ({navigation}: any) => {
           </View>
           <View style={{alignItems: 'center'}}>
             <Text style={styles.statisticsNumber}>{stats.products}</Text>
-            <Text style={styles.statisticTitle}>Sản phẩm</Text>
+            <Text style={styles.statisticTitle}>Đã đăng</Text>
           </View>
           <View style={{alignItems: 'center'}}>
             <Text style={styles.statisticsNumber}> {stats.orderCanceled}</Text>
