@@ -25,6 +25,8 @@ const ShopSeller = ({navigation}: any) => {
     orderCanceled: 0,
   });
 
+  console.log('stats', stats);
+
   const getUserData = async () => {
     const userInfoOld = await getUserAccessToken();
     console.log('user:', userInfoOld.user);
