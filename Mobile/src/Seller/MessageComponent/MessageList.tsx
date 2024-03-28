@@ -33,7 +33,7 @@ const MessagesList = ({onSwipeToReply, dataRoomChat}: any) => {
         return [];
       }
     },
-    refetchInterval: 2000,
+    refetchInterval: 1000,
   });
   const fetchUser = async () => {
     const {user} = await getUserAccessToken();

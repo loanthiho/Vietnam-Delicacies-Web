@@ -32,7 +32,7 @@ const MessagesList = ({onSwipeToReply, dataRoomChat}: any) => {
         return [];
       }
     },
-    refetchInterval: 5000,
+    refetchInterval: 3000,
   });
 
   const fetchUser = async () => {
