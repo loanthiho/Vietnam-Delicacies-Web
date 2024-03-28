@@ -17,6 +17,7 @@ LogBox.ignoreLogs([
   `Image source "null" doesn't exist`,
   'new NativeEventEmitter()` was called with a non-null argument without the required `addListener` method',
   '`new NativeEventEmitter()` was called with a non-null argument without the required `removeListeners` method.',
+  'Warning: Failed prop type: Invalid prop `color` supplied to `Text`:',
 ]);
 
 const App = () => {
