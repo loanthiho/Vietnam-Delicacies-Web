@@ -12,14 +12,20 @@ const NewPasswordScreen = ({ route, navigation }: any) => {
   const mutation = useMutation({
     mutationKey: ['changePassword'],
     mutationFn: async (data) => {
+      console.log("data _________________-", data)
       const changePass = await api.post(`users/change-password`, { auth: false, data: data });
       return changePass.data.data;
     },
     onSuccess: (data, variable) => {
+      console.log("data update success:", data)
+      showMessage({
+        type: "success",
+        message: "Thay đổi mật khẩu thành công!"
+      })
       return navigation.navigate('SignIn');
     },
     onError: (error, variable) => {
-      console.log("error when update password");
+      console.log("error when update password", error.response?.data);
       return showMessage({
         type: "danger",
         message: error.response.data.message

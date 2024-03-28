@@ -15,8 +15,8 @@ const buildAxios = async (auth: boolean = true) => {
     headers = {Authorization: `Bearer ${tokenData.token}`};
   }
   return axios.create({
-    // baseURL: `http://nodejs-app-env-1.eba-q2t7wpq3.ap-southeast-2.elasticbeanstalk.com/`,
-    baseURL: `https://9540-113-176-99-140.ngrok-free.app/`,
+    baseURL: `http://nodejs-app-env-1.eba-q2t7wpq3.ap-southeast-2.elasticbeanstalk.com/`,
+    // baseURL: `https://2301-2402-9d80-412-dcfc-15de-ccc2-b8e3-c739.ngrok-free.app/`,
     headers,
   });
 };
