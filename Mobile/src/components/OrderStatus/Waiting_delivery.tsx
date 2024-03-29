@@ -53,7 +53,7 @@ const Waiting_confirmation = () => {
       <Image source={{ uri: item.Product?.Files?.[0]?.src }} style={styles.itemImage} />
       <View style={styles.content}>
         <Text style={styles.itemText}>{item.Product?.name}</Text>
-        <Text style={styles.itemPrice}>{item.Product?.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.')}đ</Text>
+        <Text style={styles.itemPrice}>{item?.total_price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.')}đ</Text>
       </View>
       <View style={styles.status}>
         <View style={{ flexDirection: 'row' }}>

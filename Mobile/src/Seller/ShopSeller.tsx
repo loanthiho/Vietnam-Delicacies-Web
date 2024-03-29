@@ -21,7 +21,7 @@ const ShopSeller = ({navigation}: any) => {
   const [userInfo, setUserInfo] = useState<any>();
   const [stats, setStats] = useState({
     sold: 0,
-    products: 0,
+     products: 0,
     orderCanceled: 0,
   });
 

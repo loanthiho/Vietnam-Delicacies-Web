@@ -42,8 +42,7 @@ const Canceled = () => {
       <View style={styles.content}>
         <Text style={styles.itemText}>{item.Product?.name}</Text>
         <Text style={styles.itemPrice}>
-          {item.Product?.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.')}
-          đ
+          {item?.total_price?.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.')}đ
         </Text>
       </View>
       <View style={styles.status}>

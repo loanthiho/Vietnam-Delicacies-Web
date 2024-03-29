@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   View,
   Text,
@@ -9,12 +9,12 @@ import {
 } from 'react-native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import { LogOut, getUserAccessToken } from '../api/storage';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import {LogOut, getUserAccessToken} from '../api/storage';
+import {useMutation, useQuery} from '@tanstack/react-query';
 import api from '../api/request';
-import { SwipeListView } from 'react-native-swipe-list-view';
+import {SwipeListView} from 'react-native-swipe-list-view';
 
-const ProfileScreen = ({ navigation }: any) => {
+const ProfileScreen = ({navigation}: any) => {
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
   const [userInfo, setUserInfo] = useState<any>();
   const [oldUserInfo, setOldUserInfo] = useState<any>();
@@ -47,7 +47,7 @@ const ProfileScreen = ({ navigation }: any) => {
   } = useQuery({
     queryKey: ['get_order_CHO_DANH_GIA'],
     queryFn: async () => {
-      const res = await api.get('orders', { params: { status: 'CHO_DANH_GIA' } });
+      const res = await api.get('orders', {params: {status: 'CHO_DANH_GIA'}});
       if (res) {
         return res.data?.data;
       }
@@ -83,24 +83,33 @@ const ProfileScreen = ({ navigation }: any) => {
 
   console.log('Dtaa', data);
 
-  const renderItemHistory = ({ item }: any) => (
+  const renderItemHistory = ({item}: any) => (
     <TouchableOpacity key={item.id} style={styles.itemContainer}>
       <Image
-        source={{ uri: item.Product?.Files?.[0]?.src }}
+        source={{uri: item.Product?.Files?.[0]?.src}}
         style={styles.itemImage}
       />
       <View style={styles.content}>
-        <Text numberOfLines={1} style={styles.itemText}>
-          {item.Product?.name}
-        </Text>
-        <Text numberOfLines={1} style={styles.messenger}>
-          {item.Product?.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.')}
-          đ
-        </Text>
+        <View>
+          <Text numberOfLines={1} style={styles.itemText}>
+            {item.Product?.name}
+          </Text>
+          <Text numberOfLines={1} style={styles.messenger}>
+            {item.Product?.price
+              .toString()
+              .replace(/\B(?=(\d{3})+(?!\d))/g, '.')}
+            đ
+          </Text>
+        </View>
+        <View>
+          <Text numberOfLines={1} style={[styles.messenger, {color: "green"}]}>
+            {item?.quantity}x
+          </Text>
+        </View>
       </View>
     </TouchableOpacity>
   );
-  const renderHiddenItem = ({ item }: any) => (
+  const renderHiddenItem = ({item}: any) => (
     <View>
       <TouchableOpacity
         disabled={removePending}
@@ -127,7 +136,7 @@ const ProfileScreen = ({ navigation }: any) => {
           <Image
             source={
               userInfo?.avatar
-                ? { uri: userInfo.avatar }
+                ? {uri: userInfo.avatar}
                 : require('../assets/huong.jpg')
             }
             style={styles.profileImage}
@@ -142,7 +151,7 @@ const ProfileScreen = ({ navigation }: any) => {
           onPress={() =>
             navigation.navigate({
               name: 'EditProfileScreen',
-              params: { userInfo, setUserInfo, oldUserInfo },
+              params: {userInfo, setUserInfo, oldUserInfo},
             })
           }>
           <AntDesign name="edit" style={styles.IconEdit} />
@@ -249,7 +258,7 @@ const ProfileScreen = ({ navigation }: any) => {
         </TouchableOpacity>
       ) : null}
 
-      <Text style={{ fontSize: 16, fontWeight: 'bold', color: '#2E7D32' }}>
+      <Text style={{fontSize: 16, fontWeight: 'bold', color: '#2E7D32'}}>
         Lịch sử đơn hàng
       </Text>
 
@@ -411,6 +420,7 @@ const styles = StyleSheet.create({
   },
 
   content: {
+    flexDirection:"row",
     alignSelf: 'center',
     gap: 10,
   },
